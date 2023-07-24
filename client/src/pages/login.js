@@ -126,7 +126,7 @@ export default function Login() {
             href="/signup"
             className={selected === 0 ? "text-blue-500" : "text-yellow-500"}
           >
-            Signup
+            {" Signup"}
           </Link>
         </span>
       </form>
