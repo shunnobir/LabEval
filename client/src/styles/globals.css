@@ -4,12 +4,23 @@
 
 :root {
   --red-600: #d3493a;
-  --blue-600: #4282cd;
-  --yellow-600: #ffbe39;
-  --slate-900: #151720;
-  --slate-300: #cbd5e1;
+
+  --blue-500: #4282cd;
+  --blue-600: #3272bd;
+
+  --yellow-500: #ffbe39;
+  --yellow-600: #ffae25;
+
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
   --slate-200: #e2e8f0;
-  --slate-50: #f0f8fc;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
 }
 
 body {
@@ -30,6 +41,7 @@ textarea:focus {
 }
 
 a {
-  color: var(--blue-600);
+  color: var(--blue-500);
   text-decoration: none;
+  font-weight: 500;
 }
