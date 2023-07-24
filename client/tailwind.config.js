@@ -12,22 +12,46 @@ module.exports = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+
       colors: {
         red: {
-          600: "#d3493a",
+          600: "var(--red-600)",
         },
         blue: {
-          600: "#4282cd",
+          500: "var(--blue-500)",
+          600: "var(--blue-600)",
         },
         yellow: {
-          600: "#ffbe39",
+          500: "var(--yellow-500)",
+          600: "var(--yellow-600)",
         },
         slate: {
-          900: "#151720",
-          300: "#cbd5e1",
-          200: "#e2e8f0",
-          50: "#f0f8fc",
+          900: "var(--slate-900)",
+          800: "var(--slate-800)",
+          700: "var(--slate-700)",
+          600: "var(--slate-600)",
+          500: "var(--slate-500)",
+          400: "var(--slate-400)",
+          300: "var(--slate-300)",
+          200: "var(--slate-200)",
+          100: "var(--slate-100)",
+          50: "var(--slate-50)",
         },
+      },
+
+      keyframes: {
+        opacity: {
+          from: {
+            opacity: "0",
+          },
+          to: {
+            opacity: "1",
+          },
+        },
+      },
+
+      animation: {
+        opacity: "opacity 350ms ease-in 1 forwards",
       },
     },
   },

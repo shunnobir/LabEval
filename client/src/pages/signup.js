@@ -1,9 +1,55 @@
+import axios from "axios";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+
+import Select from "@/components/Select";
 
 export default function Signup() {
+  const [username, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [selected, setSelected] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleError = (s) => {
+    setError(s);
+    setTimeout(() => {
+      setError("");
+    }, 5000);
+  };
+
+  const handleSignup = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    axios
+      .post("/api/signup", {
+        username,
+        email,
+        password,
+        role: selected === 1 ? "instructor" : "participant",
+        accepted: selected === 0 ? "true" : "false",
+      })
+      .then((res) => res.data)
+      .then((res) => {
+        if (res !== "Successful") handleError(res);
+        else router.push("/login");
+        setLoading(false);
+      })
+      .catch((err) => {
+        handleError(err);
+      });
+  };
+
   return (
-    <div className="signup m-auto pt-[25vh] flex flex-col w-[450px] h-fit p-8 gap-4">
+    <div className="signup translate-x-[calc(calc(100vw-450px)/2)] translate-y-[25%] flex flex-col w-[450px] h-fit p-8 gap-4 animate-opacity">
+      <Head key={new Date().getMilliseconds()}>
+        <title> Signup | LabEval </title>
+      </Head>
       <Image
         src="/labeval_logo.png"
         alt="LabEval Logo"
@@ -11,44 +57,78 @@ export default function Signup() {
         height={40}
         style={{ objectFit: "contain", margin: "auto" }}
       />
-      <span className="text-xl font-medium text-center"> SIGNUP </span>
-      <form className="signup-form flex flex-col gap-6 w-full">
+      <span className="text-2xl font-medium text-center"> SIGNUP </span>
+      <form
+        className="signup-form flex flex-col gap-6 w-full"
+        onSubmit={handleSignup}
+      >
         <div className="form-row flex flex-col gap-1">
           <label className="text-sm font-medium"> Username </label>
           <input
-            id="username"
             type="text"
-            name="username"
             placeholder="username"
             className="h-10 px-4"
+            value={username}
+            onChange={(e) => setUserName(e.target.value)}
           />
         </div>
         <div className="form-row flex flex-col gap-1">
           <label className="text-sm font-medium"> Email </label>
           <input
-            id="email"
             type="text"
-            name="email"
             placeholder="email"
             className="h-10 px-4"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="form-row flex flex-col gap-1">
           <label className="text-sm font-medium"> Password </label>
           <input
-            id="password"
             type="password"
-            name="passworde"
             placeholder="password"
             className="h-10 px-4"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button className="bg-blue-600 text-slate-50 h-10 rounded-[5px]">
-          SIGNUP
+        <div className="form-row flex flex-col gap-1">
+          <label className="text-sm font-medium"> Signup as </label>
+          <Select
+            options={["Participant", "Instructor"]}
+            setSelected={setSelected}
+          />
+        </div>
+        {error.length > 0 ? (
+          <span className="animate-opacity min-h-[2.5rem] rounded-[5px] w-full pl-4 pr-6 bg-red-500 text-slate-50 flex flex-row items-center justify-center relative">
+            {error}
+            <span
+              className="absolute right-4 text-xl cursor-pointer"
+              onClick={() => setError("")}
+            >
+              &times;
+            </span>
+          </span>
+        ) : null}
+        <button
+          className={
+            "text-slate-50 h-10 rounded-[5px] duration-300" +
+            (selected === 0
+              ? " bg-blue-500 hover:bg-blue-600"
+              : " bg-yellow-500 hover:bg-yellow-600")
+          }
+          onClick={handleSignup}
+        >
+          {loading ? "Signing up..." : "SIGNUP"}
         </button>
         <span className="text-center">
-          {" "}
-          Already have an account? <Link href="/login"> Login </Link>{" "}
+          Already have an account?
+          <Link
+            href="/login"
+            className={selected === 0 ? "text-blue-500" : "text-yellow-500"}
+          >
+            Login
+          </Link>
         </span>
       </form>
     </div>
