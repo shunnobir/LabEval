@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 import { random_string } from "@/utility";
 import psql from "../../database.config";
 
@@ -11,10 +13,9 @@ export default async function handler(req, res) {
       return;
     }
 
-    result =
-      await psql`select * from users where username = ${body.username} and password = ${body.password}`;
+    result = await psql`select * from users where username = ${body.username}`;
 
-    if (result.length === 0) {
+    if (!(await bcrypt.compare(body.password, result[0].password))) {
       res.status(200).json({ status: "Wrong Password" });
       return;
     }
@@ -24,10 +25,12 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (result[0].accepted === "f") {
+    console.log(result[0]);
+
+    if (!result[0].accepted) {
       res.status(200).json({
         status:
-          "Your Instructor role request has not been accepted yet. Contact system admin.",
+          "Your request for Instructor role has not been accepted yet. Contact system admin.",
       });
       return;
     }

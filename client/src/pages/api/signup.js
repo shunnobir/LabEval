@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 import { random_string } from "@/utility";
 import psql from "../../database.config";
 
@@ -17,6 +19,10 @@ export default async function handler(req, res) {
       return;
     }
 
+    const saltRound = 10;
+    const hash = await bcrypt.hash(body.password, saltRound);
+
+    body.password = hash;
     await psql`insert into users values ${psql(body)}`;
     res.status(200).json("Successful");
   }

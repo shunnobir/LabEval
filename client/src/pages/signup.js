@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import Select from "@/components/Select";
+import Loader from "@/components/Loader";
 
 export default function Signup() {
   const [username, setUserName] = useState("");
@@ -25,6 +26,21 @@ export default function Signup() {
 
   const handleSignup = (e) => {
     e.preventDefault();
+    if (username.length === 0) {
+      handleError("Invalid username");
+      return;
+    }
+
+    if (email.length === 0) {
+      handleError("Invalid email");
+      return;
+    }
+
+    if (password.length === 0) {
+      handleError("Empty password is not allowed");
+      return;
+    }
+
     setLoading(true);
     axios
       .post("/api/signup", {
@@ -32,7 +48,8 @@ export default function Signup() {
         email,
         password,
         role: selected === 1 ? "instructor" : "participant",
-        accepted: selected === 0 ? "true" : "false",
+        // accepted: selected === 0 ? "true" : "false",
+        accepted: true,
       })
       .then((res) => res.data)
       .then((res) => {
@@ -46,7 +63,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="signup translate-x-[calc(calc(100vw-450px)/2)] translate-y-[25%] flex flex-col w-[450px] h-fit p-8 gap-4 animate-opacity">
+    <div className="signup absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col w-[450px] h-fit p-8 gap-4 animate-opacity">
       <Head key={new Date().getMilliseconds()}>
         <title> Signup | LabEval </title>
       </Head>
@@ -111,22 +128,14 @@ export default function Signup() {
           </span>
         ) : null}
         <button
-          className={
-            "text-slate-50 h-10 rounded-[5px] duration-300" +
-            (selected === 0
-              ? " bg-blue-500 hover:bg-blue-600"
-              : " bg-yellow-500 hover:bg-yellow-600")
-          }
+          className="text-slate-50 h-10 rounded-[5px] duration-300 flex flex-row items-center justify-center bg-blue-500 hover:bg-blue-600"
           onClick={handleSignup}
         >
-          {loading ? "Signing up..." : "SIGNUP"}
+          {loading ? <Loader /> : "SIGNUP"}
         </button>
         <span className="text-center">
           Already have an account?
-          <Link
-            href="/login"
-            className={selected === 0 ? "text-blue-500" : "text-yellow-500"}
-          >
+          <Link href="/login" className="text-blue-500">
             {" Login"}
           </Link>
         </span>
