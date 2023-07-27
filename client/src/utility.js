@@ -10,7 +10,6 @@ export function random_string(length) {
     "7",
     "8",
     "9",
-    "10",
     "a",
     "b",
     "c",
