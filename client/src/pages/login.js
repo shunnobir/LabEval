@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import Select from "@/components/Select";
+import Loader from "@/components/Loader";
 
 export default function Login() {
   const [username, setUserName] = useState("");
@@ -24,6 +25,16 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
+    if (username.length === 0) {
+      handleError("Invalid username");
+      return;
+    }
+
+    if (password.length === 0) {
+      handleError("Empty password field");
+      return;
+    }
+
     setLoading(true);
     axios
       .post("/api/login", {
@@ -31,10 +42,13 @@ export default function Login() {
         password,
         role: selected === 1 ? "instructor" : "participant",
       })
-      .then((res) => res.data)
+      .then((res) => {
+        return res.data;
+      })
       .then((res) => {
         if (res.status !== "Successful") handleError(res.status);
         else {
+          res = res.data;
           localStorage.setItem(
             "user",
             JSON.stringify({
@@ -45,7 +59,7 @@ export default function Login() {
               join_date: res.join_date,
             })
           );
-          router.push("/");
+          router.push("/" + res.role + "/dashboard");
         }
         setLoading(false);
       })
@@ -55,7 +69,7 @@ export default function Login() {
   };
 
   return (
-    <div className="login translate-x-[calc(calc(100vw-450px)/2)] translate-y-[25%] flex flex-col w-[450px] h-fit p-8 gap-4 animate-opacity">
+    <div className="login absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col w-[450px] h-fit p-8 gap-4 animate-opacity">
       <Head key={new Date().getMilliseconds()}>
         <title> Login | LabEval </title>
       </Head>
@@ -110,22 +124,14 @@ export default function Login() {
           </span>
         ) : null}
         <button
-          className={
-            "text-slate-50 h-10 rounded-[5px] duration-300" +
-            (selected === 0
-              ? " bg-blue-500 hover:bg-blue-600"
-              : " bg-yellow-500 hover:bg-yellow-600")
-          }
+          className="text-slate-50 h-10 flex flex-row rounded-[5px] duration-300 items-center justify-center bg-blue-500 hover:bg-blue-600"
           onClick={handleLogin}
         >
-          {loading ? "Logging in..." : "LOGIN"}
+          {loading ? <Loader /> : "LOGIN"}
         </button>
         <span className="text-center">
           Already have an account?
-          <Link
-            href="/signup"
-            className={selected === 0 ? "text-blue-500" : "text-yellow-500"}
-          >
+          <Link href="/signup" className="text-blue-500">
             {" Signup"}
           </Link>
         </span>

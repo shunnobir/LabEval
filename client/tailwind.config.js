@@ -7,14 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
-
       colors: {
         red: {
+          500: "var(--red-500)",
           600: "var(--red-600)",
         },
         blue: {
@@ -48,10 +43,20 @@ module.exports = {
             opacity: "1",
           },
         },
+
+        loader: {
+          from: {
+            transform: "rotate(0deg)",
+          },
+          to: {
+            transform: "rotate(360deg)",
+          },
+        },
       },
 
       animation: {
-        opacity: "opacity 350ms ease-in 1 forwards",
+        opacity: "opacity 350ms ease-in 1 normal",
+        loader: "loader 750ms ease-in infinite",
       },
     },
   },

@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --red-600: #d3493a;
+  --red-500: #d3493a;
+  --red-600: #c3392a;
 
   --blue-500: #4282cd;
   --blue-600: #3272bd;
@@ -23,6 +24,16 @@
   --slate-900: #0f172a;
 }
 
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
 body {
   color: var(--slate-900);
   background-color: var(--slate-50);
@@ -37,11 +48,16 @@ input {
 
 input:focus,
 textarea:focus {
-  outline: transparent;
+  outline: 1px solid transparent;
 }
 
 a {
   color: var(--blue-500);
   text-decoration: none;
   font-weight: 500;
+}
+
+*:hover {
+  transition-property: background-color;
+  transition-duration: 350ms;
 }
