@@ -9,6 +9,9 @@
   --blue-500: #4282cd;
   --blue-600: #3272bd;
 
+  --green-500: #42cd82;
+  --green-600: #32bd72;
+
   --yellow-500: #ffbe39;
   --yellow-600: #ffae25;
 
@@ -44,6 +47,12 @@ input {
   border-radius: 5px;
   background-color: transparent;
   padding-inline: 1rem;
+  overflow-y: auto;
+}
+
+textarea {
+  resize: none;
+  background-color: transparent;
 }
 
 input:focus,
@@ -52,7 +61,7 @@ textarea:focus {
 }
 
 a {
-  color: var(--blue-500);
+  /*color: var(--blue-500);*/
   text-decoration: none;
   font-weight: 500;
 }
@@ -60,4 +69,23 @@ a {
 *:hover {
   transition-property: background-color;
   transition-duration: 350ms;
+}
+
+svg,
+img {
+  overflow: visible;
+}
+
+em {
+  font-style: italic;
+}
+
+@media screen and (max-width: 400px) {
+  body {
+    font-size: 12px;
+  }
+}
+
+.labeval-markdown-content p {
+  margin-block: 0.5rem;
 }

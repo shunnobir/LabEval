@@ -16,6 +16,10 @@ module.exports = {
           500: "var(--blue-500)",
           600: "var(--blue-600)",
         },
+        green: {
+          500: "var(--green-500)",
+          600: "var(--green-600)",
+        },
         yellow: {
           500: "var(--yellow-500)",
           600: "var(--yellow-600)",
@@ -52,11 +56,26 @@ module.exports = {
             transform: "rotate(360deg)",
           },
         },
+
+        popup: {
+          "0%": {
+            transform: "scale(0)",
+          },
+
+          "75%": {
+            transform: "scale(1.05)",
+          },
+
+          "100%": {
+            transform: "scale(1)",
+          },
+        },
       },
 
       animation: {
         opacity: "opacity 350ms ease-in 1 normal",
         loader: "loader 750ms ease-in infinite",
+        popup: "500ms ease-in-out 1 normal popup",
       },
     },
   },
