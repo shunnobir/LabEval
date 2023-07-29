@@ -83,3 +83,71 @@ export function DashboardIcon({ color, width, height }) {
     </svg>
   );
 }
+
+export function PersonIcon({ color, width, height }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M480-481q-66 0-108-42t-42-108q0-66 42-108t108-42q66 0 108 42t42 108q0 66-42 108t-108 42ZM160-160v-94q0-38 19-65t49-41q67-30 128.5-45T480-420q62 0 123 15.5t127.921 44.694q31.301 14.126 50.19 40.966Q800-292 800-254v94H160Zm60-60h520v-34q0-16-9.5-30.5T707-306q-64-31-117-42.5T480-360q-57 0-111 11.5T252-306q-14 7-23 21.5t-9 30.5v34Zm260-321q39 0 64.5-25.5T570-631q0-39-25.5-64.5T480-721q-39 0-64.5 25.5T390-631q0 39 25.5 64.5T480-541Zm0-90Zm0 411Z" />
+    </svg>
+  );
+}
+
+export function ShortTextIcon({ color, width, height }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M160-390v-60h389v60H160Zm0-120v-60h640v60H160Z" />
+    </svg>
+  );
+}
+
+export function EventCreateYes({ color, width, height }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M433-228 295-365l42-42 96 94 184-184 42 43-226 226ZM180-80q-24 0-42-18t-18-42v-620q0-24 18-42t42-18h65v-60h65v60h340v-60h65v60h65q24 0 42 18t18 42v620q0 24-18 42t-42 18H180Zm0-60h600v-430H180v430Zm0-490h600v-130H180v130Zm0 0v-130 130Z" />
+    </svg>
+  );
+}
+
+export function CancelIcon({ color, width, height }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="m330-288 150-150 150 150 42-42-150-150 150-150-42-42-150 150-150-150-42 42 150 150-150 150 42 42ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z" />
+    </svg>
+  );
+}
