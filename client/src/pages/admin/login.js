@@ -49,7 +49,7 @@ export default function Login() {
   return (
     <div className="admin-login absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col w-[450px] h-fit p-8 gap-4 animate-opacity">
       <Head key={new Date().getMilliseconds()}>
-        <title> Admin Login | LabEval </title>
+        <title>{"Admin Login | LabEval"}</title>
       </Head>
       <Image
         src="/labeval_logo_admin.png"

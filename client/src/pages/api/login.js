@@ -25,8 +25,6 @@ export default async function handler(req, res) {
       return;
     }
 
-    console.log(result[0]);
-
     if (!result[0].accepted) {
       res.status(200).json({
         status:
