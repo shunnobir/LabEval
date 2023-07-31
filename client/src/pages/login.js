@@ -49,7 +49,7 @@ export default function Login() {
         if (res.status !== "Successful") handleError(res.status);
         else {
           res = res.data;
-          localStorage.setItem(
+          sessionStorage.setItem(
             "user",
             JSON.stringify({
               uid: res.uid,

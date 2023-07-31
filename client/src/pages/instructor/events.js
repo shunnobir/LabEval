@@ -10,11 +10,11 @@ import { useEffect, useState } from "react";
 
 function CreateEventPopup({ setShow }) {
   const [value, setValue] = useState(
-    localStorage.getItem("event-description") || ""
+    sessionStorage.getItem("event-description") || ""
   );
 
   useEffect(() => {
-    localStorage.setItem("event-description", value);
+    sessionStorage.setItem("event-description", value);
   }, [value]);
 
   return (

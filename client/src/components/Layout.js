@@ -24,7 +24,7 @@ function Navbar({ page }) {
   const profileRef = useRef(null);
 
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("user"));
+    const u = JSON.parse(sessionStorage.getItem("user"));
     setUser(u);
 
     if (u.role === "admin")
@@ -120,7 +120,7 @@ function Navbar({ page }) {
                 <div
                   className="px-4 h-12 hover:bg-slate-200 flex flex-row gap-3 items-center cursor-pointer"
                   onClick={() => {
-                    localStorage.removeItem("user");
+                    sessionStorage.removeItem("user");
                     router.push("/login");
                   }}
                 >
