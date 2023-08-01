@@ -7,10 +7,11 @@ import {
 } from "@/icons";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
-function Navbar({ page }) {
+function Navbar({ page, setNotification }) {
   const [user, setUser] = useState({
     uid: "",
     username: "",
@@ -24,7 +25,33 @@ function Navbar({ page }) {
   const profileRef = useRef(null);
 
   useEffect(() => {
-    const u = JSON.parse(sessionStorage.getItem("user"));
+    let item = sessionStorage.getItem("user");
+    if (item === null) {
+      setNotification({
+        header: "You were logged out",
+        page: "",
+        body: [
+          <span key={0}>
+            Session expired. You got logged out. Each time you close labeval tab
+            or your browser, you get logged out.
+          </span>,
+          <span key={1}>
+            Please{" "}
+            <Link href="/login" className="text-blue-500">
+              login
+            </Link>{" "}
+            again!
+          </span>,
+        ],
+        interval: 0,
+        type: "error",
+        save: false,
+        render: true,
+      });
+      return;
+    }
+
+    const u = JSON.parse(item);
     setUser(u);
 
     if (u.role === "admin")
@@ -35,7 +62,7 @@ function Navbar({ page }) {
       setTabBg(
         "border-b-2 border-solid border-b-blue-500 hover:border-b-blue-600"
       );
-  }, []);
+  }, [setNotification]);
 
   useEffect(() => {
     const handleShowProfilePopup = (e) => {
@@ -140,14 +167,26 @@ function Navbar({ page }) {
   ) : null;
 }
 
-export default function Layout({ children, page }) {
+export default function Layout({ children, page, setNotification }) {
   let title = page.toUpperCase()[0] + page.slice(1) + " | LabEval";
+  const [userLoggedIn, setUserLoggedIn] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("user")) setUserLoggedIn(false);
+  }, []);
+
+  if (!userLoggedIn) {
+    router.push("/login");
+    return null;
+  }
+
   return (
     <div className="layout flex flex-col gap-8 px-[10%] py-8">
       <Head>
         <title>{title}</title>
       </Head>
-      <Navbar page={page} />
+      <Navbar page={page} setNotification={setNotification} />
       {children}
     </div>
   );

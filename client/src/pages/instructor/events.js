@@ -13,6 +13,10 @@ function CreateEventPopup({ setShow }) {
     sessionStorage.getItem("event-description") || ""
   );
 
+  const [title, setTitle] = useState("");
+  const [startDateTime, setStartDateTime] = useState("");
+  const [endDateTime, setEndDateTime] = useState("");
+
   useEffect(() => {
     sessionStorage.setItem("event-description", value);
   }, [value]);
@@ -49,6 +53,8 @@ function CreateEventPopup({ setShow }) {
                 required={true}
                 placeholder="Event Title"
                 className="h-10 border-0"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
           </div>
@@ -64,12 +70,17 @@ function CreateEventPopup({ setShow }) {
                   type="datetime-local"
                   required={true}
                   className="h-10 border-0 w-fit"
+                  value={startDateTime}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setStartDateTime(e.target.value);
+                  }}
                 />
               </div>
             </div>
             <div className="input-field flex flex-col gap-1">
               <label className="text-sm font-medium">
-                Event End Date and Time{" "}
+                Event End Date and Time
                 <span className="text-red-500"> * </span>
               </label>
               <div className="input flex flex-row px-2 h-10 w-full border border-solid border-slate-300 rounded-[5px] items-center">
@@ -78,6 +89,11 @@ function CreateEventPopup({ setShow }) {
                   type="datetime-local"
                   required={true}
                   className="h-10 border-0"
+                  value={endDateTime}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setEndDateTime(e.target.value);
+                  }}
                 />
               </div>
             </div>
@@ -138,11 +154,11 @@ function EventBody() {
   );
 }
 
-export default function Events() {
+export default function Events(props) {
   return (
     <div className="instructor-events animate-opacity">
-      <Layout page={"events"}>
-        <EventBody />
+      <Layout page={"events"} {...props}>
+        <EventBody {...props} />
       </Layout>
     </div>
   );

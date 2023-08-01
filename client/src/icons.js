@@ -151,3 +151,54 @@ export function CancelIcon({ color, width, height }) {
     </svg>
   );
 }
+
+export function ErrorIcon({ color, width, height }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M480-281q14 0 24.5-10.5T515-316q0-14-10.5-24.5T480-351q-14 0-24.5 10.5T445-316q0 14 10.5 24.5T480-281Zm-30-144h60v-263h-60v263ZM330-120 120-330v-300l210-210h300l210 210v300L630-120H330Zm25-60h250l175-175v-250L605-780H355L180-605v250l175 175Zm125-300Z" />
+    </svg>
+  );
+}
+
+export function InfoIcon({ color, width, height }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M453-280h60v-240h-60v240Zm26.982-314q14.018 0 23.518-9.2T513-626q0-14.45-9.482-24.225-9.483-9.775-23.5-9.775-14.018 0-23.518 9.775T447-626q0 13.6 9.482 22.8 9.483 9.2 23.5 9.2Zm.284 514q-82.734 0-155.5-31.5t-127.266-86q-54.5-54.5-86-127.341Q80-397.681 80-480.5q0-82.819 31.5-155.659Q143-709 197.5-763t127.341-85.5Q397.681-880 480.5-880q82.819 0 155.659 31.5Q709-817 763-763t85.5 127Q880-563 880-480.266q0 82.734-31.5 155.5T763-197.684q-54 54.316-127 86Q563-80 480.266-80Zm.234-60Q622-140 721-239.5t99-241Q820-622 721.188-721 622.375-820 480-820q-141 0-240.5 98.812Q140-622.375 140-480q0 141 99.5 240.5t241 99.5Zm-.5-340Z" />
+    </svg>
+  );
+}
+
+export function TipsIcon({ color, width, height }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M480-80q-34 0-57.5-23.5T399-161h162q0 34-23.5 57.5T480-80ZM318-223v-60h324v60H318Zm5-121q-66-43-104.5-107.5T180-597q0-122 89-211t211-89q122 0 211 89t89 211q0 81-38 145.5T637-344H323Zm22-60h271q48-32 76-83t28-110q0-99-70.5-169.5T480-837q-99 0-169.5 70.5T240-597q0 59 28 110t77 83Zm135 0Z" />
+    </svg>
+  );
+}

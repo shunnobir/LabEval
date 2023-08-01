@@ -1,9 +1,9 @@
 import Layout from "@/components/Layout";
 
-export default function Dashboard() {
+export default function Dashboard(props) {
   return (
     <div className="instructor-dashboard animate-opacity">
-      <Layout page={"dashboard"} />
+      <Layout page={"dashboard"} {...props} />
     </div>
   );
 }

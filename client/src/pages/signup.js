@@ -65,7 +65,7 @@ export default function Signup() {
   return (
     <div className="signup absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col w-[450px] h-fit p-8 gap-4 animate-opacity">
       <Head key={new Date().getMilliseconds()}>
-        <title> {"Signup | LabEval"} </title>
+        <title> Signup | LabEval </title>
       </Head>
       <Image
         src="/labeval_logo.png"
