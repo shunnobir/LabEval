@@ -568,6 +568,8 @@ export default function mdParser(buffer) {
   }
 
   return (
-    <div className="labeval-markdown-content h-full w-full p-2">{...r}</div>
+    <div className="labeval-markdown-content h-full w-full py-2 px-4">
+      {...r}
+    </div>
   );
 }

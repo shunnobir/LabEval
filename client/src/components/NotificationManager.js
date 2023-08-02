@@ -41,7 +41,7 @@ export default function NotificationManager({ notification, setNotification }) {
         handleClose();
       }, notification.interval);
     }
-  }, [notification.interval]);
+  }, [notification.body, notification.interval]);
 
   useEffect(() => {
     setShow(notification.render);
@@ -72,7 +72,7 @@ export default function NotificationManager({ notification, setNotification }) {
           &times;
         </button>
       </div>
-      <div className="body flex flex-col gap-2 text-sm pl-4 pr-8 pb-4">
+      <div className="body flex flex-col gap-2 pl-4 pr-8 pb-4">
         {...notification.body}
       </div>
     </div>
