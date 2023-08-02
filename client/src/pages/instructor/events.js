@@ -26,8 +26,7 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
         header: "Empty Title Field",
         body: [
           <span key={0}>
-            {" "}
-            Event must have a title. And the title must be within 65 characters.{" "}
+            Event must have a title. And the title must be within 65 characters.
           </span>,
           <span key={1}> Try to give meaningful title. </span>,
         ],
@@ -52,8 +51,7 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
             Event must have a valid start date time and end date time.
           </span>,
           <span key={1}>
-            {" "}
-            Make sure end date time is greater than start date time{" "}
+            Make sure end date time is greater than start date time
           </span>,
         ],
         interval: 5000,
@@ -73,9 +71,8 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
             Event must have a description describing about the event.
           </span>,
           <span key={1}>
-            {" "}
             Description can be as long as you need. But do not overdo it. Try to
-            keep it to the point.{" "}
+            keep it to the point.
           </span>,
         ],
         interval: 5000,
@@ -105,7 +102,9 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
         if (res !== "created") {
           setNotification({
             header: "Could Not Create Event",
-            body: [<span> Event was not created because of: {res} </span>],
+            body: [
+              <span key={0}> Event was not created because of: {res} </span>,
+            ],
             interval: 5000,
             type: "error",
             save: false,
@@ -116,8 +115,8 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
           setNotification({
             header: "Event Created",
             body: [
-              <span> Successfully created event. </span>,
-              <span> Reload the page to update the event list </span>,
+              <span key={0}> Successfully created event. </span>,
+              <span key={1}> Reload the page to update the event list </span>,
             ],
             interval: 10000,
             type: "info",
