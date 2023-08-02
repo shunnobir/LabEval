@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Roboto_Mono } from "next/font/google";
 
 const robotoMono = Roboto_Mono({
@@ -53,7 +52,6 @@ export default function mdParser(buffer) {
     skipWs();
     skipNewline();
 
-    //console.log("next: ", peek(), peekNext());
     switch (peek()) {
       case "*":
         if (peekNext() === "*") {
@@ -95,6 +93,12 @@ export default function mdParser(buffer) {
   const parseBlockStatement = () => {
     if (peek() === "#") {
       return parseHeading();
+    } else if (peek() === "-") {
+      next();
+      return parseUnorderedlist();
+    } else if (peek() === "=") {
+      next();
+      return parseOrderedlist();
     } else if (peek() === "`" && peekNext() === "`" && peekPastNext() === "`") {
     } else {
       let r = [];
@@ -135,7 +139,6 @@ export default function mdParser(buffer) {
       next();
     }
     r += buffer.substring(_prevPos, curPos + 1);
-    //console.log(r);
     return <span key={curPos}> {r} </span>;
   };
 
@@ -143,14 +146,12 @@ export default function mdParser(buffer) {
     let lst = [];
     let _prevPos = curPos + 1;
 
-    //console.log("<strong");
     while (!(peek() === "*" && peekNext() === "*") && !isNewline(peek())) {
       if (peek() === "\0" || peekNext() === "\0") break;
       lst.push(parseSimpleStatement());
     }
 
     if (peek() === "*" && peekNext() === "*") {
-      //console.log("strong>");
       let r = <strong key={curPos}> {...lst} </strong>;
       next();
       next();
@@ -174,13 +175,11 @@ export default function mdParser(buffer) {
     let lst = [];
     let _prevPos = curPos + 1;
 
-    //console.log("<em");
     while (peek() !== "*" && !isNewline(peek()) && peek() !== "\0") {
       lst.push(parseSimpleStatement());
     }
 
     if (peek() === "*") {
-      //console.log("em>");
       let r = <em key={curPos}> {...lst} </em>;
       next();
       return r;
@@ -200,13 +199,11 @@ export default function mdParser(buffer) {
     let _prevPos = curPos + 1;
     let lst = [];
 
-    //console.log("<u");
     while (peek() !== "_" && !isNewline(peek()) && peek() !== "\0") {
       lst.push(parseSimpleStatement());
     }
 
     if (peek() === "_") {
-      //console.log("u>");
       let r = <u key={curPos}> {...lst} </u>;
       next();
       return r;
@@ -319,7 +316,6 @@ export default function mdParser(buffer) {
   };
 
   const parseAttributes = () => {
-    let _prevPos = curPos;
     let lst = {
       color: "",
       href: "",
@@ -361,7 +357,6 @@ export default function mdParser(buffer) {
 
       attr.trim();
       val.trim();
-      console.log(`'${attr}', '${val}'`);
       switch (attr) {
         case "color":
           if (
@@ -392,7 +387,6 @@ export default function mdParser(buffer) {
     }
 
     next();
-    console.log(lst);
     return lst;
   };
 
@@ -437,7 +431,7 @@ export default function mdParser(buffer) {
               {attributes.src ? (
                 <img
                   src={attributes.src}
-                  styles={{
+                  style={{
                     transform: `scale(${
                       attributes.scale ? attributes.scale : 1
                     })`,
@@ -450,7 +444,7 @@ export default function mdParser(buffer) {
           ) : attributes.src ? (
             <img
               src={attributes.src}
-              styles={{
+              style={{
                 transform: `scale(${attributes.scale ? attributes.scale : 1})`,
               }}
             />
@@ -462,12 +456,120 @@ export default function mdParser(buffer) {
     }
   };
 
+  const parseUnorderedlist = (indent = 0) => {
+    let lst = [];
+    let r = [];
+
+    while (peek() !== "\0" && !(isNewline(peek()) && isNewline(peekNext()))) {
+      let spaceCount = 0;
+      let _pPos = curPos;
+      while (isWs(peek())) {
+        next();
+        spaceCount++;
+      }
+
+      if (peek() === "-" && spaceCount > indent * 4 && spaceCount % 4 === 0) {
+        next();
+        lst.push(parseUnorderedlist(indent + 1));
+      } else {
+        while (!isNewline(peek()) && peek() !== "\0") {
+          lst.push(parseSimpleStatement());
+        }
+      }
+
+      if (isNewline(peek()) && isNewline(peekNext())) {
+        next();
+        next();
+        break;
+      }
+
+      if (isNewline(peek())) next();
+
+      spaceCount = 0;
+      _pPos = curPos;
+      while (isWs(peek())) {
+        next();
+        ++spaceCount;
+      }
+
+      if (spaceCount === indent * 4 && peek() === "-") {
+        r.push(<li> {...lst} </li>);
+        lst = [];
+        next();
+        continue;
+      } else if (spaceCount < indent * 4 && peek() === "-") {
+        curPos = _pPos;
+        break;
+      }
+
+      curPos = _pPos;
+    }
+
+    r.push(<li> {...lst} </li>);
+    return <ul key={curPos}> {...r} </ul>;
+  };
+
+  const parseOrderedlist = (indent = 0) => {
+    let lst = [];
+    let r = [];
+
+    while (peek() !== "\0" && !(isNewline(peek()) && isNewline(peekNext()))) {
+      let spaceCount = 0;
+      let _pPos = curPos;
+      while (isWs(peek())) {
+        next();
+        spaceCount++;
+      }
+
+      if (peek() === "=" && spaceCount > indent * 4 && spaceCount % 4 === 0) {
+        next();
+        lst.push(parseOrderedlist(indent + 1));
+      } else {
+        while (!isNewline(peek()) && peek() !== "\0") {
+          lst.push(parseSimpleStatement());
+        }
+      }
+
+      if (isNewline(peek()) && isNewline(peekNext())) {
+        next();
+        next();
+        break;
+      }
+
+      if (isNewline(peek())) next();
+
+      spaceCount = 0;
+      _pPos = curPos;
+      while (isWs(peek())) {
+        next();
+        ++spaceCount;
+      }
+
+      if (spaceCount === indent * 4 && peek() === "=") {
+        r.push(<li> {...lst} </li>);
+        lst = [];
+        next();
+        continue;
+      } else if (spaceCount < indent * 4 && peek() === "=") {
+        curPos = _pPos;
+        break;
+      }
+
+      curPos = _pPos;
+    }
+
+    r.push(<li> {...lst} </li>);
+    return <ol key={curPos}> {...r} </ol>;
+  };
+
   let r = [];
   while (peek() !== "\0") {
     r.push(parseBlockStatement());
   }
 
   return (
-    <div className="labeval-markdown-content h-full w-full p-2">{...r}</div>
+    <div className="labeval-markdown-content h-full w-full py-2 px-4">
+      {...r}
+    </div>
   );
 }

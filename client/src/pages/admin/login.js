@@ -30,7 +30,7 @@ export default function Login() {
 
     setLoading(true);
     if (password === process.env.LABEVAL_ADMIN_PASS) {
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify({
           uid: random_string(10),

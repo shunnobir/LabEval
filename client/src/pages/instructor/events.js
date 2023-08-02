@@ -1,24 +1,141 @@
 import Layout from "@/components/Layout";
 import MdEditor from "@/components/markdown/MdEditor";
+import Table from "@/components/Table";
 import {
   CancelIcon,
   EventCreateYes,
   EventsCreateIcon,
   ShortTextIcon,
 } from "@/icons";
+import { random_string } from "@/utility";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
-function CreateEventPopup({ setShow }) {
+function CreateEventPopup({ setShow, setNotification, reload }) {
   const [value, setValue] = useState(
-    localStorage.getItem("event-description") || ""
+    sessionStorage.getItem("event-description") || ""
   );
 
+  const [title, setTitle] = useState("");
+  const [startDateTime, setStartDateTime] = useState("");
+  const [endDateTime, setEndDateTime] = useState("");
+
+  const handleCreate = () => {
+    if (title.length === 0) {
+      setNotification({
+        header: "Empty Title Field",
+        body: [
+          <span key={0}>
+            Event must have a title. And the title must be within 65 characters.
+          </span>,
+          <span key={1}> Try to give meaningful title. </span>,
+        ],
+        interval: 5000,
+        type: "error",
+        page: "/instructor/events",
+        save: false,
+        render: true,
+      });
+      return;
+    }
+
+    if (
+      startDateTime.length === 0 ||
+      endDateTime.length === 0 ||
+      startDateTime > endDateTime
+    ) {
+      setNotification({
+        header: "Invalid Date and Time",
+        body: [
+          <span key={0}>
+            Event must have a valid start date time and end date time.
+          </span>,
+          <span key={1}>
+            Make sure end date time is greater than start date time
+          </span>,
+        ],
+        interval: 5000,
+        type: "error",
+        page: "/instructor/events",
+        save: false,
+        render: true,
+      });
+      return;
+    }
+
+    if (value.length === 0) {
+      setNotification({
+        header: "Empty Description Field",
+        body: [
+          <span key={0}>
+            Event must have a description describing about the event.
+          </span>,
+          <span key={1}>
+            Description can be as long as you need. But do not overdo it. Try to
+            keep it to the point.
+          </span>,
+        ],
+        interval: 5000,
+        type: "error",
+        page: "/instructor/events",
+        save: false,
+        render: true,
+      });
+      return;
+    }
+
+    let st = startDateTime.replace("T", " "),
+      et = endDateTime.replace("T", " ");
+    const event = {
+      event_id: random_string(10),
+      title: title,
+      description: value,
+      start_time: st,
+      end_time: et,
+      created_by: JSON.parse(sessionStorage.getItem("user"))?.uid,
+    };
+
+    axios
+      .post("/api/instructor/events", event)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res !== "created") {
+          setNotification({
+            header: "Could Not Create Event",
+            body: [
+              <span key={0}> Event was not created because of: {res} </span>,
+            ],
+            interval: 5000,
+            type: "error",
+            save: false,
+            render: true,
+            page: "/instructor/events",
+          });
+        } else {
+          setNotification({
+            header: "Event Created",
+            body: [
+              <span key={0}> Successfully created event. </span>,
+              <span key={1}> Reload the page to update the event list </span>,
+            ],
+            interval: 10000,
+            type: "info",
+            save: false,
+            render: true,
+            page: "/instructor/events",
+          });
+          reload();
+          setShow(false);
+        }
+      });
+  };
+
   useEffect(() => {
-    localStorage.setItem("event-description", value);
+    sessionStorage.setItem("event-description", value);
   }, [value]);
 
   return (
-    <div className="overlay w-screen h-screen fixed inset-0 bg-[rgba(0,0,0,0.3)] animate-opacity">
+    <div className="overlay w-screen h-screen fixed inset-0 bg-[rgba(0,0,0,0.3)] animate-opacity delay-[1500]">
       <div className="create-event bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] fixed w-[50%] min-h-[auto] h-auto top-[15%] left-[25%] rounded-[10px] animate-popup">
         <div className="top flex flex-row bg-blue-500 h-16 justify-between items-center p-4 rounded-t-[5px]">
           <div className="left flex flex-row gap-4">
@@ -49,6 +166,8 @@ function CreateEventPopup({ setShow }) {
                 required={true}
                 placeholder="Event Title"
                 className="h-10 border-0"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
           </div>
@@ -64,12 +183,17 @@ function CreateEventPopup({ setShow }) {
                   type="datetime-local"
                   required={true}
                   className="h-10 border-0 w-fit"
+                  value={startDateTime}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setStartDateTime(e.target.value);
+                  }}
                 />
               </div>
             </div>
             <div className="input-field flex flex-col gap-1">
               <label className="text-sm font-medium">
-                Event End Date and Time{" "}
+                Event End Date and Time
                 <span className="text-red-500"> * </span>
               </label>
               <div className="input flex flex-row px-2 h-10 w-full border border-solid border-slate-300 rounded-[5px] items-center">
@@ -78,6 +202,11 @@ function CreateEventPopup({ setShow }) {
                   type="datetime-local"
                   required={true}
                   className="h-10 border-0"
+                  value={endDateTime}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setEndDateTime(e.target.value);
+                  }}
                 />
               </div>
             </div>
@@ -94,7 +223,10 @@ function CreateEventPopup({ setShow }) {
           </div>
         </div>
         <div className="bottom mx-4 mb-2 px-4 pb-4 flex flex-row gap-4 items-center justify-end">
-          <div className="flex flex-row gap-2 items-center h-10 px-4 bg-blue-500 hover:bg-blue-600 text-slate-50 rounded-[5px] text-sm cursor-pointer">
+          <div
+            className="flex flex-row gap-2 items-center h-10 px-4 bg-blue-500 hover:bg-blue-600 text-slate-50 rounded-[5px] text-sm cursor-pointer"
+            onClick={() => handleCreate()}
+          >
             <EventCreateYes height="20" width="20" color="#f8fafc" />
             <span> Create </span>
           </div>
@@ -111,8 +243,50 @@ function CreateEventPopup({ setShow }) {
   );
 }
 
-function EventBody() {
+function EventBody({ setNotification }) {
   const [showCreateEventPopup, setShowCreateEventPopup] = useState(false);
+  const [pastEvents, setPastEvents] = useState([]);
+  const [ongoingEvents, setOngoingEvents] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [curTime, setCurTime] = useState(new Date().getTime());
+  const interval = setInterval(() => setCurTime(new Date().getTime()), 1000);
+
+  const fetchPastEvents = () => {
+    let uid = JSON.parse(sessionStorage.getItem("user"))?.uid;
+    axios
+      .get(`/api/instructor/events/?type=past&uid=${uid}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setPastEvents(res);
+      });
+  };
+
+  const fetchOngoingEvents = () => {
+    let uid = JSON.parse(sessionStorage.getItem("user"))?.uid;
+    axios
+      .get(`/api/instructor/events/?type=ongoing&uid=${uid}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setOngoingEvents(res);
+      });
+  };
+
+  const fetchUpcomingEvents = () => {
+    let uid = JSON.parse(sessionStorage.getItem("user"))?.uid;
+    axios
+      .get(`/api/instructor/events/?type=upcoming&uid=${uid}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setUpcomingEvents(res);
+      });
+  };
+
+  useEffect(() => {
+    fetchPastEvents();
+    fetchOngoingEvents();
+    fetchUpcomingEvents();
+  }, []);
+
   return (
     <div className="event-body flex flex-col gap-8">
       <button
@@ -122,27 +296,112 @@ function EventBody() {
         <EventsCreateIcon height="24" width="24" color="#f8fafc" />{" "}
         <span> New event </span>
       </button>
-      <div className="block1">
-        <span className="text-2xl"> Ongoing Events </span>
+      <div className="block1 flex flex-col gap-4">
+        <span className="text-2xl">Ongoing or Soon to Be Starting Events</span>
+        <Table
+          heads={[
+            "Title",
+            "Start Date",
+            "End Date",
+            "Time to start or Time Remaining",
+          ]}
+          empty={ongoingEvents.length === 0}
+          className="w-full"
+        >
+          {ongoingEvents.map((value, index) => {
+            let st = new Date(value.start_time).getTime();
+            let et = new Date(value.end_time).getTime();
+            let diff =
+              st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
+            let color =
+              st >= curTime
+                ? "text-slate-900"
+                : et >= curTime
+                ? "text-blue-500"
+                : "text-red-500";
+            let hours = Math.floor(diff / (1000 * 60 * 60));
+            diff -= hours * 60 * 60 * 1000;
+            let minutes = Math.floor(diff / (1000 * 60));
+            diff -= minutes * 60 * 1000;
+            let seconds = Math.floor(diff / 1000);
+            let finished = hours === 0 && minutes === 0 && seconds === 0;
+            return (
+              <tr key={index}>
+                <td>{value.title}</td>
+                <td>{value.start_time}</td>
+                <td>{value.end_time}</td>
+                <td className={color + " font-medium"}>
+                  {finished
+                    ? "Completed"
+                    : String(hours).padStart(2, 0) +
+                      ":" +
+                      String(minutes).padStart(2, 0) +
+                      ":" +
+                      String(seconds).padStart(2, 0)}
+                </td>
+              </tr>
+            );
+          })}
+        </Table>
       </div>
-      <div className="block2">
+      <div className="block2 flex flex-col gap-4">
         <span className="text-2xl"> Upcoming Events </span>
+        <Table
+          heads={["Title", "Start Date", "End Date", "Participant"]}
+          empty={upcomingEvents.length === 0}
+          className="w-full"
+        >
+          {upcomingEvents.map((value, index) => {
+            return (
+              <tr key={index}>
+                <td>{value.title}</td>
+                <td>{value.start_time}</td>
+                <td>{value.end_time}</td>
+                <td>{0}</td>
+              </tr>
+            );
+          })}
+        </Table>
       </div>
-      <div className="block3">
+      <div className="block3 flex flex-col gap-4">
         <span className="text-2xl"> Past Events </span>
+        <Table
+          heads={["Title", "Start Date", "End Date", "Participant"]}
+          empty={pastEvents.length === 0}
+          className="w-full"
+        >
+          {pastEvents.map((value, index) => {
+            return (
+              <tr key={index}>
+                <td>{value.title}</td>
+                <td>{value.start_time}</td>
+                <td>{value.end_time}</td>
+                <td>{0}</td>
+              </tr>
+            );
+          })}
+        </Table>
       </div>
       {showCreateEventPopup ? (
-        <CreateEventPopup setShow={setShowCreateEventPopup} />
+        <CreateEventPopup
+          setShow={setShowCreateEventPopup}
+          setNotification={setNotification}
+          reload={() => {
+            fetchPastEvents();
+            fetchOngoingEvents();
+            fetchUpcomingEvents();
+          }}
+        />
       ) : null}
     </div>
   );
 }
 
-export default function Events() {
+export default function Events(props) {
   return (
     <div className="instructor-events animate-opacity">
-      <Layout page={"events"}>
-        <EventBody />
+      <Layout page={"events"} {...props}>
+        <EventBody {...props} />
       </Layout>
     </div>
   );

@@ -89,3 +89,65 @@ em {
 .labeval-markdown-content p {
   margin-block: 0.5rem;
 }
+
+img {
+  width: auto;
+  height: auto;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+}
+
+ul {
+  display: block;
+  list-style-type: disc;
+  margin-block: 1rem;
+  padding-left: 2.5rem;
+}
+
+ul ul {
+  list-style-type: circle;
+  margin-block: 0rem;
+}
+
+ul ul ul {
+  list-style-type: square;
+}
+
+ol {
+  display: block;
+  list-style-type: decimal;
+  margin-block: 1rem;
+  padding-left: 2.5rem;
+}
+
+ol ol {
+  margin-block: 0rem;
+}
+
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+.labeval-table td,
+.labeval-table th {
+  padding-block: 0.5rem;
+  border: 1px solid var(--slate-300);
+  text-align: left;
+  padding-inline: 1rem;
+}
+
+.labeval-table thead tr {
+  background-color: var(--slate-200);
+}
+
+.labeval-table tbody tr:nth-child(even) {
+  background-color: var(--slate-100);
+}
+
+.instructor-events .labeval-table thead th:first-child {
+  width: 50%;
+}
