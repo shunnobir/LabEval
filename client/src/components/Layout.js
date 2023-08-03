@@ -4,6 +4,7 @@ import {
   LogoutIcon,
   SettingsIcon,
   PersonIcon,
+  LabEvalLogo,
 } from "@/icons";
 import Head from "next/head";
 import Image from "next/image";
@@ -81,16 +82,9 @@ function Navbar({ page, setNotification }) {
     <div className="navbar flex flex-col gap-4 animate-opacity">
       <div className="top flex flex-row justify-between items-center">
         <div className="nav-left">
-          <Image
-            src={
-              user.role === "admin"
-                ? "/labeval_logo_admin.png"
-                : "/labeval_logo.png"
-            }
-            alt="LabEval logo"
-            height={40}
-            width={190}
-          />
+          <Link href={`/${user.role}/dashboard`}>
+            <LabEvalLogo />
+          </Link>
         </div>
 
         <div className="nav-right flex flex-row gap-4 items-center">
@@ -119,7 +113,7 @@ function Navbar({ page, setNotification }) {
             className="profile flex flex-row items-center gap-2 relative"
           >
             <span
-              className="text-slate-50 font-medium flex flex-row items-center justify-between h-10 w-[4.5rem] px-3 rounded-[5px] bg-blue-500 cursor-pointer hover:bg-blue-600"
+              className="text-slate-50 font-medium flex flex-row items-center justify-between h-10 w-[4.5rem] px-3 rounded-[5px] bg-blue-500 cursor-pointer hover:bg-blue-600 duration-[350ms]"
               onClick={() => setShowProfilePopup(true)}
             >
               <PersonIcon height="24" width="24" color="#f8fafc" />

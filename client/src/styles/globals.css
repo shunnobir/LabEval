@@ -9,8 +9,8 @@
   --blue-500: #4282cd;
   --blue-600: #3272bd;
 
-  --green-500: #42cd82;
-  --green-600: #32bd72;
+  --green-500: #12cd42;
+  --green-600: #12dd22;
 
   --yellow-500: #ffbe39;
   --yellow-600: #ffae25;
@@ -86,6 +86,30 @@ em {
   }
 }
 
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+h5 {
+  font-size: 0.8rem;
+}
+
+h6 {
+  font-size: 0.7rem;
+}
+
 .labeval-markdown-content p {
   margin-block: 0.5rem;
 }
@@ -146,8 +170,4 @@ li {
 
 .labeval-table tbody tr:nth-child(even) {
   background-color: var(--slate-100);
-}
-
-.instructor-events .labeval-table thead th:first-child {
-  width: 50%;
 }
