@@ -34,6 +34,15 @@ export default async function handler(req, res) {
                                  to_char(end_time, 'DD Month, YYYY HH:MI am') as "end_time"
                           from events
                           where start_time > current_timestamp and created_by = ${q.uid}`;
+    } else if (q.type === "info") {
+      result = await psql`select event_id, 
+                                 title, 
+                                 description,
+                                 to_char(start_time, 'DD Month, YYYY HH:MI am') as "start_time", 
+                                 to_char(end_time, 'DD Month, YYYY HH:MI am') as "end_time",
+                                 created_by
+                          from events
+                          where event_id = ${q.event_id}`;
     }
     res.status(200).json(result);
   }

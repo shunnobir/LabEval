@@ -9,6 +9,7 @@ import {
 } from "@/icons";
 import { random_string } from "@/utility";
 import axios from "axios";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function CreateEventPopup({ setShow, setNotification, reload }) {
@@ -287,10 +288,14 @@ function EventBody({ setNotification }) {
     fetchUpcomingEvents();
   }, []);
 
+  useEffect(() => {
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="event-body flex flex-col gap-8">
       <button
-        className="bg-blue-500 hover:bg-blue-600 flex flex-row gap-2 ml-auto h-10 px-4 rounded-[5px] text-slate-50 items-center"
+        className="bg-blue-500 hover:bg-blue-600 flex flex-row gap-2 ml-auto h-10 px-4 rounded-[5px] text-slate-50 items-center duration-[350ms]"
         onClick={() => setShowCreateEventPopup(true)}
       >
         <EventsCreateIcon height="24" width="24" color="#f8fafc" />{" "}
@@ -300,10 +305,10 @@ function EventBody({ setNotification }) {
         <span className="text-2xl">Ongoing or Soon to Be Starting Events</span>
         <Table
           heads={[
-            "Title",
-            "Start Date",
-            "End Date",
-            "Time to start or Time Remaining",
+            { content: "Title", className: "w-[50%]" },
+            { content: "Start Date", className: "" },
+            { content: "End Date", className: "" },
+            { content: "Time to Start or Time Remaining", className: "" },
           ]}
           empty={ongoingEvents.length === 0}
           className="w-full"
@@ -327,7 +332,14 @@ function EventBody({ setNotification }) {
             let finished = hours === 0 && minutes === 0 && seconds === 0;
             return (
               <tr key={index}>
-                <td>{value.title}</td>
+                <td>
+                  <Link
+                    href={`/instructor/events/${value.event_id}`}
+                    className="font-normal hover:text-blue-500"
+                  >
+                    {value.title}
+                  </Link>
+                </td>
                 <td>{value.start_time}</td>
                 <td>{value.end_time}</td>
                 <td className={color + " font-medium"}>
@@ -347,14 +359,26 @@ function EventBody({ setNotification }) {
       <div className="block2 flex flex-col gap-4">
         <span className="text-2xl"> Upcoming Events </span>
         <Table
-          heads={["Title", "Start Date", "End Date", "Participant"]}
+          heads={[
+            { content: "Title", className: "w-[50%]" },
+            { content: "Start Date", className: "" },
+            { content: "End Date", className: "" },
+            { content: "Participant", className: "" },
+          ]}
           empty={upcomingEvents.length === 0}
           className="w-full"
         >
           {upcomingEvents.map((value, index) => {
             return (
               <tr key={index}>
-                <td>{value.title}</td>
+                <td>
+                  <Link
+                    href={`/instructor/events/${value.event_id}`}
+                    className="font-normal hover:text-blue-500"
+                  >
+                    {value.title}
+                  </Link>
+                </td>
                 <td>{value.start_time}</td>
                 <td>{value.end_time}</td>
                 <td>{0}</td>
@@ -366,14 +390,26 @@ function EventBody({ setNotification }) {
       <div className="block3 flex flex-col gap-4">
         <span className="text-2xl"> Past Events </span>
         <Table
-          heads={["Title", "Start Date", "End Date", "Participant"]}
+          heads={[
+            { content: "Title", className: "w-[50%]" },
+            { content: "Start Date", className: "" },
+            { content: "End Date", className: "" },
+            { content: "Participant", className: "" },
+          ]}
           empty={pastEvents.length === 0}
           className="w-full"
         >
           {pastEvents.map((value, index) => {
             return (
               <tr key={index}>
-                <td>{value.title}</td>
+                <td>
+                  <Link
+                    href={`/instructor/events/${value.event_id}`}
+                    className="font-normal hover:text-blue-500"
+                  >
+                    {value.title}
+                  </Link>
+                </td>
                 <td>{value.start_time}</td>
                 <td>{value.end_time}</td>
                 <td>{0}</td>

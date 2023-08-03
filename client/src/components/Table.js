@@ -9,7 +9,14 @@ export default function Table({ heads, children, empty, className }) {
       <thead>
         <tr>
           {heads.map((value, index) => {
-            return <th key={index}> {value} </th>;
+            return (
+              <th
+                key={index}
+                className={value.className ? value.className : ""}
+              >
+                {value.content}
+              </th>
+            );
           })}
         </tr>
       </thead>

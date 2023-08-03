@@ -89,7 +89,7 @@ module.exports = {
       },
 
       animation: {
-        opacity: "opacity 350ms ease-in 1 normal",
+        opacity: "opacity 500ms ease-in-out 1 normal",
         loader: "loader 750ms ease-in infinite",
         popup: "500ms ease-in-out 1 normal popup",
         popdown: "500ms ease-in-out 1 normal popdown",

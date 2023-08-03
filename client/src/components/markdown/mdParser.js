@@ -567,9 +567,5 @@ export default function mdParser(buffer) {
     r.push(parseBlockStatement());
   }
 
-  return (
-    <div className="labeval-markdown-content h-full w-full py-2 px-4">
-      {...r}
-    </div>
-  );
+  return <div className="labeval-markdown-content h-full w-full">{...r}</div>;
 }
