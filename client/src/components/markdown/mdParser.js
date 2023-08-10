@@ -757,17 +757,14 @@ export function labevalMarkdownParser(buffer) {
 
   const parseTable = (tok, key) => {
     return (
-      <Table key={key} heads={
-        ...tok.headings.map((head, index) => {
+      <Table key={key} heads={...tok.headings.map((head, index) => {
           return {
             content: parseTableHeading(head, key + 1 + index),
             className: '',
           };
         })
       }
-      className="flex-1 w-full">
-        {
-          ...tok.rows.map((row, index) => {
+      className="flex-1 w-full">{...tok.rows.map((row, index) => {
             return parseStatement(row, key + 1 + index);
           })
         }
