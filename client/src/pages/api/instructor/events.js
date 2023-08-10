@@ -26,7 +26,7 @@ export default async function handler(req, res) {
                            to_char(start_time, 'DD Month, YYYY HH:MI am') as "start_time", 
                            to_char(end_time, 'DD Month, YYYY HH:MI am') as "end_time"
                           from events
-                          where current_timestamp - interval '1 hour' < start_time and current_timestamp + interval '1 hour' >= end_time and current_timestamp <= end_time and created_by = ${q.uid}`;
+                          where current_timestamp + interval '5 hour' >= end_time and current_timestamp <= end_time and created_by = ${q.uid}`;
     } else if (q.type === "upcoming") {
       result = await psql`select event_id, 
                                  title, 

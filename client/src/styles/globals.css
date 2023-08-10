@@ -37,6 +37,11 @@
   font: inherit;
 }
 
+#__next {
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
 body {
   color: var(--slate-900);
   background-color: var(--slate-50);
@@ -110,8 +115,35 @@ h6 {
   font-size: 0.7rem;
 }
 
-.labeval-markdown-content p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.25;
+}
+
+.labeval-markdown-content p,
+.labeval-markdown-preview-content p {
   margin-block: 0.5rem;
+  line-height: 1.7;
+}
+
+.labeval-markdown-content li,
+.labeval-markdown-preview-content li {
+  line-height: 1.7;
+}
+
+.labeval-markdown-content span,
+.labeval-markdown-preview-content span {
+  margin: 0;
+  padding: 0;
+}
+
+hr {
+  height: 1px;
+  border: 1px solid var(--slate-200);
 }
 
 img {

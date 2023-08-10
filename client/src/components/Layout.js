@@ -176,7 +176,7 @@ export default function Layout({ children, page, setNotification }) {
   }
 
   return (
-    <div className="layout flex flex-col gap-8 px-[10%] py-8">
+    <div className="layout flex flex-col gap-8 px-[10%] py-8 w-screen h-screen overflow-y-auto">
       <Head>
         <title>{title}</title>
       </Head>

@@ -2,7 +2,7 @@ export default function Table({ heads, children, empty, className }) {
   return (
     <table
       className={
-        "labeval-table animate-opacity table-auto border-collapse h-auto " +
+        "labeval-table animate-opacity table-auto border-collapse h-auto mb-4 " +
         className
       }
     >
@@ -12,7 +12,7 @@ export default function Table({ heads, children, empty, className }) {
             return (
               <th
                 key={index}
-                className={value.className ? value.className : ""}
+                className={value.className ? value.className : " font-bold"}
               >
                 {value.content}
               </th>

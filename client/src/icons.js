@@ -1,9 +1,10 @@
-export function LogoutIcon({ color, width, height }) {
+export function LogoutIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -15,12 +16,13 @@ export function LogoutIcon({ color, width, height }) {
   );
 }
 
-export function SettingsIcon({ color, width, height }) {
+export function SettingsIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -32,12 +34,13 @@ export function SettingsIcon({ color, width, height }) {
   );
 }
 
-export function EventsCreateIcon({ color, width, height }) {
+export function EventsCreateIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -50,12 +53,13 @@ export function EventsCreateIcon({ color, width, height }) {
   );
 }
 
-export function EventsIcon({ color, width, height }) {
+export function EventsIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -67,12 +71,13 @@ export function EventsIcon({ color, width, height }) {
   );
 }
 
-export function DashboardIcon({ color, width, height }) {
+export function DashboardIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -84,12 +89,13 @@ export function DashboardIcon({ color, width, height }) {
   );
 }
 
-export function PersonIcon({ color, width, height }) {
+export function PersonIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -101,12 +107,13 @@ export function PersonIcon({ color, width, height }) {
   );
 }
 
-export function ShortTextIcon({ color, width, height }) {
+export function ShortTextIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -118,12 +125,13 @@ export function ShortTextIcon({ color, width, height }) {
   );
 }
 
-export function EventCreateYes({ color, width, height }) {
+export function EventCreateYes({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -135,12 +143,13 @@ export function EventCreateYes({ color, width, height }) {
   );
 }
 
-export function CancelIcon({ color, width, height }) {
+export function CancelIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -152,12 +161,13 @@ export function CancelIcon({ color, width, height }) {
   );
 }
 
-export function ErrorIcon({ color, width, height }) {
+export function ErrorIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -169,12 +179,13 @@ export function ErrorIcon({ color, width, height }) {
   );
 }
 
-export function InfoIcon({ color, width, height }) {
+export function InfoIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -186,12 +197,13 @@ export function InfoIcon({ color, width, height }) {
   );
 }
 
-export function TipsIcon({ color, width, height }) {
+export function TipsIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -203,12 +215,13 @@ export function TipsIcon({ color, width, height }) {
   );
 }
 
-export function BackButton({ color, width, height }) {
+export function BackButton({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -220,12 +233,13 @@ export function BackButton({ color, width, height }) {
   );
 }
 
-export function ClockIcon({ color, width, height }) {
+export function ClockIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -237,12 +251,13 @@ export function ClockIcon({ color, width, height }) {
   );
 }
 
-export function ProblemCreateIcon({ color, width, height }) {
+export function ProblemCreateIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -254,11 +269,29 @@ export function ProblemCreateIcon({ color, width, height }) {
   );
 }
 
-export function LabEvalLogo({ width, height }) {
+export function ProblemCreateYesIcon({ color, width, height, className }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M120-331v-60h306v60H120Zm0-165v-60h473v60H120Zm0-165v-60h473v60H120Zm532 460L516-337l42-43 94 93 185-185 43 43-228 228Z" />
+    </svg>
+  );
+}
+
+export function LabEvalLogo({ width, height, className }) {
   const w = width ? width : "197";
   const h = height ? height : "56";
   return (
     <svg
+      className={className}
       width={w}
       height={h}
       viewBox="0 0 197 56"
