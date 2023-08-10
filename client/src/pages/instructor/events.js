@@ -136,8 +136,8 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
   }, [value]);
 
   return (
-    <div className="overlay w-screen h-screen fixed inset-0 bg-[rgba(0,0,0,0.3)] animate-opacity delay-[1500]">
-      <div className="create-event bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] fixed w-[50%] min-h-[auto] h-auto top-[15%] left-[25%] rounded-[10px] animate-popup">
+    <div className="overlay w-screen h-screen fixed inset-0 bg-[rgba(0,0,0,0.3)] animate-opacity delay-[1500ms] flex flex-col items-center justify-center">
+      <div className="create-event bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] rounded-[10px] animate-popup">
         <div className="top flex flex-row bg-blue-500 h-16 justify-between items-center p-4 rounded-t-[5px]">
           <div className="left flex flex-row gap-4">
             <EventsCreateIcon height="24" width="24" color="#f8fafc" />
@@ -186,7 +186,6 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
                   className="h-10 border-0 w-fit"
                   value={startDateTime}
                   onChange={(e) => {
-                    console.log(e.target.value);
                     setStartDateTime(e.target.value);
                   }}
                 />
@@ -205,7 +204,6 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
                   className="h-10 border-0"
                   value={endDateTime}
                   onChange={(e) => {
-                    console.log(e.target.value);
                     setEndDateTime(e.target.value);
                   }}
                 />
@@ -217,10 +215,7 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
               Event Description
               <span className="text-red-500"> * </span>
             </label>
-            <MdEditor
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
+            <MdEditor value={value} onChange={(value) => setValue(value)} />
           </div>
         </div>
         <div className="bottom mx-4 mb-2 px-4 pb-4 flex flex-row gap-4 items-center justify-end">
@@ -289,7 +284,10 @@ function EventBody({ setNotification }) {
   }, []);
 
   useEffect(() => {
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      sessionStorage.removeItem("event-description");
+    };
   }, []);
 
   return (
