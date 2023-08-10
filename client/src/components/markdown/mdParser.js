@@ -102,56 +102,77 @@ function labevalMarkdownRawTextTokenizer(src) {
 
   const consumeBoxedStatement = () => {
     let offset = 2;
-    while (peek(offset) !== '\0' && peek(offset) !== ']') ++offset;
-    if (peek(offset) === '\0' || peek(offset) !== ']') {
+    while (peek(offset) !== "\0" && peek(offset) !== "]") ++offset;
+    if (peek(offset) === "\0" || peek(offset) !== "]") {
       consume(1);
-      return { type: TokenType.SPAN, tag: "<span>", tokens: [{ type: TokenType.TEXT, tag: "<text>", raw: "[" }, consumeText()] };
+      return {
+        type: TokenType.SPAN,
+        tag: "<span>",
+        tokens: [
+          { type: TokenType.TEXT, tag: "<text>", raw: "[" },
+          consumeText(),
+        ],
+      };
     }
     ++offset;
-    while (peek(offset) !== '\0' && peek(offset) === ' ') ++offset;
-    if (peek(offset) === '\0' || peek(offset) !== '{') {
+    while (peek(offset) !== "\0" && peek(offset) === " ") ++offset;
+    if (peek(offset) === "\0" || peek(offset) !== "{") {
       consume(1);
-      return { type: TokenType.SPAN, tag: "<span>", tokens: [{ type: TokenType.TEXT, tag: "<text>", raw: "[" }, consumeText()] };
+      return {
+        type: TokenType.SPAN,
+        tag: "<span>",
+        tokens: [
+          { type: TokenType.TEXT, tag: "<text>", raw: "[" },
+          consumeText(),
+        ],
+      };
     }
     ++offset;
-    while (peek(offset) !== '\0' && peek(offset) !== '}') ++offset;
-    if (peek(offset) === '\0' || peek(offset) !== '}') {
+    while (peek(offset) !== "\0" && peek(offset) !== "}") ++offset;
+    if (peek(offset) === "\0" || peek(offset) !== "}") {
       consume(1);
-      return { type: TokenType.SPAN, tag: "<span>", tokens: [{ type: TokenType.TEXT, tag: "<text>", raw: "[" }, consumeText()] };
+      return {
+        type: TokenType.SPAN,
+        tag: "<span>",
+        tokens: [
+          { type: TokenType.TEXT, tag: "<text>", raw: "[" },
+          consumeText(),
+        ],
+      };
     }
     ++offset;
     consume(1);
     let content = [];
-    while (peek(1) !== ']') {
+    while (peek(1) !== "]") {
       if (/\\\\/.test(peekMultiple(2))) {
-            consume(2);
-            content.push({ type: TokenType.BREAK, tag: "<br />" });
+        consume(2);
+        content.push({ type: TokenType.BREAK, tag: "<br />" });
       } else {
         content.push(consumeText());
       }
     }
     consume(1);
-    while ((peek(1) === ' ' || peek(1) === '\n') && peek(1) !== '}') consume(1);
+    while ((peek(1) === " " || peek(1) === "\n") && peek(1) !== "}") consume(1);
     consume(1);
-    let curlText = '';
-    while (peek(1) !== '}') curlText += consume(1);
+    let curlText = "";
+    while (peek(1) !== "}") curlText += consume(1);
     consume(1);
-    let attributes = curlText.split(",").map(val => {
+    let attributes = curlText.split(",").map((val) => {
       let t = val.split("=");
       return { attribute: t[0].trim(), value: t[1].trim() };
     });
     return { type: TokenType.BOXED, attributes, content: content };
-  }
-  
+  };
+
   const consumeInlineCode = () => {
     consume(1);
-    let content = '';
-    while (!isEof() && peek(1) !== '`') {
-      if (peek(1) === '\n') consume(1);
+    let content = "";
+    while (!isEof() && peek(1) !== "`") {
+      if (peek(1) === "\n") consume(1);
       else content += consume(1);
     }
     if (isEof()) {
-      return { type: TokenType.TEXT, tag: "<text>", raw: '`' + content };
+      return { type: TokenType.TEXT, tag: "<text>", raw: "`" + content };
     }
     consume(1);
     return { type: TokenType.INLINE_CODE, raw: content };
@@ -183,7 +204,7 @@ function labevalMarkdownRawTextTokenizer(src) {
       return { type: TokenType.BREAK, tag: "<br />" };
     } else if (/\[/.test(peek(1))) {
       return consumeBoxedStatement();
-    } else if (peek(1) === '`') {
+    } else if (peek(1) === "`") {
       return consumeInlineCode();
     } else {
       return consumeText();
@@ -506,7 +527,11 @@ function labEvalMarkdownTokenizer(src) {
     while (peek(1) !== "\0" && peek(1) !== "\n") {
       let head = "";
       while (peek(1) !== "|") head += consume(1);
-      headings.push({ type: TokenType.TABLE_HEADING, tag: "<th>", tokens: labevalMarkdownRawTextTokenizer(head)});
+      headings.push({
+        type: TokenType.TABLE_HEADING,
+        tag: "<th>",
+        tokens: labevalMarkdownRawTextTokenizer(head),
+      });
       consume(1); // Consume '|'
     }
 
@@ -628,18 +653,19 @@ export function labevalMarkdownParser(buffer) {
 
   const parseText = (tok, key) => {
     let parts = [];
-    let cur = '';
+    let cur = "";
     for (let i = 0; i < tok.raw.length; ++i) {
-      if (tok.raw[i] === '\n') {
+      if (tok.raw[i] === "\n") {
         if (cur.length > 0) parts.push(<span key={key + 1 + i}>{cur}</span>);
-        cur = '';
-        parts.push(<br key={key + 2 + i}/>);
+        cur = "";
+        parts.push(<br key={key + 2 + i} />);
       } else {
         cur += tok.raw[i];
       }
     }
 
-    if (cur.length > 0) parts.push(<span key={key + 1 + tok.raw.length + 1}>{cur}</span>);
+    if (cur.length > 0)
+      parts.push(<span key={key + 1 + tok.raw.length + 1}>{cur}</span>);
     return <span key={key}>{...parts}</span>;
   };
 
@@ -738,65 +764,118 @@ export function labevalMarkdownParser(buffer) {
   };
 
   const parseTableHeading = (tok, key) => {
-    return <span key={key}>{...tok.tokens.map((token, index) => {
-      return parseStatement(token, key + 1 + index);
-    })}</span>
-  }
+    return (
+      <span key={key}>
+        {...tok.tokens.map((token, index) => {
+          return parseStatement(token, key + 1 + index);
+        })}
+      </span>
+    );
+  };
 
   const parseTableCell = (tok, key) => {
-    return <td key={key}>{...tok.tokens.map((token, index) => {
-      return parseStatement(token, key + 1 + index);
-    })}</td>;
-  }
+    return (
+      <td key={key}>
+        {...tok.tokens.map((token, index) => {
+          return parseStatement(token, key + 1 + index);
+        })}
+      </td>
+    );
+  };
 
   const parseTableRow = (tok, key) => {
-    return <tr key={key}>{...tok.cells.map((cell, index) => {
-      return parseStatement(cell, key + 1 + index);
-    })}</tr>;
-  }
+    return (
+      <tr key={key}>
+        {...tok.cells.map((cell, index) => {
+          return parseStatement(cell, key + 1 + index);
+        })}
+      </tr>
+    );
+  };
 
   const parseTable = (tok, key) => {
     return (
-      <Table key={key} heads={
-        ...tok.headings.map((head, index) => {
+      <Table
+        key={key}
+        heads={tok.headings.map((head, index) => {
           return {
             content: parseTableHeading(head, key + 1 + index),
-            className: '',
+            className: "",
           };
-        })
-      }
-      className="flex-1 w-full">
-        {
-          ...tok.rows.map((row, index) => {
-            return parseStatement(row, key + 1 + index);
-          })
-        }
+        })}
+        className="flex-1 w-full"
+      >
+        {...tok.rows.map((row, index) => {
+          return parseStatement(row, key + 1 + index);
+        })}
       </Table>
     );
-  }
+  };
 
   const parseBoxedStatement = (tok, key) => {
-    let isImage = tok.attributes.find(attribute => attribute.attribute === 'src');
+    let isImage = tok.attributes.find(
+      (attribute) => attribute.attribute === "src"
+    );
     if (isImage) {
-      let scale = tok.attributes.find(attribute => attribute.attribute === 'scale');
+      let scale = tok.attributes.find(
+        (attribute) => attribute.attribute === "scale"
+      );
       scale = scale ? scale.value : 1;
-      return <img key={key} src={isImage.value} alt="" className="h-auto w-auto" style={{ transform: `scale(${scale})` }}/>
+      return (
+        <img
+          key={key}
+          src={isImage.value}
+          alt=""
+          className="h-auto w-auto"
+          style={{ transform: `scale(${scale})` }}
+        />
+      );
     }
 
-    let color = tok.attributes.find(attribute => attribute.attribute === 'color');
-    let href = tok.attributes.find(attribute => attribute.attribute === 'href');
-    return <span key={key} style={{ color: color ? `var(--${color.value}-500)` : 'var(--slate-900)' }}>
-        {href ? (<a key={key + 1} href={href.value}> {...tok.content.map((token, index) => {
-          return parseStatement(token, key + 1 + index);
-        })
-        } </a>) : <span key={key + 1}>{...tok.content.map((token, index) => {
-          return parseStatement(token, key + 1 + index);
-        })}</span>}
+    let color = tok.attributes.find(
+      (attribute) => attribute.attribute === "color"
+    );
+    let href = tok.attributes.find(
+      (attribute) => attribute.attribute === "href"
+    );
+    return (
+      <span
+        key={key}
+        style={{
+          color: color ? `var(--${color.value}-500)` : "var(--slate-900)",
+        }}
+      >
+        {href ? (
+          <a key={key + 1} href={href.value}>
+            {" "}
+            {...tok.content.map((token, index) => {
+              return parseStatement(token, key + 1 + index);
+            })}{" "}
+          </a>
+        ) : (
+          <span key={key + 1}>
+            {...tok.content.map((token, index) => {
+              return parseStatement(token, key + 1 + index);
+            })}
+          </span>
+        )}
       </span>
+    );
   };
 
   const parseInlineCode = (tok, key) => {
-    return <span key={key} className={robotoMono.className + " whitespace-pre text-blue-500 bg-slate-200 rounded-[5px] border border-solid border-slate-300"} style={{ paddingInline: "5px", marginInline: "2px" }}>{tok.raw}</span>;
+    return (
+      <span
+        key={key}
+        className={
+          robotoMono.className +
+          " whitespace-pre text-blue-500 bg-slate-200 rounded-[5px] border border-solid border-slate-300"
+        }
+        style={{ paddingInline: "5px", marginInline: "2px" }}
+      >
+        {tok.raw}
+      </span>
+    );
   };
 
   const parseStatement = (tok, key) => {
@@ -845,5 +924,7 @@ export function labevalMarkdownParser(buffer) {
     tok = next();
   }
 
-  return <main className="labeval-markdown-content h-full w-full">{...html}</main>;
+  return (
+    <main className="labeval-markdown-content h-full w-full">{...html}</main>
+  );
 }
