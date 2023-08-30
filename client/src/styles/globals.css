@@ -65,6 +65,11 @@ textarea:focus {
   outline: 1px solid transparent;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: var(--slate-400);
+}
+
 a {
   /*color: var(--blue-500);*/
   text-decoration: none;
@@ -144,6 +149,7 @@ h6 {
 hr {
   height: 1px;
   border: 1px solid var(--slate-200);
+  margin-block: 0.5rem 1rem;
 }
 
 img {

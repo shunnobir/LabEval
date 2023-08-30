@@ -25,13 +25,17 @@ export default function NotificationManager({ notification, setNotification }) {
   const handleClose = () => {
     let elem = document.querySelector(".notification-manager");
     if (elem) {
-      elem.classList.remove("animate-popup");
-      elem.classList.add("animate-popdown");
-      setTimeout(() => {
-        setNotification((prev) => {
-          return { ...prev, render: false };
-        });
-      }, 350);
+      setNotification({
+        header: "",
+        subheader: "",
+        page: "",
+        body: [],
+        interval: 0,
+        type: "",
+        save: false,
+        render: false,
+      });
+      setShow(false);
     }
   };
 
@@ -45,9 +49,9 @@ export default function NotificationManager({ notification, setNotification }) {
 
   useEffect(() => {
     setShow(notification.render);
-  }, [notification]);
+  }, [notification, notification.render]);
 
-  return notification.render ? (
+  return show ? (
     <div
       className={
         "notification-manager animate-popup fixed right-20 bottom-16 bg-opacity-90 backdrop-blur-md bg-slate-50 text-slate-900 w-[30rem] min-h-[10rem] max-h-[15rem] flex flex-col gap-4 shadow-[0_0_16px_rgba(0,0,0,0.15)] rounded-[5px]"

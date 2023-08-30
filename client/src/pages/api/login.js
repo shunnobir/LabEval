@@ -4,7 +4,7 @@ import { random_string } from "@/utility";
 import psql from "../../database.config";
 
 export default async function handler(req, res) {
-  const body = { uid: random_string(10), ...req.body };
+  const body = { user_id: random_string(10), ...req.body };
   if (req.method === "POST") {
     let result =
       await psql`select * from users where username = ${body.username}`;

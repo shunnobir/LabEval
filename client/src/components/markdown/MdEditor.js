@@ -44,6 +44,12 @@ export default function MdEditor({ value, onChange }) {
     setTabInserted(false);
   }, [caretPosition]);
 
+  useEffect(() => {
+    window.MathJax?.typesetClear();
+    window.MathJax?.typeset();
+    window.MathJax?.document?.updateDocument();
+  }, [active]);
+
   return (
     <div className="markdown-editor-frame rounded-[5px] h-full flex flex-col items-stretch">
       <div className="toolbar flex flex-row h-10 items-end">

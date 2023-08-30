@@ -6,20 +6,27 @@ export default function Table({ heads, children, empty, className }) {
         className
       }
     >
-      <thead>
-        <tr>
-          {heads.map((value, index) => {
-            return (
-              <th
-                key={index}
-                className={value.className ? value.className : " font-bold"}
-              >
-                {value.content}
-              </th>
-            );
-          })}
-        </tr>
-      </thead>
+      {heads ? (
+        <thead>
+          <tr>
+            {heads.map((value, index) => {
+              return (
+                <th
+                  key={index}
+                  className={
+                    value.className
+                      ? "font-bold " + value.className
+                      : "font-bold"
+                  }
+                  style={value.style}
+                >
+                  {value.content}
+                </th>
+              );
+            })}
+          </tr>
+        </thead>
+      ) : null}
       <tbody>
         {!empty ? (
           children
