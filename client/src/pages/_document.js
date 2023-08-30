@@ -20,7 +20,7 @@ export default function Document() {
                 packages: {'[+]': ['color', 'array']},
               },
               CommonHTML: { matchFontHeight: false },
-          })`,
+          });`,
           }}
         ></script>
         <script
