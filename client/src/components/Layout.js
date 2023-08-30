@@ -7,7 +7,6 @@ import {
   LabEvalLogo,
 } from "@/icons";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -114,22 +113,22 @@ function Navbar({ page, setNotification }) {
           >
             <span
               className="text-slate-50 font-medium flex flex-row items-center justify-between h-10 w-[4.5rem] px-3 rounded-[5px] bg-blue-500 cursor-pointer hover:bg-blue-600 duration-[350ms]"
-              onClick={() => setShowProfilePopup(true)}
+              onClick={() => setShowProfilePopup((prev) => !prev)}
             >
               <PersonIcon height="24" width="24" color="#f8fafc" />
               <span className="border-[5px] border-solid border-b-transparent border-l-transparent border-r-transparent border-t-slate-50 w-[12px] h-[10px] translate-y-[2px]"></span>
             </span>
             {showProfilePopup ? (
-              <div className="profile-popup animate-opacity absolute right-0 top-[110%] min-w-[20rem] bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] rounded-[5px] z-10 before:border-[12px] before:border-solid before:border-b-slate-50 before:border-t-transparent before:border-l-transparent before:border-r-transparent before:w-[24px] before:h-[24px] before:absolute before:right-2 before:top-[-24px] before:z-[10]">
+              <div className="profile-popup animate-popup absolute right-0 top-[110%] min-w-[20rem] bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] rounded-[5px] z-10 before:border-[12px] before:border-solid before:border-b-slate-50 before:border-t-transparent before:border-l-transparent before:border-r-transparent before:w-[24px] before:h-[24px] before:absolute before:right-2 before:top-[-24px] before:z-[10]">
                 <div className="p-4 flex flex-row gap-3 items-center">
                   <div className="left flex flex-row gap-4 items-center">
                     <span className="border border-solid border-slate-900 p-1 flex flex-row items-center justify-center rounded-full">
                       <PersonIcon height="28" width="28" />
                     </span>
                     <div className="name-email flex flex-col gap-1">
-                      <span>
+                      <span className="flex flex-row flex-wrap gap-2">
                         {user.username + " "}
-                        <span className="font-medium px-2 bg-red-100 border border-solud border-red-200 rounded-[5px] text-red-500">
+                        <span className="font-medium px-2 bg-red-100 border border-solid border-red-200 rounded-[5px] text-red-500">
                           {user.role.toUpperCase()[0] + user.role.slice(1)}
                         </span>
                       </span>

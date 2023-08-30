@@ -67,6 +67,10 @@ module.exports = {
             transform: "scale(1.1)",
           },
 
+          "70%": {
+            transform: "scale(1.1)",
+          },
+
           "100%": {
             transform: "scale(1)",
           },
@@ -91,7 +95,7 @@ module.exports = {
       animation: {
         opacity: "opacity 500ms ease-in-out 1 normal",
         loader: "loader 750ms ease-in infinite",
-        popup: "500ms ease-in-out 1 normal popup",
+        popup: "500ms cubic-bezier(0.18, -0.07, 0.23, 1.02) 1 normal popup",
         popdown: "500ms ease-in-out 1 normal popdown",
       },
     },

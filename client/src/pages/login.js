@@ -52,7 +52,7 @@ export default function Login({ setNotification }) {
           sessionStorage.setItem(
             "user",
             JSON.stringify({
-              uid: res.uid,
+              user_id: res.user_id,
               username: res.username,
               email: res.email,
               role: res.role,

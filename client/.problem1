@@ -1,0 +1,20 @@
+There are $N$ people numbered $1$ through $N$. Each person has a integer score called programming ability; person $i$'s programming ability is $P_i$ points. How many more points does person $1$ need, so that person $1$ becomes the strongest? In other words, what is the minimum non-negative integer $x$ such that $P_1 + x \gt P_i$ for all $i \neq 1$?
+
+## **Constraints**
+$1 \le N \le 100$
+$1 \le Pi \le 100$
+All input values are integers.
+
+## **Input**
+The input is given from Standard Input in the following format:
+$N$
+$P_1\ P_2\ P_3 \ldots P_N$
+
+## **Output**
+Print the answer as an integer.
+
+## **Examples**
+|Input|Output|
+|-----|------|
+|$4$\n$5\ 15\ 2\ 10$|$11$|
+

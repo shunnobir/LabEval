@@ -3,6 +3,8 @@ import MdEditor from "@/components/markdown/MdEditor";
 import Table from "@/components/Table";
 import {
   CancelIcon,
+  DeleteIcon,
+  EditIcon,
   EventCreateYes,
   EventsCreateIcon,
   ShortTextIcon,
@@ -93,7 +95,7 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
       description: value,
       start_time: st,
       end_time: et,
-      created_by: JSON.parse(sessionStorage.getItem("user"))?.uid,
+      user_id: JSON.parse(sessionStorage.getItem("user"))?.user_id,
     };
 
     axios
@@ -119,7 +121,7 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
               <span key={0}> Successfully created event. </span>,
               <span key={1}> Reload the page to update the event list </span>,
             ],
-            interval: 10000,
+            interval: 5000,
             type: "info",
             save: false,
             render: true,
@@ -136,8 +138,8 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
   }, [value]);
 
   return (
-    <div className="overlay w-screen h-screen fixed inset-0 bg-[rgba(0,0,0,0.3)] animate-opacity delay-[1500ms] flex flex-col items-center justify-center">
-      <div className="create-event bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] rounded-[10px] animate-popup">
+    <div className="overlay w-screen h-screen fixed inset-0 bg-[rgba(0,0,0,0.3)] flex flex-col items-center justify-center">
+      <div className="create-event bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] rounded-[10px]">
         <div className="top flex flex-row bg-blue-500 h-16 justify-between items-center p-4 rounded-t-[5px]">
           <div className="left flex flex-row gap-4">
             <EventsCreateIcon height="24" width="24" color="#f8fafc" />
@@ -145,7 +147,7 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
           </div>
           <div className="right">
             <button
-              className="close text-2xl text-slate-50 w-8 h-8 hover:bg-[rgba(0,0,0,0.1)] rounded-full"
+              className="close text-2xl text-slate-50 w-8 h-8 hover:bg-[rgba(0,0,0,0.1)] rounded-full select-none"
               onClick={() => setShow(false)}
             >
               &times;
@@ -248,9 +250,9 @@ function EventBody({ setNotification }) {
   const interval = setInterval(() => setCurTime(new Date().getTime()), 1000);
 
   const fetchPastEvents = () => {
-    let uid = JSON.parse(sessionStorage.getItem("user"))?.uid;
+    let user_id = JSON.parse(sessionStorage.getItem("user"))?.user_id;
     axios
-      .get(`/api/instructor/events/?type=past&uid=${uid}`)
+      .get(`/api/instructor/events/?type=past&user_id=${user_id}`)
       .then((res) => res.data)
       .then((res) => {
         setPastEvents(res);
@@ -258,9 +260,9 @@ function EventBody({ setNotification }) {
   };
 
   const fetchOngoingEvents = () => {
-    let uid = JSON.parse(sessionStorage.getItem("user"))?.uid;
+    let user_id = JSON.parse(sessionStorage.getItem("user"))?.user_id;
     axios
-      .get(`/api/instructor/events/?type=ongoing&uid=${uid}`)
+      .get(`/api/instructor/events/?type=ongoing&user_id=${user_id}`)
       .then((res) => res.data)
       .then((res) => {
         setOngoingEvents(res);
@@ -268,12 +270,42 @@ function EventBody({ setNotification }) {
   };
 
   const fetchUpcomingEvents = () => {
-    let uid = JSON.parse(sessionStorage.getItem("user"))?.uid;
+    let user_id = JSON.parse(sessionStorage.getItem("user"))?.user_id;
     axios
-      .get(`/api/instructor/events/?type=upcoming&uid=${uid}`)
+      .get(`/api/instructor/events/?type=upcoming&user_id=${user_id}`)
       .then((res) => res.data)
       .then((res) => {
         setUpcomingEvents(res);
+      });
+  };
+
+  const reload = () => {
+    fetchUpcomingEvents();
+    fetchOngoingEvents();
+    fetchPastEvents();
+  };
+
+  const handleDeleteEvent = (event_id) => {
+    // TODO: Yes/No promp
+    axios
+      .delete(`/api/instructor/events/?event_id=${event_id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res === "deleted") {
+          setNotification({
+            header: "Event Deleted",
+            body: [
+              <span key={0}> Successfully deleted event. </span>,
+              <span key={1}> Reload the page to update the event list </span>,
+            ],
+            interval: 5000,
+            type: "info",
+            save: false,
+            render: true,
+            page: "/instructor/events",
+          });
+          reload();
+        }
       });
   };
 
@@ -362,6 +394,7 @@ function EventBody({ setNotification }) {
             { content: "Start Date", className: "" },
             { content: "End Date", className: "" },
             { content: "Participant", className: "" },
+            { content: "", className: "w-[5%]" },
           ]}
           empty={upcomingEvents.length === 0}
           className="w-full"
@@ -380,6 +413,16 @@ function EventBody({ setNotification }) {
                 <td>{value.start_time}</td>
                 <td>{value.end_time}</td>
                 <td>{0}</td>
+                <td>
+                  <div className="flex flex-row gap-2 w-full items-center justify-center">
+                    <button
+                      className="w-6 h-6 border border-solid border-slate-500 flex flex-row items-center justify-center rounded-full"
+                      onClick={() => handleDeleteEvent(value.event_id)}
+                    >
+                      <DeleteIcon width="16" height="16" color="#64748b" />
+                    </button>
+                  </div>
+                </td>
               </tr>
             );
           })}
@@ -393,6 +436,7 @@ function EventBody({ setNotification }) {
             { content: "Start Date", className: "" },
             { content: "End Date", className: "" },
             { content: "Participant", className: "" },
+            { content: "", className: "w-[5%]" },
           ]}
           empty={pastEvents.length === 0}
           className="w-full"
@@ -411,6 +455,16 @@ function EventBody({ setNotification }) {
                 <td>{value.start_time}</td>
                 <td>{value.end_time}</td>
                 <td>{0}</td>
+                <td>
+                  <div className="flex flex-row gap-2 w-full items-center justify-center">
+                    <button
+                      className="w-6 h-6 border border-solid border-slate-500 flex flex-row items-center justify-center rounded-full"
+                      onClick={() => handleDeleteEvent(value.event_id)}
+                    >
+                      <DeleteIcon width="16" height="16" color="#64748b" />
+                    </button>
+                  </div>
+                </td>
               </tr>
             );
           })}

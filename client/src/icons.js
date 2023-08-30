@@ -275,6 +275,7 @@ export function ProblemCreateYesIcon({ color, width, height, className }) {
   const c = color ? color : "#0f172a";
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       height={h}
       viewBox="0 -960 960 960"
@@ -282,6 +283,60 @@ export function ProblemCreateYesIcon({ color, width, height, className }) {
       fill={c}
     >
       <path d="M120-331v-60h306v60H120Zm0-165v-60h473v60H120Zm0-165v-60h473v60H120Zm532 460L516-337l42-43 94 93 185-185 43 43-228 228Z" />
+    </svg>
+  );
+}
+
+export function FileAddIcon({ color, width, height, className }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M450-313v-371L330-564l-43-43 193-193 193 193-43 43-120-120v371h-60ZM220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Z" />
+    </svg>
+  );
+}
+
+export function EditIcon({ color, width, height, className }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M180-180h44l443-443-44-44-443 443v44Zm614-486L666-794l42-42q17-17 42-17t42 17l44 44q17 17 17 42t-17 42l-42 42Zm-42 42L248-120H120v-128l504-504 128 128Zm-107-21-22-22 44 44-22-22Z" />
+    </svg>
+  );
+}
+
+export function DeleteIcon({ color, width, height, className }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      height={h}
+      viewBox="0 -960 960 960"
+      width={w}
+      fill={c}
+    >
+      <path d="M261-120q-24.75 0-42.375-17.625T201-180v-570h-41v-60h188v-30h264v30h188v60h-41v570q0 24-18 42t-42 18H261Zm438-630H261v570h438v-570ZM367-266h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z" />
     </svg>
   );
 }
