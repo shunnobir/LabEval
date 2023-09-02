@@ -12,6 +12,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     const q = { ...req.query };
+    console.log(q);
     let result;
     if (q.type === "past") {
       result = await psql`select event_id, 
@@ -44,6 +45,7 @@ export default async function handler(req, res) {
                           from events
                           where event_id = ${q.event_id}`;
     }
+    console.log(result);
     res.status(200).json(result);
   } else if (req.method === "DELETE") {
     let event_id = req.query.event_id;
