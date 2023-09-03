@@ -23,20 +23,17 @@ export default function NotificationManager({ notification, setNotification }) {
   }
 
   const handleClose = () => {
-    let elem = document.querySelector(".notification-manager");
-    if (elem) {
-      setNotification({
-        header: "",
-        subheader: "",
-        page: "",
-        body: [],
-        interval: 0,
-        type: "",
-        save: false,
-        render: false,
-      });
-      setShow(false);
-    }
+    setNotification({
+      header: "",
+      subheader: "",
+      page: "",
+      body: [],
+      interval: 0,
+      type: "",
+      save: false,
+      render: false,
+    });
+    setShow(false);
   };
 
   useEffect(() => {
@@ -45,11 +42,11 @@ export default function NotificationManager({ notification, setNotification }) {
         handleClose();
       }, notification.interval);
     }
-  }, [notification.body, notification.interval]);
+  }, [notification]);
 
   useEffect(() => {
     setShow(notification.render);
-  }, [notification, notification.render]);
+  }, [notification]);
 
   return show ? (
     <div

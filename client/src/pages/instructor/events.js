@@ -87,8 +87,9 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
       return;
     }
 
-    let st = startDateTime.replace("T", " "),
-      et = endDateTime.replace("T", " ");
+    let st = new Date(startDateTime).toString(),
+      et = new Date(endDateTime).toString();
+    console.log(st, et);
     const event = {
       event_id: random_string(10),
       title: title,
@@ -359,15 +360,22 @@ function EventBody({ setNotification }) {
             let minutes = Math.floor(diff / (1000 * 60));
             diff -= minutes * 60 * 1000;
             let seconds = Math.floor(diff / 1000);
-            let finished = hours === 0 && minutes === 0 && seconds === 0;
+            let finished =
+              hours === 0 && minutes === 0 && seconds === 0 && et < curTime;
+            if (finished) reload();
             return (
               <tr key={index}>
                 <td>
                   <Link
                     href={`/instructor/events/${value.event_id}`}
-                    className="font-normal hover:text-blue-500"
+                    className="font-normal hover:text-blue-500 flex flex-row gap-2"
                   >
-                    {value.title}
+                    <span>{value.title}</span>
+                    {st < curTime && (et >= curTime || et < curTime) ? (
+                      <span className="px-2 bg-red-50 border border-solid border-red-200 text-red-500 rounded-[1rem]">
+                        Running
+                      </span>
+                    ) : null}
                   </Link>
                 </td>
                 <td>{value.start_time}</td>
