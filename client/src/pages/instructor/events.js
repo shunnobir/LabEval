@@ -89,7 +89,6 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
 
     let st = new Date(startDateTime).toString(),
       et = new Date(endDateTime).toString();
-    console.log(st, et);
     const event = {
       event_id: random_string(10),
       title: title,
