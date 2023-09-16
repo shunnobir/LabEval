@@ -2,6 +2,7 @@
 
 import Layout from "@/components/Layout";
 import { labevalMarkdownParser } from "@/components/markdown/mdParser";
+import Table from "@/components/Table";
 import { BackButton } from "@/icons";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -18,6 +19,20 @@ function ProblemViewer({ setNotification }) {
     event_id: "",
   });
 
+  const [sampleTestCases, setSampleTestCases] = useState([
+    {
+      testcase_id: "",
+      input_file: "",
+      output_file: "",
+      input_content: "",
+      output_content: "",
+      input_size: "",
+      output_size: "",
+      is_sample: "",
+      problem_id: "",
+    },
+  ]);
+
   useEffect(() => {
     window.MathJax?.typesetClear();
     window.MathJax?.typeset();
@@ -28,8 +43,9 @@ function ProblemViewer({ setNotification }) {
       .then((res) => res.data)
       .then((res) => {
         setProblem({
-          ...res,
+          ...res.problem,
         });
+        setSampleTestCases(res.samples);
       });
     window.MathJax?.startup.document.updateDocument();
   }, [router.query]);
@@ -66,6 +82,34 @@ function ProblemViewer({ setNotification }) {
             <div className="middle flex flex-col">
               {problem.statement?.length
                 ? labevalMarkdownParser(problem.statement)
+                : null}
+            </div>
+            <div className="tail flex flex-col">
+              {sampleTestCases.length
+                ? sampleTestCases.map((sample, index) => {
+                    return (
+                      <Table
+                        key={index}
+                        heads={[
+                          {
+                            content: "input",
+                            className: "font-medium w-1/2",
+                          },
+                          {
+                            content: "output",
+                            className: "font-medium w-1/2",
+                          },
+                        ]}
+                        className="w-full"
+                        empty={sampleTestCases.length === 0}
+                      >
+                        <tr>
+                          <td>{sample.input_content}</td>
+                          <td>{sample.output_content}</td>
+                        </tr>
+                      </Table>
+                    );
+                  })
                 : null}
             </div>
           </div>

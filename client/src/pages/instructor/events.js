@@ -139,7 +139,7 @@ function CreateEventPopup({ setShow, setNotification, reload }) {
 
   return (
     <div className="overlay w-screen h-screen fixed inset-0 bg-[rgba(0,0,0,0.3)] flex flex-col items-center justify-center">
-      <div className="create-event bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] rounded-[10px]">
+      <div className="create-event bg-slate-50 shadow-[0_0_8px_rgba(0,0,0,0.15)] rounded-[10px] w-1/2">
         <div className="top flex flex-row bg-blue-500 h-16 justify-between items-center p-4 rounded-t-[5px]">
           <div className="left flex flex-row gap-4">
             <EventsCreateIcon height="24" width="24" color="#f8fafc" />

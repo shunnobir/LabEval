@@ -24,6 +24,32 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
   const [outputFile, setOutputFile] = useState("");
   const [isSample, setIsSample] = useState(false);
 
+  const handleInputFile = (file) => {
+    setInputFile(file);
+    let fr = new FileReader();
+    fr.addEventListener("load", () => {
+      setInputFile((prev) => {
+        let n = prev;
+        n.content = fr.result;
+        return n;
+      });
+    });
+    fr.readAsText(file);
+  };
+
+  const handleOutputFile = (file) => {
+    setOutputFile(file);
+    let fr = new FileReader();
+    fr.addEventListener("load", () => {
+      setOutputFile((prev) => {
+        let n = prev;
+        n.content = fr.result;
+        return n;
+      });
+    });
+    fr.readAsText(file);
+  };
+
   const handleAddTestcase = () => {
     setTestcases((prev) => {
       let n = [
@@ -33,6 +59,8 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
           output_file: outputFile.name,
           input_size: inputFile.size,
           output_size: outputFile.size,
+          input_content: inputFile.content,
+          output_content: outputFile.content,
           is_sample: isSample,
         },
       ];
@@ -43,6 +71,13 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
     setIsSample(false);
     document.querySelector(".input-file").value = "";
     document.querySelector(".output-file").value = "";
+  };
+
+  const handleDelete = (index) => {
+    setTestcases((prev) => {
+      let n = prev.filter((_, ind) => ind !== index);
+      return n;
+    });
   };
 
   return (
@@ -64,6 +99,11 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
             },
             { content: "File Name", className: "w-[70%]" },
             { content: "Size", className: "" },
+            {
+              content: "Sample",
+              className: "w-[5%]",
+              style: { textAlign: "center" },
+            },
             { content: "", className: "w-[5%]" },
           ]}
           className="w-full"
@@ -72,7 +112,7 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
           {testcases.map((testcase, index) => {
             return (
               <tr key={index} style={{ backgroundColor: "var(--slate-50)" }}>
-                <td>{index + 1}</td>
+                <td style={{ textAlign: "center" }}>{index + 1}</td>
                 <td style={{ padding: "0" }}>
                   <div className="flex flex-col">
                     <span className="px-4 py-2">{testcase.input_file}</span>
@@ -89,12 +129,15 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
                     </span>
                   </div>
                 </td>
+                <td style={{ textAlign: "center" }}>
+                  {testcase.is_sample ? "YES" : "NO"}
+                </td>
                 <td>
                   <div className="flex flex-row gap-2 w-full items-center justify-center">
-                    <button className="w-8 h-8 border border-solid border-slate-500 flex flex-row items-center justify-center rounded-full">
-                      <EditIcon width="20" height="20" color="#64748b" />
-                    </button>
-                    <button className="w-8 h-8 border border-solid border-slate-500 flex flex-row items-center justify-center rounded-full">
+                    <button
+                      className="w-8 h-8 border border-solid border-slate-500 flex flex-row items-center justify-center rounded-full"
+                      onClick={() => handleDelete(index)}
+                    >
                       <DeleteIcon width="20" height="20" color="#64748b" />
                     </button>
                   </div>
@@ -117,11 +160,13 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
             }
           >
             <div
-              className="file-remove-bbutton"
+              className="file-remove-button"
               onClick={() => {
-                if (inputFile) setInputFile(undefined);
-                else {
-                  const elem = document.querySelector(".input-file");
+                let elem = document.querySelector(".input-file");
+                if (inputFile) {
+                  setInputFile(undefined);
+                  elem.value = "";
+                } else {
                   elem.click();
                 }
               }}
@@ -154,9 +199,8 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
                 required={true}
                 className="input-file h-10 border-0 bg-red-500 text-slate-50 hidden w-fit"
                 accept=".in, .input, .txt, .text"
-                //value={inputFile?.name}
                 onChange={(e) => {
-                  setInputFile(e.target.files[0]);
+                  handleInputFile(e.target.files[0]);
                 }}
               />
             </label>
@@ -174,11 +218,13 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
             }
           >
             <div
-              className="file-remove-bbutton"
+              className="file-remove-button"
               onClick={() => {
-                if (outputFile) setOutputFile(undefined);
-                else {
-                  const elem = document.querySelector(".output-file");
+                let elem = document.querySelector(".input-file");
+                if (outputFile) {
+                  setOutputFile(undefined);
+                  elem.value = "";
+                } else {
                   elem.click();
                 }
               }}
@@ -211,9 +257,8 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
                 required={true}
                 className="output-file h-10 border-0 bg-red-500 text-slate-50 hidden w-fit"
                 accept=".out, .output, .txt, .text"
-                //value={inputFile?.name}
                 onChange={(e) => {
-                  setOutputFile(e.target.files[0]);
+                  handleOutputFile(e.target.files[0]);
                 }}
               />
             </label>
@@ -269,13 +314,22 @@ function CreateProblemPopup({ setShow, setNotification, reload, event_id }) {
   const [testcases, setTestcases] = useState([]);
 
   const handleCreate = () => {
+    let problem_id = random_string(20);
     axios.post(`/api/instructor/events/${event_id}/?type=create_problem`, {
-      problem_id: random_string(20),
+      problem_id: problem_id,
       title: title,
       statement: value,
       points: Number(points),
       time_limit: Number(problemRunTime),
       event_id: event_id,
+    });
+    testcases.forEach((value) => {
+      value.testcase_id = random_string(20);
+      value.problem_id = problem_id;
+      axios.post(
+        `/api/instructor/events/${event_id}/?type=create_testcase`,
+        value
+      );
     });
     reload();
     setShow(false);

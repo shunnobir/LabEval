@@ -33,7 +33,7 @@ export default async function handler(req, res) {
                               ${problem.time_limit},
                               ${req.query.event_id})
       `;
-    } else if (req.query.type === "testcase") {
+    } else if (req.query.type === "create_testcase") {
       let testcase = { ...req.body };
       await psql`insert into testcases
                         values (${testcase.testcase_id},
