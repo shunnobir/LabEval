@@ -33,6 +33,7 @@ export default async function handler(req, res) {
                               ${problem.time_limit},
                               ${req.query.event_id})
       `;
+      res.status(200).json("Successfully Created");
     } else if (req.query.type === "create_testcase") {
       let testcase = { ...req.body };
       await psql`insert into testcases
@@ -47,5 +48,8 @@ export default async function handler(req, res) {
                                 ${testcase.problem_id})
       `;
     }
+  } else if (req.method === "DELETE") {
+    await psql`delete from problems where problem_id = ${req.query.problem_id}`;
+    res.status(200).json("Successfully deleted");
   }
 }
