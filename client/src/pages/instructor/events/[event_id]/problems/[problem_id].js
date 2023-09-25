@@ -57,7 +57,7 @@ function ProblemViewer({ setNotification }) {
   }, [problem]);
 
   return router.query.problem_id ? (
-    <div className="problem-viewer flex flex-col w-full h-full">
+    <div className="problem-viewer flex flex-col w-full min-h-fit py-4">
       <div className="left flex flex-col w-3/4">
         <div className="top flex flex-row">
           <button
@@ -84,7 +84,8 @@ function ProblemViewer({ setNotification }) {
                 ? labevalMarkdownParser(problem.statement)
                 : null}
             </div>
-            <div className="tail flex flex-col">
+            <div className="tail flex flex-col gap-4 mt-4">
+              <span className="text-2xl font-bold"> Samples </span>
               {sampleTestCases.length
                 ? sampleTestCases.map((sample, index) => {
                     return (
@@ -104,8 +105,12 @@ function ProblemViewer({ setNotification }) {
                         empty={sampleTestCases.length === 0}
                       >
                         <tr>
-                          <td>{sample.input_content}</td>
-                          <td>{sample.output_content}</td>
+                          <td className="whitespace-pre">
+                            {sample.input_content}
+                          </td>
+                          <td className="whitespace-pre">
+                            {sample.output_content}
+                          </td>
                         </tr>
                       </Table>
                     );

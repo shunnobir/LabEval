@@ -51,6 +51,24 @@ function CreateTestcase({ setShow, setNotification, testcases, setTestcases }) {
   };
 
   const handleAddTestcase = () => {
+    if (!inputFile || !outputFile) {
+      setNotification({
+        header: "No file was selected",
+        body: [
+          <span key={0}>
+            {" "}
+            Both input and output files should be selected.{" "}
+          </span>,
+        ],
+        interval: 3000,
+        type: "error",
+        save: false,
+        render: true,
+        page: "/instructor/events",
+      });
+      return;
+    }
+
     setTestcases((prev) => {
       let n = [
         ...prev,
@@ -315,22 +333,27 @@ function CreateProblemPopup({ setShow, setNotification, reload, event_id }) {
 
   const handleCreate = () => {
     let problem_id = random_string(20);
-    axios.post(`/api/instructor/events/${event_id}/?type=create_problem`, {
-      problem_id: problem_id,
-      title: title,
-      statement: value,
-      points: Number(points),
-      time_limit: Number(problemRunTime),
-      event_id: event_id,
-    });
-    testcases.forEach((value) => {
-      value.testcase_id = random_string(20);
-      value.problem_id = problem_id;
-      axios.post(
-        `/api/instructor/events/${event_id}/?type=create_testcase`,
-        value
-      );
-    });
+    axios
+      .post(`/api/instructor/events/${event_id}/?type=create_problem`, {
+        problem_id: problem_id,
+        title: title,
+        statement: value,
+        points: Number(points),
+        time_limit: Number(problemRunTime),
+        event_id: event_id,
+      })
+      .then((res) => {
+        if (res.data === "Successfully Created") {
+          testcases.forEach((value) => {
+            value.testcase_id = random_string(20);
+            value.problem_id = problem_id;
+            axios.post(
+              `/api/instructor/events/${event_id}/?type=create_testcase`,
+              value
+            );
+          });
+        }
+      });
     reload();
     setShow(false);
   };
@@ -514,6 +537,20 @@ export default function Event(props) {
       });
   };
 
+  const handleDeleteProblem = (id) => {
+    axios
+      .delete(`/api/instructor/events/${eventId}/?problem_id=${id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        // Set notification for successful deletion
+        router.reload();
+      });
+  };
+
+  const handleEditProblem = (id) => {
+    router.push(`/instructor/events/${eventId}/problems/${id}/edit`);
+  };
+
   useEffect(() => {
     if (router.query?.event_id) {
       setEventId(router.query.event_id);
@@ -570,6 +607,7 @@ export default function Event(props) {
                   content: "Problem Title",
                   className: "text-center",
                 },
+                { content: "", className: "w-[5%]" },
               ]}
               empty={problemList.length === 0}
               className="w-full"
@@ -583,10 +621,29 @@ export default function Event(props) {
                         href={`/instructor/events/${eventId}/problems/${
                           value.problem_id
                         }?order=${String.fromCharCode(65 + index)}`}
-                        className="text-blue-500"
+                        className="text-blue-500 flex flex-row"
                       >
                         {value.title}
+                        <button
+                          className="w-6 h-6 flex flex-row items-center justify-center"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProblem(value.problem_id);
+                          }}
+                        >
+                          <EditIcon width="16" height="16" color="#64748b" />
+                        </button>
                       </Link>
+                    </td>
+                    <td>
+                      <div className="flex flex-row gap-2 w-full items-center justify-center">
+                        <button
+                          className="w-6 h-6 border border-solid border-slate-500 flex flex-row items-center justify-center rounded-full"
+                          onClick={() => handleDeleteProblem(value.problem_id)}
+                        >
+                          <DeleteIcon width="16" height="16" color="#64748b" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
