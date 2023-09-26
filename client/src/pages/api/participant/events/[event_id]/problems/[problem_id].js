@@ -1,6 +1,8 @@
 import psql from "@/database.config";
 const fs = require("fs");
 const child_process = require("child_process");
+const os = require("os");
+const path = require("path");
 
 export default async function handler(req, res) {
   let result;
@@ -19,7 +21,7 @@ export default async function handler(req, res) {
         await psql`select * from testcases where problem_id = ${req.query.problem_id}`;
       if (extension === "C++") {
         await executeCppFile(file, testcases, res);
-        await deleteCppTempFiles(testcases);
+        await deleteCppTempFiles(testcases, res);
       }
     }
   }
@@ -27,14 +29,19 @@ export default async function handler(req, res) {
 
 async function executeCppFile(file, testcases, res) {
   try {
-    fs.writeFileSync("temp.cpp", file);
+    const cppPath = path.join("temp.cpp");
+    const executablePath = path.join("temp");
+    fs.writeFileSync(cppPath, file);
     child_process.execSync(
-      "g++ -std=c++20 -Wall -pedantic -O2 temp.cpp -o temp"
+      "g++ -std=c++20 -Wall -pedantic -O2 " + cppPath + " -o " + executablePath
     );
     let acc_test = [];
     for (let i = 0; i < testcases.length; ++i) {
-      fs.writeFileSync(`temp${i + 1}.input`, testcases[i].input_content);
-      let stdout = child_process.execSync(`./temp < temp${i + 1}.input`);
+      const inputPath = path.join(`temp${i + 1}.input`);
+      fs.writeFileSync(inputPath, testcases[i].input_content);
+      let stdout = child_process.execSync(
+        "./" + executablePath + " < " + inputPath
+      );
       if (stdout.toString().trim() === testcases[i].output_content.trim())
         acc_test.push(i + 1);
       else {
@@ -49,15 +56,18 @@ async function executeCppFile(file, testcases, res) {
   }
 }
 
-async function deleteCppTempFiles(testcases) {
+async function deleteCppTempFiles(testcases, res) {
   try {
-    fs.rmSync("temp");
-    fs.rmSync("temp.cpp");
+    const cppPath = path.join("temp.cpp");
+    const executablePath = path.join("temp");
+    fs.rmSync(cppPath);
+    fs.rmSync(executablePath);
     testcases.forEach((_, index) => {
-      fs.rmSync(`temp${index + 1}.input`);
+      const inputPath = path.join(`temp${index + 1}.input`);
+      fs.rmSync(inputPath);
     });
   } catch (error) {
-    console.error("Could not delete temporary files");
+    console.error("Could not delete temporary files", error);
     res.status(200);
   }
 }
