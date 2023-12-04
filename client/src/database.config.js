@@ -16,7 +16,6 @@ if (process.env.LABEVAL_USE_NEON === "true") {
     username: process.env.LABEVAL_PGUSER2,
     host: process.env.LABEVAL_PGHOST2,
     password: process.env.LABEVAL_PGPASSWORD2,
-    ssl: "require",
   });
 }
 
