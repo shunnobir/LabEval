@@ -4,7 +4,6 @@ import Table from "@/components/Table";
 import {
   CancelIcon,
   DeleteIcon,
-  EditIcon,
   EventCreateYes,
   EventsCreateIcon,
   ShortTextIcon,

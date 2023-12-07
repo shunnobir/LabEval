@@ -98,8 +98,8 @@ function ProblemViewer({ setNotification }) {
   useEffect(() => {}, [submissionPending]);
 
   return router.query.problem_id ? (
-    <div className="problem-viewer flex flex-row w-full min-h-fit py-4">
-      <div className="left flex flex-col w-3/4">
+    <div className="problem-viewer flex flex-row w-full min-h-fit py-4 justify-between">
+      <div className="left flex flex-col w-[70%]">
         <div className="top flex flex-row">
           <button
             className="w-8 h-8 bg-blue-500 flex flex-row items-center justify-center rounded-full cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.15)] duration-[350ms]"

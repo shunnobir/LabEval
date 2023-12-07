@@ -25,6 +25,16 @@ export default function Event(props) {
   });
   const [problemList, setProblemList] = useState([]);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [curTime, setCurTime] = useState(new Date().getTime());
+  const interval = setInterval(() => setCurTime(new Date().getTime()), 1000);
+  const [timeRemaining, setTimeRemaining] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    finished: false,
+    running: false,
+    color: "text-slate-900",
+  });
   const router = useRouter();
 
   const getEvent = (id) => {
@@ -32,7 +42,33 @@ export default function Event(props) {
       .get(`/api/participant/events/${id}/?type=info`)
       .then((res) => res.data[0])
       .then((res) => {
-        if (res) setEvent(res);
+        if (res) {
+          setEvent(res);
+          let st = new Date(res.start_time).getTime();
+          let et = new Date(res.end_time).getTime();
+          let diff =
+            st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
+          let color =
+            st >= curTime
+              ? "text-slate-900"
+              : et >= curTime
+                ? "text-blue-500"
+                : "text-red-500";
+          let running =
+            st >= curTime
+              ? false
+              : et >= curTime
+                ? true
+                : false
+          let hours = Math.floor(diff / (1000 * 60 * 60));
+          diff -= hours * 60 * 60 * 1000;
+          let minutes = Math.floor(diff / (1000 * 60));
+          diff -= minutes * 60 * 1000;
+          let seconds = Math.floor(diff / 1000);
+          let finished =
+            hours === 0 && minutes === 0 && seconds === 0 && et < curTime;
+          setTimeRemaining({ hours, minutes, seconds, finished, running, color });
+        }
       });
   };
 
@@ -83,10 +119,16 @@ export default function Event(props) {
     }
   }, [router.query]);
 
+  useEffect(() => {
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
+
   return eventId ? (
     <Layout page="events" {...props}>
-      <div className="labeval-event flex flex-row gap-4 animate-opacity w-full">
-        <div className="left flex flex-col gap-4 w-3/4">
+      <div className="labeval-event flex flex-row gap-4 animate-opacity w-full justify-between">
+        <div className="left flex flex-col gap-4 w-[70%]">
           <button
             className="w-8 h-8 bg-blue-500 flex flex-row items-center justify-center rounded-full cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.15)] duration-[350ms]"
             title="Go back"
@@ -95,8 +137,12 @@ export default function Event(props) {
             <BackButton height="20" width="20" color="#f8fafc" />
           </button>
           <div className="flex flex-row justify-between items-center">
-            <h1> {event.title} </h1>
-            <button
+            <h1 className="flex items-center"> {event.title}
+              {timeRemaining.running || timeRemaining.finished ? <span className="px-2 text-[1rem] bg-red-50 border border-solid border-red-200 text-red-500 rounded-[1rem]">
+                {timeRemaining.running ? "Running" : "Finished"}
+              </span> : null}
+            </h1>
+            {!timeRemaining.running && !timeRemaining.finished ? <button
               className={
                 (isRegistered
                   ? "bg-green-500 hover:bg-green-600 "
@@ -112,7 +158,7 @@ export default function Event(props) {
                 <RegistrationIcon width="24" height="24" color="#f8fafc" />
               )}
               {isRegistered ? "Registered" : "Register"}
-            </button>
+            </button> : null}
           </div>
           <div className="time-group flex flex-row gap-4 items-center">
             <span className="flex flex-row items-center gap-2">
@@ -150,9 +196,8 @@ export default function Event(props) {
                     <td>{String.fromCharCode(65 + index)}</td>
                     <td>
                       <Link
-                        href={`/participant/events/${eventId}/problems/${
-                          value.problem_id
-                        }?order=${String.fromCharCode(65 + index)}`}
+                        href={`/participant/events/${eventId}/problems/${value.problem_id
+                          }?order=${String.fromCharCode(65 + index)}`}
                         className="text-blue-500 flex flex-row"
                       >
                         {value.title}
@@ -164,7 +209,20 @@ export default function Event(props) {
             </Table>
           </div>
         </div>
-        <div className="right flex flex-col gap-4 w-[25%]"></div>
+        <div className="right flex flex-col gap-4 w-[25%]">
+          <div className="top flex flex-col p-4 w-full border border-solid border-slate-300 rounded-[5px]">
+            <span className="text-2xl"> {timeRemaining.color === "text-slate-900" ? "Time to Start" : "Time Remaining"} </span>
+            <span className={timeRemaining.color + " font-medium"}>
+              {timeRemaining.finished
+                ? "Completed"
+                : String(timeRemaining.hours).padStart(2, 0) +
+                ":" +
+                String(timeRemaining.minutes).padStart(2, 0) +
+                ":" +
+                String(timeRemaining.seconds).padStart(2, 0)}
+            </span>
+          </div>
+        </div>
       </div>
     </Layout>
   ) : (
