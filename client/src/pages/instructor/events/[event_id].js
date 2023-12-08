@@ -704,7 +704,7 @@ export default function Event(props) {
             <span className="text-2xl"> {timeRemaining.color === "text-slate-900" ? "Time to Start" : "Time Remaining"} </span>
             <span className={timeRemaining.color + " font-medium"}>
               {timeRemaining.finished
-                ? "Completed"
+                ? "Contest Finished"
                 : String(timeRemaining.hours).padStart(2, 0) +
                 ":" +
                 String(timeRemaining.minutes).padStart(2, 0) +

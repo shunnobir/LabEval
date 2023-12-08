@@ -21,6 +21,25 @@ function ProblemViewer({ setNotification }) {
     event_id: "",
   });
 
+  const [event, setEvent] = useState({
+    event_id: "",
+    title: "",
+    description: "",
+    start_time: "",
+    end_time: "",
+    created_by: "",
+  });
+  const [curTime, setCurTime] = useState(new Date().getTime());
+  const interval = setInterval(() => setCurTime(new Date().getTime()), 1000);
+  const [timeRemaining, setTimeRemaining] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    finished: false,
+    running: false,
+    color: "text-slate-900",
+  });
+
   const [sampleTestCases, setSampleTestCases] = useState([
     {
       testcase_id: "",
@@ -34,6 +53,65 @@ function ProblemViewer({ setNotification }) {
       problem_id: "",
     },
   ]);
+
+  const getProblem = () => {
+    axios
+      .get(
+        `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}`
+      )
+      .then((res) => res.data)
+      .then((res) => {
+        setProblem({
+          ...res.problem,
+        });
+        setSampleTestCases(res.samples);
+      });
+  }
+
+  const getEvent = (id) => {
+    axios
+      .get(`/api/instructor/events/${id}/?type=info`)
+      .then((res) => res.data[0])
+      .then((res) => {
+        if (res) {
+          setEvent(res);
+          let st = new Date(res.start_time).getTime();
+          let et = new Date(res.end_time).getTime();
+          let diff =
+            st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
+          let color =
+            st >= curTime
+              ? "text-slate-900"
+              : et >= curTime
+                ? "text-blue-500"
+                : "text-red-500";
+          let running =
+            st >= curTime
+              ? false
+              : et >= curTime
+                ? true
+                : false
+          let hours = Math.floor(diff / (1000 * 60 * 60));
+          diff -= hours * 60 * 60 * 1000;
+          let minutes = Math.floor(diff / (1000 * 60));
+          diff -= minutes * 60 * 1000;
+          let seconds = Math.floor(diff / 1000);
+          let finished =
+            hours === 0 && minutes === 0 && seconds === 0 && et < curTime;
+          setTimeRemaining({ hours, minutes, seconds, finished, running, color });
+        }
+      });
+  };
+
+
+  useEffect(() => {
+    window.MathJax?.typesetClear();
+    window.MathJax?.typeset();
+    getEvent(router.query.event_id);
+    getProblem();
+    window.MathJax?.startup.document.updateDocument();
+  }, [router.query]);
+
   const [inputFile, setInputFile] = useState(undefined);
   const [languageSelected, setLanguageSelected] = useState("");
   const [status, setStatus] = useState("Not Submitted");
@@ -75,17 +153,8 @@ function ProblemViewer({ setNotification }) {
   useEffect(() => {
     window.MathJax?.typesetClear();
     window.MathJax?.typeset();
-    axios
-      .get(
-        `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}`
-      )
-      .then((res) => res.data)
-      .then((res) => {
-        setProblem({
-          ...res.problem,
-        });
-        setSampleTestCases(res.samples);
-      });
+    getProblem();
+    getEvent(router.query.event_id);
     window.MathJax?.startup.document.updateDocument();
   }, [router.query]);
 
@@ -95,7 +164,12 @@ function ProblemViewer({ setNotification }) {
     window.MathJax?.startup.document.updateDocument();
   }, [problem]);
 
-  useEffect(() => {}, [submissionPending]);
+  useEffect(() => { }, [submissionPending]);
+  useEffect(() => {
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
 
   return router.query.problem_id ? (
     <div className="problem-viewer flex flex-row w-full min-h-fit py-4 justify-between">
@@ -129,39 +203,51 @@ function ProblemViewer({ setNotification }) {
               <span className="text-2xl font-bold"> Samples </span>
               {sampleTestCases.length
                 ? sampleTestCases.map((sample, index) => {
-                    return (
-                      <Table
-                        key={index}
-                        heads={[
-                          {
-                            content: "input",
-                            className: "font-medium w-1/2",
-                          },
-                          {
-                            content: "output",
-                            className: "font-medium w-1/2",
-                          },
-                        ]}
-                        className="w-full"
-                        empty={sampleTestCases.length === 0}
-                      >
-                        <tr>
-                          <td className="whitespace-pre">
-                            {sample.input_content}
-                          </td>
-                          <td className="whitespace-pre">
-                            {sample.output_content}
-                          </td>
-                        </tr>
-                      </Table>
-                    );
-                  })
+                  return (
+                    <Table
+                      key={index}
+                      heads={[
+                        {
+                          content: "input",
+                          className: "font-medium w-1/2",
+                        },
+                        {
+                          content: "output",
+                          className: "font-medium w-1/2",
+                        },
+                      ]}
+                      className="w-full"
+                      empty={sampleTestCases.length === 0}
+                    >
+                      <tr>
+                        <td className="whitespace-pre">
+                          {sample.input_content}
+                        </td>
+                        <td className="whitespace-pre">
+                          {sample.output_content}
+                        </td>
+                      </tr>
+                    </Table>
+                  );
+                })
                 : null}
             </div>
           </div>
         </div>
       </div>
       <div className="right flex flex-col gap-4 w-[25%]">
+        <div className="top flex flex-col p-4 w-full border border-solid border-slate-300 rounded-[5px]">
+          <span className="text-2xl"> {timeRemaining.color === "text-slate-900" ? "Time to Start" : "Time Remaining"} </span>
+          <span className={timeRemaining.color + " font-medium"}>
+            {timeRemaining.finished
+              ? "Contest Finished"
+              : String(timeRemaining.hours).padStart(2, 0) +
+              ":" +
+              String(timeRemaining.minutes).padStart(2, 0) +
+              ":" +
+              String(timeRemaining.seconds).padStart(2, 0)}
+          </span>
+        </div>
         <div className="border border-solid border-slate-300 p-4 rounded-[5px] flex flex-col gap-4">
           <h2> Submit </h2>
           <Select options={["C", "C++"]} setSelected={setLanguageSelected} />
