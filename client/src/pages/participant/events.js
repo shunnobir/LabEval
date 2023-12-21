@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import Table from "@/components/Table";
-import { EventsCreateIcon } from "@/icons";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -63,13 +62,6 @@ function EventBody({ setNotification }) {
 
   return (
     <div className="event-body flex flex-col gap-8">
-      <button
-        className="bg-blue-500 hover:bg-blue-600 flex flex-row gap-2 ml-auto h-10 px-4 rounded-[5px] text-slate-50 items-center duration-[350ms]"
-        onClick={() => setShowCreateEventPopup(true)}
-      >
-        <EventsCreateIcon height="24" width="24" color="#f8fafc" />{" "}
-        <span> New event </span>
-      </button>
       <div className="block1 flex flex-col gap-4">
         <span className="text-2xl">Ongoing or Soon to Be Starting Events</span>
         <Table

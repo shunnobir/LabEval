@@ -59,3 +59,17 @@ create table testcases (
     constraint foreign_problem_id foreign key (problem_id) references problems (problem_id) on delete cascade,
     constraint testcases_primary_key primary key (testcase_id)
 );
+
+create table submissions (
+    submission_id varchar(12),
+    code varchar,
+    language varchar,
+    accepted boolean,
+    user_id varchar(10),
+    problem_id varchar(20),
+    submission_time timestamp with time zone,
+    constraint unique_submissionid unique(submission_id),
+    constraint foreign_user_id foreign key (user_id) references users (user_id) on delete cascade,
+    constraint foreign_problem_id foreign key (problem_id) references problems (problem_id) on delete cascade,
+    constraint submissions_primary_key primary key (submission_id)
+);

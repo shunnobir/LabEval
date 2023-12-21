@@ -65,6 +65,33 @@ function ProblemViewer({ setNotification }) {
       });
   }
 
+  const setTime = (event) => {
+    let st = new Date(event.start_time).getTime();
+    let et = new Date(event.end_time).getTime();
+    let diff =
+      st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
+    let color =
+      st >= curTime
+      ? "text-slate-900"
+      : et >= curTime
+      ? "text-blue-500"
+      : "text-red-500";
+    let running =
+      st >= curTime
+      ? false
+      : et >= curTime
+      ? true
+      : false
+    let hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * 60 * 60 * 1000;
+    let minutes = Math.floor(diff / (1000 * 60));
+    diff -= minutes * 60 * 1000;
+    let seconds = Math.floor(diff / 1000);
+    let finished =
+      hours === 0 && minutes === 0 && seconds === 0 && et < curTime;
+    setTimeRemaining({ hours, minutes, seconds, finished, running, color });
+  };
+
   const getEvent = (id) => {
     axios
       .get(`/api/instructor/events/${id}/?type=info`)
@@ -72,30 +99,7 @@ function ProblemViewer({ setNotification }) {
       .then((res) => {
         if (res) {
           setEvent(res);
-          let st = new Date(res.start_time).getTime();
-          let et = new Date(res.end_time).getTime();
-          let diff =
-            st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
-          let color =
-            st >= curTime
-              ? "text-slate-900"
-              : et >= curTime
-                ? "text-blue-500"
-                : "text-red-500";
-          let running =
-            st >= curTime
-              ? false
-              : et >= curTime
-                ? true
-                : false
-          let hours = Math.floor(diff / (1000 * 60 * 60));
-          diff -= hours * 60 * 60 * 1000;
-          let minutes = Math.floor(diff / (1000 * 60));
-          diff -= minutes * 60 * 1000;
-          let seconds = Math.floor(diff / 1000);
-          let finished =
-            hours === 0 && minutes === 0 && seconds === 0 && et < curTime;
-          setTimeRemaining({ hours, minutes, seconds, finished, running, color });
+          setTime(res);
         }
       });
   };
@@ -114,6 +118,10 @@ function ProblemViewer({ setNotification }) {
     window.MathJax?.typeset();
     window.MathJax?.startup.document.updateDocument();
   }, [problem]);
+
+  useEffect(() => {
+    setTime(event);
+  }, [curTime]);
 
   useEffect(() => {
     return () => {
@@ -186,9 +194,9 @@ function ProblemViewer({ setNotification }) {
         </div>
       </div>
       <div className="right flex flex-col gap-4 w-[25%]">
-        <div className="top flex flex-col p-4 w-full border border-solid border-slate-300 rounded-[5px]">
-          <span className="text-2xl"> {timeRemaining.color === "text-slate-900" ? "Time to Start" : "Time Remaining"} </span>
-          <span className={timeRemaining.color + " font-medium"}>
+        <div className="top flex flex-col w-full border border-solid border-slate-300 rounded-xl">
+          <span className="text-xl text-blue-600 bg-slate-100 px-4 py-2 border-b border-solid border-slate-300 rounded-t-xl"> {timeRemaining.color === "text-slate-900" ? "Time to Start" : "Time Remaining"} </span>
+          <span className={timeRemaining.color + " text-2xl text-center p-4 font-medium"}>
             {timeRemaining.finished
               ? "Contest Finished"
               : String(timeRemaining.hours).padStart(2, 0) +

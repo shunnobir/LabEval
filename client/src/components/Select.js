@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function Select({ options, setSelected }) {
+export default function Select({ options, setSelected, className }) {
   const optionRef = useRef(null);
   const [show, setShow] = useState(false);
   const [currentOption, setCurrentOption] = useState(0);
@@ -23,6 +23,8 @@ export default function Select({ options, setSelected }) {
         (show
           ? " before:rotate-[-45deg] before:top-[15px]"
           : " before:rotate-[135deg]")
+          +
+          (className ? ` ${className}` : "")
       }
       onClick={() => setShow((prev) => !prev)}
     >

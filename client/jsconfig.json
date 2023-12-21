@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "module": "ES6",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "target": "ES6"
   }
 }
