@@ -1,10 +1,11 @@
-export default function Table({ heads, children, empty, className }) {
+export default function Table({ heads, children, empty, className, style }) {
   return (
     <table
       className={
         "labeval-table animate-opacity table-auto border-collapse h-auto mb-4 " +
         className
       }
+      style={style}
     >
       {heads ? (
         <thead>

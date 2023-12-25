@@ -1,4 +1,4 @@
-export function random_string(length) {
+export function random_string(length, only_nums = false) {
   let chars = [
     "0",
     "1",
@@ -66,7 +66,7 @@ export function random_string(length) {
 
   let str = "";
   for (let i = 1; i <= length; ++i) {
-    str = str + chars[Math.floor(Math.random() * chars.length)];
+    str = str + chars[Math.floor(Math.random() * (only_nums ? 10 : chars.length))];
   }
 
   return str;

@@ -9,6 +9,7 @@ import { BackButton, CancelIcon, FileAddIcon } from "@/icons";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { random_string } from "@/utility";
 
 function ProblemViewer({ setNotification }) {
   const router = useRouter();
@@ -68,6 +69,33 @@ function ProblemViewer({ setNotification }) {
       });
   }
 
+  const setTime = (event) => {
+    let st = new Date(event.start_time).getTime();
+    let et = new Date(event.end_time).getTime();
+    let diff =
+      st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
+    let color =
+      st >= curTime
+      ? "text-slate-900"
+      : et >= curTime
+      ? "text-blue-500"
+      : "text-red-500";
+    let running =
+      st >= curTime
+      ? false
+      : et >= curTime
+      ? true
+      : false
+    let hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * 60 * 60 * 1000;
+    let minutes = Math.floor(diff / (1000 * 60));
+    diff -= minutes * 60 * 1000;
+    let seconds = Math.floor(diff / 1000);
+    let finished =
+      hours === 0 && minutes === 0 && seconds === 0 && et < curTime;
+    setTimeRemaining({ hours, minutes, seconds, finished, running, color });
+  };
+
   const getEvent = (id) => {
     axios
       .get(`/api/instructor/events/${id}/?type=info`)
@@ -75,30 +103,7 @@ function ProblemViewer({ setNotification }) {
       .then((res) => {
         if (res) {
           setEvent(res);
-          let st = new Date(res.start_time).getTime();
-          let et = new Date(res.end_time).getTime();
-          let diff =
-            st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
-          let color =
-            st >= curTime
-              ? "text-slate-900"
-              : et >= curTime
-                ? "text-blue-500"
-                : "text-red-500";
-          let running =
-            st >= curTime
-              ? false
-              : et >= curTime
-                ? true
-                : false
-          let hours = Math.floor(diff / (1000 * 60 * 60));
-          diff -= hours * 60 * 60 * 1000;
-          let minutes = Math.floor(diff / (1000 * 60));
-          diff -= minutes * 60 * 1000;
-          let seconds = Math.floor(diff / 1000);
-          let finished =
-            hours === 0 && minutes === 0 && seconds === 0 && et < curTime;
-          setTimeRemaining({ hours, minutes, seconds, finished, running, color });
+          setTime(res);
         }
       });
   };
@@ -114,8 +119,9 @@ function ProblemViewer({ setNotification }) {
 
   const [inputFile, setInputFile] = useState(undefined);
   const [languageSelected, setLanguageSelected] = useState("");
-  const [status, setStatus] = useState("Not Submitted");
+  const [verdict, setVerdict] = useState("");
   const [submissionPending, setSubmissionPending] = useState(false);
+  const [submissions, setSubmissions] = useState([]);
 
   const handleInputFile = (file) => {
     setInputFile(file);
@@ -132,22 +138,46 @@ function ProblemViewer({ setNotification }) {
 
   const handleSubmit = () => {
     setSubmissionPending(true);
+    let submission_id = random_string(12, true);
     axios
       .post(
         `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/?type=submit`,
         {
-          file: inputFile,
+          submission_id: submission_id,
+          user_id: JSON.parse(sessionStorage.getItem('user')).user_id,
+          problem_id: problem.problem_id,
+          code: inputFile,
           language: languageSelected === 1 ? "C++" : "C",
+          time: (new Date()).toString()
         },
         {
-          timeout: 60000,
+          timeout: 60000,  // 6 seconds
         }
       )
       .then((res) => res.data)
       .then((res) => {
-        setStatus(res.status);
+        setVerdict(res.verdict);
+        router.push(`${router.asPath}/submission/${submission_id}`);
         setSubmissionPending(false);
+        setInputFile(undefined);
       });
+  };
+
+  const getSubmissions = () => {
+    if (!router.query?.event_id) return;
+    axios
+      .post(
+        `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/?type=submission_of`,
+        { 
+            user_id: JSON.parse(sessionStorage.getItem('user')).user_id,
+            problem_id: router.query.problem_id,
+        }
+      )
+    .then((res) => res.data)
+    .then((res) => {
+      setSubmissions(res.submissions);
+    });
+
   };
 
   useEffect(() => {
@@ -155,6 +185,7 @@ function ProblemViewer({ setNotification }) {
     window.MathJax?.typeset();
     getProblem();
     getEvent(router.query.event_id);
+    getSubmissions();
     window.MathJax?.startup.document.updateDocument();
   }, [router.query]);
 
@@ -165,6 +196,11 @@ function ProblemViewer({ setNotification }) {
   }, [problem]);
 
   useEffect(() => { }, [submissionPending]);
+
+  useEffect(() => {
+    setTime(event);
+  }, [curTime]);
+
   useEffect(() => {
     return () => {
       clearInterval(interval);
@@ -174,7 +210,7 @@ function ProblemViewer({ setNotification }) {
   return router.query.problem_id ? (
     <div className="problem-viewer flex flex-row w-full min-h-fit py-4 justify-between">
       <div className="left flex flex-col w-[70%]">
-        <div className="top flex flex-row">
+        <div className="top flex flex-row items-center gap-4">
           <button
             className="w-8 h-8 bg-blue-500 flex flex-row items-center justify-center rounded-full cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.15)] duration-[350ms]"
             title="Go back"
@@ -182,6 +218,7 @@ function ProblemViewer({ setNotification }) {
           >
             <BackButton height="20" width="20" color="#f8fafc" />
           </button>
+          <span className="bg-slate-200 text-xl text-blue-600 font-semibold px-4 rounded-full cursor-pointer" onClick={() => router.back()}> {"#" + event.title} </span>
         </div>
         <div className="middle flex flex-col w-full">
           <div className="problem-frame flex flex-col w-full">
@@ -235,10 +272,10 @@ function ProblemViewer({ setNotification }) {
           </div>
         </div>
       </div>
-      <div className="right flex flex-col gap-4 w-[25%]">
-        <div className="top flex flex-col p-4 w-full border border-solid border-slate-300 rounded-[5px]">
-          <span className="text-2xl"> {timeRemaining.color === "text-slate-900" ? "Time to Start" : "Time Remaining"} </span>
-          <span className={timeRemaining.color + " font-medium"}>
+      <div className="right flex flex-col gap-8 w-[25%]">
+        <div className="top flex flex-col w-full border border-solid border-slate-300 rounded-xl">
+          <span className="text-xl font-semibold text-blue-600 bg-slate-100 px-4 py-2 border-b border-solid border-slate-300 rounded-t-xl"> {timeRemaining.color === "text-slate-900" ? "Time to Start" : "Time Remaining"} </span>
+          <span className={timeRemaining.color + " p-4 font-medium text-center text-2xl"}>
             {timeRemaining.finished
               ? "Contest Finished"
               : String(timeRemaining.hours).padStart(2, 0) +
@@ -248,10 +285,12 @@ function ProblemViewer({ setNotification }) {
               String(timeRemaining.seconds).padStart(2, 0)}
           </span>
         </div>
-        <div className="border border-solid border-slate-300 p-4 rounded-[5px] flex flex-col gap-4">
-          <h2> Submit </h2>
-          <Select options={["C", "C++"]} setSelected={setLanguageSelected} />
-          <div className="bottom flex flex-row gap-2 justify-between">
+        <div className="border border-solid border-slate-300 rounded-xl flex flex-col gap-4">
+          <span className="text-xl font-semibold text-blue-600 bg-slate-100 px-4 py-2 border-b border-solid border-slate-300 rounded-t-xl"> Submit </span>
+          <div className="w-full px-4">
+            <Select options={["C", "C++"]} setSelected={setLanguageSelected} />
+          </div>
+          <div className="bottom p-4 flex flex-row gap-2 justify-between">
             <div
               className={
                 "input flex flex-row pl-2 pr-4 h-10 w-fit border border-solid border-slate-300 rounded-[5px] items-center" +
@@ -319,16 +358,27 @@ function ProblemViewer({ setNotification }) {
           </div>
         </div>
 
-        <div className="border border-solid border-slate-300 p-4 rounded-[5px] flex flex-col gap-4">
-          <h2> Status </h2>
-          <span
-            className={
-              "font-medium " +
-              (status === "Accepted" ? "text-green-500" : "text-red-500")
-            }
+        <div className="border border-solid border-slate-300 border-b-0 rounded-t-xl flex flex-col">
+          <span className="text-xl font-semibold text-blue-600 bg-slate-100 px-4 py-2 border-b border-solid border-slate-300 rounded-t-xl"> Submissions </span>
+          <Table
+            heads={[
+              { content: "Submission" },
+              { content: "Time" },
+              { content: "Verdict" },
+            ]}
+            className="h-full w-full"
+            style={{ marginBottom: "0" }}
+            empty={submissions.length === 0}
           >
-            {status}
-          </span>
+            {submissions.map((submission, index) => {
+              let time = new Date(submission.submission_time);
+              return (<tr key={index}> 
+                <td className="text-blue-500 font-semibold cursor-pointer" onClick={() => router.push(`${router.asPath}/submission/${submission.submission_id}`)}> {submission.submission_id} </td>
+                <td> {`${time.getDay().toString().padStart(2, 0)}/${time.getMonth().toString().padStart(2, 0)}/${time.getFullYear()} ${time.getHours().toString().padStart(2, 0)}:${time.getMinutes().toString().padStart(2, 0)}:${time.getSeconds().toString().padStart(2, 0)}`} </td>
+                <td className={"font-semibold " + (submission.accepted ? "text-green-600" : "text-red-500")}> {submission.accepted ? "Accepted" : "Wrong Answer"} </td>
+              </tr>);
+            })}
+          </Table>
         </div>
       </div>
     </div>
@@ -336,9 +386,8 @@ function ProblemViewer({ setNotification }) {
 }
 
 export default function Problem({ setNotification }) {
-  const router = useRouter();
   return (
-    <Layout setNotification={setNotification} page="events">
+    <Layout setNotification={setNotification} page="events" title="Problem">
       <ProblemViewer setNotification={setNotification} />
     </Layout>
   );

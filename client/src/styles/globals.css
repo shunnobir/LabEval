@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --red-500: #d3493a;
-  --red-600: #c3392a;
+  --red-500: #ea2e2e;
+  --red-600: #f01414;
 
   --blue-500: #4282cd;
   --blue-600: #3272bd;
