@@ -212,9 +212,8 @@ function ProblemViewer({ setNotification }) {
 }
 
 export default function Problem({ setNotification }) {
-  const router = useRouter();
   return (
-    <Layout setNotification={setNotification} page="events">
+    <Layout setNotification={setNotification} page="events" title={"Events"}>
       <ProblemViewer setNotification={setNotification} />
     </Layout>
   );

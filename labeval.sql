@@ -68,6 +68,7 @@ create table submissions (
     user_id varchar(10),
     problem_id varchar(20),
     submission_time timestamp with time zone,
+    points integer default 0,
     constraint unique_submissionid unique(submission_id),
     constraint foreign_user_id foreign key (user_id) references users (user_id) on delete cascade,
     constraint foreign_problem_id foreign key (problem_id) references problems (problem_id) on delete cascade,

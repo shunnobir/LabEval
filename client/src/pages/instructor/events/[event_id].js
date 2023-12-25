@@ -611,7 +611,7 @@ export default function Event(props) {
   }, []);
 
   return eventId ? (
-    <Layout page="events" {...props}>
+    <Layout page="events" title={"Events"} {...props}>
       <div className="labeval-event flex flex-row gap-4 animate-opacity w-full">
         <div className="left flex flex-col gap-4 w-3/4">
           <button

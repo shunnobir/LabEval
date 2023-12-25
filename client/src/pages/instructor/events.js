@@ -494,7 +494,7 @@ function EventBody({ setNotification }) {
 export default function Events(props) {
   return (
     <div className="instructor-events animate-opacity">
-      <Layout page={"events"} {...props}>
+      <Layout page={"events"} title={"Events"} {...props}>
         <EventBody {...props} />
       </Layout>
     </div>

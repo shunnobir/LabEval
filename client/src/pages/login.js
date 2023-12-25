@@ -69,7 +69,7 @@ export default function Login({ setNotification }) {
             render: true,
           });
 
-          router.push("/" + res.role + "/dashboard");
+          router.push("/" + res.role + "/submissions");
         }
         setLoading(false);
       })

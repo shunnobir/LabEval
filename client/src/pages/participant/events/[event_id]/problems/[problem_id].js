@@ -9,7 +9,6 @@ import { BackButton, CancelIcon, FileAddIcon } from "@/icons";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Link from "../../../../../../node_modules/next/link";
 import { random_string } from "@/utility";
 
 function ProblemViewer({ setNotification }) {
@@ -120,7 +119,7 @@ function ProblemViewer({ setNotification }) {
 
   const [inputFile, setInputFile] = useState(undefined);
   const [languageSelected, setLanguageSelected] = useState("");
-  const [status, setStatus] = useState("Not Submitted");
+  const [verdict, setVerdict] = useState("");
   const [submissionPending, setSubmissionPending] = useState(false);
   const [submissions, setSubmissions] = useState([]);
 
@@ -139,11 +138,12 @@ function ProblemViewer({ setNotification }) {
 
   const handleSubmit = () => {
     setSubmissionPending(true);
+    let submission_id = random_string(12, true);
     axios
       .post(
         `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/?type=submit`,
         {
-          submission_id: random_string(12, true),
+          submission_id: submission_id,
           user_id: JSON.parse(sessionStorage.getItem('user')).user_id,
           problem_id: problem.problem_id,
           code: inputFile,
@@ -156,9 +156,9 @@ function ProblemViewer({ setNotification }) {
       )
       .then((res) => res.data)
       .then((res) => {
-        setStatus(res.status);
+        setVerdict(res.verdict);
+        router.push(`${router.asPath}/submission/${submission_id}`);
         setSubmissionPending(false);
-        getSubmissions();
         setInputFile(undefined);
       });
   };
@@ -167,8 +167,11 @@ function ProblemViewer({ setNotification }) {
     if (!router.query?.event_id) return;
     axios
       .post(
-        `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/?type=submissions`,
-        { user_id: JSON.parse(sessionStorage.getItem('user')).user_id }
+        `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/?type=submission_of`,
+        { 
+            user_id: JSON.parse(sessionStorage.getItem('user')).user_id,
+            problem_id: router.query.problem_id,
+        }
       )
     .then((res) => res.data)
     .then((res) => {
@@ -363,12 +366,14 @@ function ProblemViewer({ setNotification }) {
               { content: "Time" },
               { content: "Verdict" },
             ]}
-            className="h-full w-full mb-0"
+            className="h-full w-full"
+            style={{ marginBottom: "0" }}
+            empty={submissions.length === 0}
           >
-            {submissions.map((submission) => {
+            {submissions.map((submission, index) => {
               let time = new Date(submission.submission_time);
-              return (<tr> 
-                <td className="text-blue-500 font-semibold cursor-pointer" onClick={() =>router.push(`/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/submissions/${submission.submission_id}`)}> {submission.submission_id} </td>
+              return (<tr key={index}> 
+                <td className="text-blue-500 font-semibold cursor-pointer" onClick={() => router.push(`${router.asPath}/submission/${submission.submission_id}`)}> {submission.submission_id} </td>
                 <td> {`${time.getDay().toString().padStart(2, 0)}/${time.getMonth().toString().padStart(2, 0)}/${time.getFullYear()} ${time.getHours().toString().padStart(2, 0)}:${time.getMinutes().toString().padStart(2, 0)}:${time.getSeconds().toString().padStart(2, 0)}`} </td>
                 <td className={"font-semibold " + (submission.accepted ? "text-green-600" : "text-red-500")}> {submission.accepted ? "Accepted" : "Wrong Answer"} </td>
               </tr>);
@@ -382,7 +387,7 @@ function ProblemViewer({ setNotification }) {
 
 export default function Problem({ setNotification }) {
   return (
-    <Layout setNotification={setNotification} page="events">
+    <Layout setNotification={setNotification} page="events" title="Problem">
       <ProblemViewer setNotification={setNotification} />
     </Layout>
   );

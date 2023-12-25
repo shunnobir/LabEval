@@ -359,6 +359,24 @@ export function RegistrationIcon({ color, width, height, className }) {
   );
 }
 
+export function CodeIcon({ color, width, height, className }) {
+  const w = width ? width : "48";
+  const h = height ? height : "48";
+  const c = color ? color : "#0f172a";
+  return (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      className={className}
+      height={h}
+      viewBox="0 -960 960 960" 
+      width={w}
+      fill={color}
+    >
+      <path d="M320-240 80-480l240-240 57 57-184 184 183 183-56 56Zm320 0-57-57 184-184-183-183 56-56 240 240-240 240Z" />
+    </svg>
+  );
+}
+
 export function RegisteredIcon({ color, width, height, className }) {
   const w = width ? width : "48";
   const h = height ? height : "48";

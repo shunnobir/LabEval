@@ -1,10 +1,10 @@
 import {
-  DashboardIcon,
   EventsIcon,
   LogoutIcon,
   SettingsIcon,
   PersonIcon,
   LabEvalLogo,
+  CodeIcon,
 } from "@/icons";
 import Head from "next/head";
 import Link from "next/link";
@@ -81,7 +81,7 @@ function Navbar({ page, setNotification }) {
     <div className="navbar flex flex-col gap-4 animate-opacity">
       <div className="top flex flex-row justify-between items-center">
         <div className="nav-left">
-          <Link href={`/${user.role}/dashboard`}>
+          <Link href={`/${user.role}/submissions`}>
             <LabEvalLogo />
           </Link>
         </div>
@@ -91,11 +91,11 @@ function Navbar({ page, setNotification }) {
             <div
               className={
                 "px-4 h-10 flex flex-row gap-2 items-center justify-center cursor-pointer" +
-                (page === "dashboard" ? " " + tabBg : "")
+                (page === "submissions" ? " " + tabBg : "")
               }
-              onClick={() => router.push(`/${user.role}/dashboard`)}
+              onClick={() => router.push(`/${user.role}/submissions`)}
             >
-              <DashboardIcon height="24" width="24" /> <span> Dashboard </span>
+              <CodeIcon height="24" width="24" /> <span> Submissions </span>
             </div>
             <div
               className={
@@ -160,8 +160,8 @@ function Navbar({ page, setNotification }) {
   ) : null;
 }
 
-export default function Layout({ children, page, setNotification }) {
-  let title = page.toUpperCase()[0] + page.slice(1) + " | LabEval";
+export default function Layout({ children, page, title, setNotification }) {
+  let pageTitle = title + " | LabEval";
   const [userLoggedIn, setUserLoggedIn] = useState(true);
   const router = useRouter();
 
@@ -177,7 +177,7 @@ export default function Layout({ children, page, setNotification }) {
   return (
     <div className="layout flex flex-col gap-8 px-[10%] py-8 w-screen h-screen overflow-y-auto">
       <Head>
-        <title>{title}</title>
+        <title>{pageTitle}</title>
       </Head>
       <Navbar page={page} setNotification={setNotification} />
       {children}
