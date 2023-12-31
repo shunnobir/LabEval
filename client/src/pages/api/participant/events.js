@@ -10,21 +10,26 @@ export default async function handler(req, res) {
                                  to_char(e.start_time, 'DD Month, YYYY HH:MI am') as "start_time", 
                                  to_char(e.end_time, 'DD Month, YYYY HH:MI am') as "end_time"
                           from events e JOIN participates p ON e.event_id = p.event_id
-                          where e.end_time  < current_timestamp at time zone 'Asia/Dhaka' and p.user_id = ${q.user_id}`;
+                          where end_time < current_timestamp at time zone 'Asia/Dhaka' and p.user_id = ${q.user_id}
+                          order by e.start_time`;
     } else if (q.type === "ongoing") {
       result = await psql`select event_id, 
                            title, 
                            to_char(start_time , 'DD Month, YYYY HH:MI am') as "start_time", 
                            to_char(end_time , 'DD Month, YYYY HH:MI am') as "end_time"
                           from events
-                          where (current_timestamp + interval '5 hours') at time zone 'Asia/Dhaka' >= end_time  and current_timestamp  at time zone 'Asia/Dhaka' <= end_time`;
+                          where (((current_timestamp at time zone 'Asia/Dhaka' >= start_time) or
+                                ((current_timestamp + interval '6 hours') at time zone 'Asia/Dhaka' >= start_time)) and
+                                (current_timestamp at time zone 'Asia/Dhaka' <= end_time))
+                          order by start_time`;
     } else if (q.type === "upcoming") {
       result = await psql`select event_id, 
                                  title, 
                                  to_char(start_time , 'DD Month, YYYY HH:MI am') as "start_time", 
                                  to_char(end_time , 'DD Month, YYYY HH:MI am') as "end_time"
                           from events
-                          where start_time  > (current_timestamp + interval '5 hours') at time zone 'Asia/Dhaka'`;
+                          where (start_time  > (current_timestamp + interval '6 hours') at time zone 'Asia/Dhaka')
+                          order by start_time`;
     } else if (q.type === "info") {
       result = await psql`select event_id, 
                                  title, 

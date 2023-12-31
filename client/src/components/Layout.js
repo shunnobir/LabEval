@@ -5,6 +5,7 @@ import {
   PersonIcon,
   LabEvalLogo,
   CodeIcon,
+  DashboardIcon,
 } from "@/icons";
 import Head from "next/head";
 import Link from "next/link";
@@ -21,12 +22,13 @@ function Navbar({ page, setNotification }) {
   });
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [tabBg, setTabBg] = useState("");
+  const [homePage, setHomePage] = useState("dashboard");
   const router = useRouter();
   const profileRef = useRef(null);
 
   useEffect(() => {
     let item = sessionStorage.getItem("user");
-    if (item === null) {
+    if (!item) {
       setNotification({
         header: "You were logged out",
         page: "",
@@ -54,14 +56,16 @@ function Navbar({ page, setNotification }) {
     const u = JSON.parse(item);
     setUser(u);
 
-    if (u.role === "admin")
+    if (u.role === "admin") {
       setTabBg(
         "border-b-2 border-solid border-b-red-500 hover:border-b-red-600"
       );
-    else
+    } else {
       setTabBg(
         "border-b-2 border-solid border-b-blue-500 hover:border-b-blue-600"
       );
+      if (u.role === "participant") setHomePage("submissions");
+    }
   }, [setNotification]);
 
   useEffect(() => {
@@ -90,12 +94,20 @@ function Navbar({ page, setNotification }) {
           <div className="nav-links flex flex-row rounded-[5px]">
             <div
               className={
-                "px-4 h-10 flex flex-row gap-2 items-center justify-center cursor-pointer" +
-                (page === "submissions" ? " " + tabBg : "")
+                "px-4 h-10 flex flex-row gap-2 items-center justify-center cursor-pointer " +
+                (page === homePage ? tabBg : "")
               }
-              onClick={() => router.push(`/${user.role}/submissions`)}
+              onClick={() => router.push(`/${user.role}/${homePage}`)}
             >
-              <CodeIcon height="24" width="24" /> <span> Submissions </span>
+                {user.role === "participant" ? 
+                    <>
+                      <CodeIcon height="24" width="24" /> <span> Submissions </span>
+                    </>
+                    :
+                    <>
+                      <DashboardIcon height="24" width="24" /> <span> Dashboard </span>
+                    </>
+                }
             </div>
             <div
               className={

@@ -255,6 +255,9 @@ function EventBody({ setNotification }) {
       .then((res) => res.data)
       .then((res) => {
         setPastEvents(res);
+      })
+      .catch((res) => {
+        console.error(res.data);
       });
   };
 
