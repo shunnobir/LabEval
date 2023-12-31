@@ -10,6 +10,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { random_string } from "@/utility";
+import Link from "../../../../../../node_modules/next/link";
 
 function ProblemViewer({ setNotification }) {
   const router = useRouter();
@@ -76,16 +77,16 @@ function ProblemViewer({ setNotification }) {
       st >= curTime ? st - curTime : et >= curTime ? et - curTime : 0;
     let color =
       st >= curTime
-      ? "text-slate-900"
-      : et >= curTime
-      ? "text-blue-500"
-      : "text-red-500";
+        ? "text-slate-900"
+        : et >= curTime
+          ? "text-blue-500"
+          : "text-red-500";
     let running =
       st >= curTime
-      ? false
-      : et >= curTime
-      ? true
-      : false
+        ? false
+        : et >= curTime
+          ? true
+          : false
     let hours = Math.floor(diff / (1000 * 60 * 60));
     diff -= hours * 60 * 60 * 1000;
     let minutes = Math.floor(diff / (1000 * 60));
@@ -157,7 +158,8 @@ function ProblemViewer({ setNotification }) {
       .then((res) => res.data)
       .then((res) => {
         setVerdict(res.verdict);
-        router.push(`${router.asPath}/submission/${submission_id}`);
+        console.log(res);
+        router.push(`/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/submission/${submission_id}`);
         setSubmissionPending(false);
         setInputFile(undefined);
       });
@@ -168,15 +170,15 @@ function ProblemViewer({ setNotification }) {
     axios
       .post(
         `/api/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/?type=submission_of`,
-        { 
-            user_id: JSON.parse(sessionStorage.getItem('user')).user_id,
-            problem_id: router.query.problem_id,
+        {
+          user_id: JSON.parse(sessionStorage.getItem('user')).user_id,
+          problem_id: router.query.problem_id,
         }
       )
-    .then((res) => res.data)
-    .then((res) => {
-      setSubmissions(res.submissions);
-    });
+      .then((res) => res.data)
+      .then((res) => {
+        setSubmissions(res.submissions);
+      });
 
   };
 
@@ -197,9 +199,9 @@ function ProblemViewer({ setNotification }) {
 
   useEffect(() => { }, [submissionPending]);
 
-  useEffect(() => {
-    setTime(event);
-  }, [curTime]);
+  // useEffect(() => {
+  //   setTime(event);
+  // }, [curTime]);
 
   useEffect(() => {
     return () => {
@@ -218,7 +220,7 @@ function ProblemViewer({ setNotification }) {
           >
             <BackButton height="20" width="20" color="#f8fafc" />
           </button>
-          <span className="bg-slate-200 text-xl text-blue-600 font-semibold px-4 rounded-full cursor-pointer" onClick={() => router.back()}> {"#" + event.title} </span>
+          <span className="bg-slate-200 text-xl text-blue-600 font-semibold px-4 rounded-full cursor-pointer"> <Link href={`/participant/events/${event.event_id}`}> {"#" + event.title} </Link> </span>
         </div>
         <div className="middle flex flex-col w-full">
           <div className="problem-frame flex flex-col w-full">
@@ -372,10 +374,10 @@ function ProblemViewer({ setNotification }) {
           >
             {submissions.map((submission, index) => {
               let time = new Date(submission.submission_time);
-              return (<tr key={index}> 
-                <td className="text-blue-500 font-semibold cursor-pointer" onClick={() => router.push(`${router.asPath}/submission/${submission.submission_id}`)}> {submission.submission_id} </td>
+              return (<tr key={index}>
+                <td className="text-blue-500 font-semibold cursor-pointer" onClick={() => router.push(`/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/submission/${submission.submission_id}`)}> {submission.submission_id} </td>
                 <td> {`${time.getDay().toString().padStart(2, 0)}/${time.getMonth().toString().padStart(2, 0)}/${time.getFullYear()} ${time.getHours().toString().padStart(2, 0)}:${time.getMinutes().toString().padStart(2, 0)}:${time.getSeconds().toString().padStart(2, 0)}`} </td>
-                <td className={"font-semibold " + (submission.accepted ? "text-green-600" : "text-red-500")}> {submission.accepted ? "Accepted" : "Wrong Answer"} </td>
+                <td className={"font-semibold " + (submission.verdict === "Accepted" ? "text-green-600" : "text-red-500")}> {submission.verdict} </td>
               </tr>);
             })}
           </Table>

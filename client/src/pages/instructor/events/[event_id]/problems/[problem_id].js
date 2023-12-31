@@ -7,6 +7,7 @@ import { BackButton } from "@/icons";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Link from "../../../../../../node_modules/next/link";
 
 function ProblemViewer({ setNotification }) {
   const router = useRouter();
@@ -132,7 +133,7 @@ function ProblemViewer({ setNotification }) {
   return router.query.problem_id ? (
     <div className="problem-viewer flex w-full min-h-fit py-4 justify-between">
       <div className="left flex flex-col w-[70%]">
-        <div className="top flex flex-row">
+        <div className="top flex flex-row gap-4">
           <button
             className="w-8 h-8 bg-blue-500 flex flex-row items-center justify-center rounded-full cursor-pointer hover:shadow-[0_0_8px_rgba(0,0,0,0.15)] duration-[350ms]"
             title="Go back"
@@ -140,6 +141,7 @@ function ProblemViewer({ setNotification }) {
           >
             <BackButton height="20" width="20" color="#f8fafc" />
           </button>
+          <span className="bg-slate-200 text-xl text-blue-600 font-semibold px-4 rounded-full cursor-pointer"> <Link href={`/instructor/events/${event.event_id}`}> {"#" + event.title} </Link> </span>
         </div>
         <div className="middle flex flex-col w-full">
           <div className="problem-frame flex flex-col w-full">

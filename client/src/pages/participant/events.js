@@ -156,7 +156,7 @@ function EventBody({ setNotification }) {
         </Table>
       </div>
       <div className="block3 flex flex-col gap-4">
-        <span className="text-2xl"> Past Events </span>
+        <span className="text-2xl"> Past Events (You Participated) </span>
         <Table
           heads={[
             { content: "Title", className: "w-[50%]" },

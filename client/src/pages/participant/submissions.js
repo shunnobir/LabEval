@@ -6,32 +6,11 @@ import axios from "../../../node_modules/axios/index";
 
 function SubmissionsBody(props) {
   const router = useRouter();
-  const [event, setEvent] = useState({
-    event_id: "",
-    title: "",
-    description: "",
-    start_time: "",
-    end_time: "",
-    created_by: "",
-  });
-
-  const getEvent = (id) => {
-    axios
-      .get(`/api/instructor/events/${id}/?type=info`)
-      .then((res) => res.data[0])
-      .then((res) => {
-        if (res) {
-          setEvent(res);
-        }
-      });
-  };
-
-
   const [submissions, setSubmissions] = useState([]);
   const getSubmissions = () => {
     axios
       .post(
-        `/api/participant/submissions`,
+        `/api/participant/submissions/?type=all`,
         {
           user_id: JSON.parse(sessionStorage.getItem('user')).user_id,
         }
@@ -44,7 +23,6 @@ function SubmissionsBody(props) {
   };
 
   useEffect(() => {
-    getEvent(JSON.parse(sessionStorage.getItem("user")).user_id);
     getSubmissions();
   }, []);
 
@@ -64,17 +42,17 @@ function SubmissionsBody(props) {
         ]}
         className="h-full w-full"
         style={{ marginBottom: "0" }}
-        empty={submissions.length === 0}
+        empty={submissions?.length === 0}
       >
         {submissions.map((submission, index) => {
           let time = new Date(submission.submission_time);
           return (<tr key={index}>
-            <td className="text-blue-500 font-semibold cursor-pointer" onClick={() => router.push(`/participant/events/${router.query.event_id}/problems/${router.query.problem_id}/submissions/${submission.submission_id}`)}> {submission.submission_id} </td>
+            <td className="text-blue-500 font-semibold cursor-pointer" onClick={() => router.push(`/participant/events/${submission.event_id}/problems/${submission.problem_id}/submission/${submission.submission_id}`)}> {submission.submission_id} </td>
             <td> {`${time.getDay().toString().padStart(2, 0)}/${time.getMonth().toString().padStart(2, 0)}/${time.getFullYear()} ${time.getHours().toString().padStart(2, 0)}:${time.getMinutes().toString().padStart(2, 0)}:${time.getSeconds().toString().padStart(2, 0)}`} </td>
             <td className="font-semibold text-blue-600 cursor-pointer" onClick={() => router.push(`/participant/events/${submission.event_id}/problems/${submission.problem_id}`)}> {submission.title} </td>
             <td> {submission.points} </td>
             <td> {submission.language} </td>
-            <td className={"font-semibold " + (submission.accepted ? "text-green-600" : "text-red-500")}> {submission.accepted ? "Accepted" : "Wrong Answer"} </td>
+            <td className={"font-semibold " + (submission.verdict === "Accepted" ? "text-green-600" : "text-red-500")}> {submission.verdict === "Accepted" ? "Accepted" : "Wrong Answer"} </td>
             <td> {submission.time} ms </td>
             <td> {submission.memory} KB </td>
           </tr>);

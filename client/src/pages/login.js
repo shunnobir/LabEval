@@ -69,7 +69,8 @@ export default function Login({ setNotification }) {
             render: true,
           });
 
-          router.push("/" + res.role + "/submissions");
+          const route = `${res.role}/${res.role === "participant" ? "submissions" : "dashboard"}`;
+          router.push(route);
         }
         setLoading(false);
       })
