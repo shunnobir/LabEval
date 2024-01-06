@@ -1,0 +1,45 @@
+NEWLINE ::= '\n'+
+
+ESCAPE_CHARACTER ::= '\' character
+
+COLOR_VALUES ::= 'red' | 'green' | 'blue' | 'yellow'
+
+BOXED_ATTRIBUTE ::= 'color' '=' COLOR_VALUES
+                 |  'href' '=' characters+
+                 |  'src' '=' characters+
+                 |  'scale' '=' number
+
+SIMPLE_STATEMENT ::= BOLD_STATEMENT 
+                  |  ITALIC_STATEMENT 
+                  |  UNDERLINE_STATEMENT
+                  |  INLINE_CODE_STATEMENT
+                  |  SUP_STATEMENT
+                  |  SUB_STATEMENT
+                  |  BOXED_STATEMENT
+                  |  TEXT_STATEMENT
+
+TEXT_STATEMENT ::= characters+
+
+BOLD_STATEMENT ::= \s+ '**' SIMPLE_STATEMENT* '**' \s+
+
+ITALIC_STATEMENT ::= \s+ '*' SIMPLE_STATEMENT* '*' \s+
+
+UNDERLINE_STATEMENT ::= \s+ '_' SIMPLE_STATEMENT* '_' \s+
+
+INLINE_CODE_STATEMENT ::= \s+ '`' SIMPLE_STATEMENT* '`' \s+
+
+SUP_STATEMENT ::= characters* '^' '{' SIMPLE_STATEMENT* '}'
+
+SUB_STATEMENT ::= characters* '_' '{' SIMPLE_STATEMENT* '}
+
+BOXED_STATEMENT ::= '[' SIMPLE_STATEMENT* ']' '{' BOXED_ATTRIBUTE [, BOXED_ATTRIBUTE]* '}'
+
+BLOCK_STATEMENT ::= PARAGRAPH_STATEMENT
+                 |  HEADING_STATEMENT
+                 |  UNORDEREDLIST_STATEMENT
+
+PARAGRAPH_STATEMENT ::= NEWLINE* SIMPLE_STATEMENT* NEWLINE+
+
+UNORDEREDLIST_STATEMENT ::= ('-' (SIMPLE_STATEMENT | INDENT UNORDEREDLIST_STATEMENT)+ (NEWLINE* (SIMPLE_STATEMENT |
+INDENT UNORDEREDLIST_STATEMENT))* NEWLINE )+
+
