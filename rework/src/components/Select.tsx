@@ -36,7 +36,7 @@ export default function Select({
       ref={optionRef}
       className={
         className +
-        " select relative h-10 w-full flex flex-col justify-center px-4 bg-zinc-700 rounded-full before:border-[3px] before:border-solid before:border-transparent before:border-t-zinc-400 before:border-r-zinc-400 before:rounded-[2px] before:absolute before:right-4 before:top-[12px] before:w-[10px] before:h-[10px] cursor-pointer" +
+        " select relative h-10 w-full flex flex-col justify-center px-4 border border-solid border-zinc-800 rounded-full before:border-[3px] before:border-solid before:border-transparent before:border-t-zinc-400 before:border-r-zinc-400 before:rounded-[2px] before:absolute before:right-4 before:top-[12px] before:w-[10px] before:h-[10px] cursor-pointer" +
         (show
           ? " before:rotate-[-45deg] before:top-[15px]"
           : " before:rotate-[135deg]")

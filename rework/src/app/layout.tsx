@@ -15,6 +15,9 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Labeval",
   description: "",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -52,7 +55,7 @@ export default function RootLayout({
           src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
           strategy="beforeInteractive"
         />
-        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        {/* <link rel="icon" href="favicon.ico" sizes="32x32" /> */}
       </head>
       <body
         className={

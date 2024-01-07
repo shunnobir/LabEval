@@ -10,15 +10,22 @@ import { cookies } from "next/headers";
 //   isInstructor: boolean;
 // };
 
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  const user = cookies().get("user");
+  if (!user?.value) return NextResponse.json({ user: undefined, ok: false });
+  else return NextResponse.json({ user: JSON.parse(user.value), ok: true });
+}
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const searchParams = req.nextUrl.searchParams;
   const auth = searchParams.get("auth");
 
   if (auth === "signup") {
     return signupHandler(req);
-  } else {
-    console.log("login");
+  } else if (auth === "login") {
     return loginHandler(req);
+  } else {
+    return logoutHandler(req);
   }
 }
 
@@ -36,7 +43,7 @@ async function signupHandler(req: NextRequest): Promise<NextResponse> {
     user = await psql`select * from users where email = ${email}`;
     if (user.length !== 0) {
       return NextResponse.json({
-        status: `email '${email}'is already registered`,
+        status: `email '${email}' is already registered`,
         ok: false,
       });
     }
@@ -94,5 +101,17 @@ async function loginHandler(req: NextRequest) {
   } catch (err) {
     console.error(err);
     return NextResponse.json({ status: "internal database error", ok: false });
+  }
+}
+
+async function logoutHandler(req: NextRequest) {
+  try {
+    cookies().delete("user");
+    return NextResponse.json({ status: "logged out", ok: true });
+  } catch (err) {
+    return NextResponse.json({
+      status: `could not log out. ${err}`,
+      ok: false,
+    });
   }
 }

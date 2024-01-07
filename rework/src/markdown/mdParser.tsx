@@ -2,6 +2,7 @@
 
 import { Roboto_Mono } from "next/font/google";
 import Table from "@/components/Table";
+import Image from "next/image";
 
 const robotoMono = Roboto_Mono({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -929,7 +930,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
       width = width ? width.value : "auto";
       height = height ? height.value : "auto";
       let elem = (
-        <img
+        <Image
           key={key}
           src={image.value}
           alt=""
@@ -937,7 +938,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
           style={{ width, height }}
         />
       );
-      console.log(elem);
+
       return href ? (
         <a key={key} href={href.value}>
           {elem}
@@ -951,14 +952,14 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
       <span
         key={key}
         style={{
-          color: color ? `var(--${color.value}-500)` : "var(--zinc-50)",
+          color: color ? `var(--${color.value}-500)` : "var(--zinc-300)",
         }}
       >
         {href ? (
           <a
             key={key + 1}
             href={href.value}
-            className="hover:text-blue-500 hover:underline"
+            className="text-blue-500 hover:underline"
           >
             {...tok.content.map((token: any, index: number): any => {
               return parseStatement(token, key + 1 + index);
@@ -981,7 +982,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
         key={key}
         className={
           robotoMono.className +
-          " whitespace-pre text-blue-500 bg-zinc-700 rounded-md"
+          " whitespace-pre text-blue-500 bg-zinc-800 rounded-md"
         }
         style={{ paddingInline: "8px" }}
       >
@@ -1003,7 +1004,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
       <p
         key={key}
         className={
-          "block-code whitespace-pre bg-zinc-700/50 text-zinc-200 w-full border border-solid border-zinc-700 rounded-md px-2 py-2"
+          "block-code whitespace-pre bg-zinc-800/50 text-zinc-200 w-full border border-solid border-zinc-800 rounded-md px-2 py-2"
         }
       >
         {tok.raw}

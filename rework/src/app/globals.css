@@ -27,7 +27,7 @@
   --zinc-900: #18181b;
   --zinc-950: #09090b;
 
-  --bg-color: var(--zinc-800);
+  --bg-color: var(--zinc-950);
   --fg-color: var(--zinc-300);
 }
 
@@ -38,6 +38,11 @@
   margin: 0;
   padding: 0;
   font: inherit;
+  color: inherit;
+}
+
+span {
+  color: inherit;
 }
 
 body {
@@ -67,6 +72,21 @@ em {
   body {
     font-size: 12px;
   }
+}
+
+textarea {
+  resize: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--zinc-500);
+  font-style: italic;
+}
+
+input:focus,
+textarea:focus {
+  outline: 1px solid transparent;
 }
 
 h1 {
@@ -121,7 +141,7 @@ h6 {
 
 hr {
   height: 1px;
-  border: 1px solid var(--zinc-700);
+  border: 1px solid var(--zinc-500);
   margin-block: 0.5rem 1rem;
 }
 
@@ -175,15 +195,15 @@ li {
 .labeval-table td,
 .labeval-table th {
   padding-block: 0.5rem;
-  border: 1px solid var(--zinc-600);
+  border: 1px solid var(--zinc-800);
   text-align: left;
   padding-inline: 1rem;
 }
 
 .labeval-table thead tr {
-  background-color: var(--zinc-700);
+  background-color: var(--zinc-900);
 }
 
 .labeval-table tbody tr:nth-child(even) {
-  background-color: var(--slate-100);
+  background-color: var(--zinc-900);
 }

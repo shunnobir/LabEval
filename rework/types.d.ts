@@ -17,6 +17,8 @@ export type Event = {
   description: string;
   start_time: Date;
   end_time: Date;
+  isopen: boolean;
+  creator_controlled: boolean;
   user_id: string;
   create_date: Date;
 };

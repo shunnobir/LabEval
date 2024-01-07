@@ -29,8 +29,7 @@ export default function EyeInput({
   return (
     <div
       className={
-        "relative flex bg-zinc-700 rounded-full items-center gap-0 flex-1 " +
-        className
+        "relative flex rounded-full items-center gap-0 flex-1 " + className
       }
     >
       <Input
@@ -41,10 +40,10 @@ export default function EyeInput({
         maxLength={60}
         value={value}
         onChange={onChange}
-        className={"rounded-full bg-zinc-700 pr-12"}
+        className={"rounded-full pr-12"}
       />
       <button
-        className="absolute right-4 ml-auto bg-transparent border-none shadow-zinc-700 shadow-none px-0"
+        className="absolute right-4 ml-auto bg-transparent border-none shadow-zinc-800 shadow-none px-0"
         onClick={handleOnClick}
       >
         {show ? (

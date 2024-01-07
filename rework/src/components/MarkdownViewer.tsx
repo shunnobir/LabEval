@@ -6,16 +6,22 @@ import React, { useEffect } from "react";
 function MarkdownViewer({
   str,
   className,
+  style,
 }: {
   str: string;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   useEffect(() => {
     (window as any).MathJax?.typesetClear();
     (window as any).MathJax?.typeset();
     (window as any).MathJax?.startup.document.updateDocument();
   }, []);
-  return <div className={className}>{labevalMarkdownParser(str)}</div>;
+  return (
+    <div className={className} style={style}>
+      {labevalMarkdownParser(str)}
+    </div>
+  );
 }
 
 export default MarkdownViewer;
