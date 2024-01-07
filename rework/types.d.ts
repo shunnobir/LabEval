@@ -1,3 +1,16 @@
+export type User = {
+  user_id: string;
+  username: string;
+  email: string;
+  password: string;
+  role: string;
+  avatar: number;
+  institution: string;
+  country: string;
+  city: string;
+  join_date: Date;
+};
+
 export type Event = {
   event_id: string;
   title: string;

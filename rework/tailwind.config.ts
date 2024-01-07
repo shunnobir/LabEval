@@ -31,6 +31,30 @@ const config: Config = {
         //   600: "var(--yellow-600)",
         // },
       },
+      keyframes: {
+        opacity: {
+          from: {
+            opacity: "0",
+          },
+          to: {
+            opacity: "1",
+          },
+        },
+
+        loader: {
+          from: {
+            transform: "rotate(0deg)",
+          },
+          to: {
+            transform: "rotate(360deg)",
+          },
+        },
+      },
+
+      animation: {
+        opacity: "opacity 500ms ease-in-out 1 normal",
+        loader: "loader 750ms ease-in infinite",
+      },
     },
   },
   plugins: [],

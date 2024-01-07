@@ -1,5 +1,6 @@
 import { getEvent } from "@/app/lib/getEvent";
 import { getEventProblems } from "@/app/lib/getEventProblems";
+import MarkdownViewer from "@/components/MarkdownViewer";
 import Table from "@/components/Table";
 import { labevalMarkdownParser } from "@/markdown/mdParser";
 import Link from "next/link";
@@ -23,7 +24,9 @@ export default async function Event({ params }: EventProps) {
     <div className="events flex gap-10">
       <div className="left flex flex-col flex-[2]">
         <h1 className="title">{event?.title}</h1>
-        <div>{labevalMarkdownParser(event?.description || "")}</div>
+        <div>
+          <MarkdownViewer str={event?.description || ""} />
+        </div>
         <div className="problems flex flex-col gap-2 mt-4">
           <h2>Problems</h2>
           <Table

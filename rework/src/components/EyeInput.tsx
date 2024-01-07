@@ -48,9 +48,17 @@ export default function EyeInput({
         onClick={handleOnClick}
       >
         {show ? (
-          <OpenEyeIcon width="20" height="20" />
+          <OpenEyeIcon
+            width="20"
+            height="20"
+            className="w-4 h-4 sm:w-5 sm:h-5"
+          />
         ) : (
-          <CloseEyeIcon width="20" height="20" />
+          <CloseEyeIcon
+            width="20"
+            height="20"
+            className="w-4 h-4 sm:w-5 sm:h-5"
+          />
         )}
       </button>
     </div>

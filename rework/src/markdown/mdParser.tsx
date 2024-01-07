@@ -35,6 +35,7 @@ const TokenType = {
   TABLE_HEADING: 24,
   SPAN: 24,
   MATH: 25,
+  CODE_BLOCK: 26,
   NEWLINE: 996,
   SPACE: 997,
   TAB: 998,
@@ -414,6 +415,18 @@ function labEvalMarkdownTokenizer(src) {
     return true;
   };
 
+  const isCodeBlock = () => {
+    let tok = peek(1) + peek(2) + peek(3) + peek(4);
+    if (tok !== "```\n") return false;
+    let offset = 5;
+    tok = peek(1) + peek(2) + peek(3);
+    while (peek(offset) !== "\0" && tok !== "```") {
+      ++offset;
+      tok = peek(1) + peek(2) + peek(3);
+    }
+    return true;
+  };
+
   const consumeSpaces = () => {
     while (peek(1) === " ") consume(1);
   };
@@ -631,6 +644,18 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.MATH, tag: "<math>", raw: "\\[" + raw + "\\]" };
   };
 
+  const consumeCodeBlock = () => {
+    consume(4);
+    let content = "";
+    let tok = peek(1) + peek(2) + peek(3);
+    while (!isEof() && !/```/.test(tok)) {
+      content += consume(1);
+      tok = peek(1) + peek(2) + peek(3);
+    }
+    if (!isEof()) consume(3);
+    return { type: TokenType.CODE_BLOCK, raw: content };
+  };
+
   const consumeParagraph = () => {
     let raw = "",
       nline = 0;
@@ -689,6 +714,11 @@ function labEvalMarkdownTokenizer(src) {
 
     if (isBlockMath()) {
       tokens.push(consumeBlockMath());
+      continue;
+    }
+
+    if (isCodeBlock()) {
+      tokens.push(consumeCodeBlock());
       continue;
     }
 
@@ -947,9 +977,9 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
         key={key}
         className={
           robotoMono.className +
-          " whitespace-pre text-blue-500 bg-slate-200 rounded-[5px] border border-solid border-slate-300"
+          " whitespace-pre text-blue-500 bg-zinc-700 rounded-md"
         }
-        style={{ paddingInline: "5px", marginInline: "2px" }}
+        style={{ paddingInline: "8px" }}
       >
         {tok.raw}
       </span>
@@ -961,6 +991,19 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
       <div key={key} className="flex flex-col">
         {tok.raw}
       </div>
+    );
+  };
+
+  const parseCodeBlock = (tok, key) => {
+    return (
+      <p
+        key={key}
+        className={
+          "block-code whitespace-pre bg-zinc-700/50 text-zinc-200 w-full border border-solid border-zinc-700 rounded-md px-2 py-2"
+        }
+      >
+        {tok.raw}
+      </p>
     );
   };
 
@@ -1003,6 +1046,8 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
         return parseInlineCode(tok, key);
       case TokenType.MATH:
         return parseMath(tok, key);
+      case TokenType.CODE_BLOCK:
+        return parseCodeBlock(tok, key);
     }
   };
 

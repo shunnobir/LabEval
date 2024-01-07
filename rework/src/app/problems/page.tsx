@@ -12,11 +12,12 @@ async function Problems() {
 
   return (
     <div className="problems flex gap-8">
-      <div className="left flex flex-col flex-[2]">
-        Problems
+      <div className="left flex flex-col flex-[2] gap-2">
+        <h2>Problems</h2>
         <Table
           heads={[{ content: "", className: "w-[5%]" }, { content: "Problem" }]}
           className="w-full"
+          empty={problems?.length === 0}
         >
           {problems?.map((problem, index) => {
             return (

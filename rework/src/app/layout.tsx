@@ -3,6 +3,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Script from "next/script";
+import { Toaster } from "sonner";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -51,7 +52,7 @@ export default function RootLayout({
           src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
           strategy="beforeInteractive"
         />
-        <link rel="icon" href="favicon.ico" sizes="32x32" />
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
       </head>
       <body
         className={
@@ -61,6 +62,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <Toaster richColors expand closeButton position="bottom-right" />
       </body>
     </html>
   );

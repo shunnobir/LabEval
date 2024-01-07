@@ -53,7 +53,7 @@ export default function Table({
           <tr>
             <td
               colSpan={heads.length}
-              style={{ textAlign: "center", color: "var(--slate-400)" }}
+              style={{ textAlign: "center", color: "var(--zinc-600)" }}
             >
               Empty
             </td>
