@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --red-500: #ff4339;
+  --red-600: #ff2929;
+
+  --blue-500: #4282cd;
+  --blue-600: #3272bd;
+
+  --green-500: #23b648;
+  --green-600: #18ae3e;
+
+  --yellow-500: #ffbe39;
+  --yellow-600: #ffae25;
+
+  --zinc-50: #fafafa;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+  --zinc-700: #3f3f46;
+  --zinc-800: #27272a;
+  --zinc-900: #18181b;
+  --zinc-950: #09090b;
+
+  --bg-color: var(--zinc-800);
+  --fg-color: var(--zinc-300);
+}
+
+*,
+*::before,
+*::after {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+}
+
+*:hover {
+  transition-property: background-color;
+  transition-duration: 350ms;
+}
+
+a {
+  text-decoration: none;
+}
+
+svg,
+img {
+  overflow: visible;
+}
+
+em {
+  font-style: italic;
+}
+
+@media screen and (max-width: 400px) {
+  body {
+    font-size: 12px;
+  }
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+h5 {
+  font-size: 0.8rem;
+}
+
+h6 {
+  font-size: 0.7rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.25;
+}
+
+.labeval-markdown-content p,
+.labeval-markdown-preview-content p {
+  margin-block: 0.5rem;
+  line-height: 2;
+}
+
+.labeval-markdown-content li,
+.labeval-markdown-preview-content li {
+  line-height: 1.7;
+}
+
+.labeval-markdown-content span,
+.labeval-markdown-preview-content span {
+  margin: 0;
+  padding: 0;
+}
+
+hr {
+  height: 1px;
+  border: 1px solid var(--zinc-700);
+  margin-block: 0.5rem 1rem;
+}
+
+img {
+  width: auto;
+  height: auto;
+}
+
+button {
+  cursor: pointer;
+  background-color: transparent;
+}
+
+li {
+  word-wrap: break-word;
+}
+
+ul {
+  display: block;
+  list-style-type: disc;
+  margin-block: 1rem;
+  padding-left: 2.5rem;
+  text-wrap: wrap;
+}
+
+ul ul {
+  list-style-type: circle;
+  margin-block: 0rem;
+}
+
+ul ul ul {
+  list-style-type: square;
+}
+
+ol {
+  display: block;
+  list-style-type: decimal;
+  margin-block: 1rem;
+  padding-left: 2.5rem;
+}
+
+ol ol {
+  margin-block: 0rem;
+}
+
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+.labeval-table td,
+.labeval-table th {
+  padding-block: 0.5rem;
+  border: 1px solid var(--zinc-600);
+  text-align: left;
+  padding-inline: 1rem;
+}
+
+.labeval-table thead tr {
+  background-color: var(--zinc-700);
+}
+
+.labeval-table tbody tr:nth-child(even) {
+  background-color: var(--slate-100);
+}
