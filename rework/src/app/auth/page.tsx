@@ -39,7 +39,7 @@ export default function Auth() {
     });
 
     let data: { status: string; ok: boolean } = await res.json();
-    if (!data.ok) setStatus(data.status);
+    if (!data.ok) toast.error(data.status);
     else {
       toast.success("signup successful");
       router.push("/auth?auth=login");
@@ -64,6 +64,7 @@ export default function Auth() {
     if (!data.ok) toast.error(data.status);
     else {
       toast.success(data.status);
+      localStorage.setItem("isLoggedIn", "true");
       router.push("/");
     }
     setLoginPending(false);
@@ -79,7 +80,7 @@ export default function Auth() {
 
   return (
     <div className="auth flex flex-col flex-1 gap-4 sm:items-center sm:justify-center px-[2.5%]">
-      <div className="m-auto w-[95%] sm:w-[30rem] flex flex-col gap-4 sm:items-center border border-solid border-zinc-700 px-4 py-8 sm:px-10 sm:py-20 rounded-md">
+      <div className="m-auto w-[95%] sm:w-[30rem] flex flex-col gap-4 sm:items-center border border-solid border-zinc-800 px-4 py-8 sm:px-10 sm:py-20 rounded-md">
         <Link href="/" className="mx-auto">
           <LabEvalLogo width="180" className="w-[140px] sm:w-[180px]" />
         </Link>

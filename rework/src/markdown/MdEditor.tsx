@@ -1,14 +1,23 @@
 "use client";
 
 import { KeyboardEventHandler, useEffect, useState } from "react";
-import { Roboto_Mono } from "next/font/google";
+import { JetBrains_Mono, Noto_Serif } from "next/font/google";
 
 import labevalMarkdownParser from "./mdParser";
+import MarkdownViewer from "@/components/MarkdownViewer";
 
-const robotoMono = Roboto_Mono({
+const jetbrainsMono = JetBrains_Mono({
   weight: ["200", "300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
+});
+
+const notoSerif = Noto_Serif({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  fallback: ["serif"],
+  preload: true,
 });
 
 type MdEditorProps = {
@@ -65,43 +74,68 @@ export default function MdEditor({ value, onChange }: MdEditorProps) {
   return (
     <div className="markdown-editor-frame rounded-[5px] h-full flex flex-col items-stretch">
       <div className="toolbar flex flex-row h-10 items-end">
-        <div className="button-group flex flex-row border border-solid border-slate-300 border-b-[0px] rounded-t-[8px] h-10">
+        <div
+          className="button-group flex flex-row border border-solid border-zinc-800 border-b-transparent rounded-t-md h-10"
+          style={{ borderBottomWidth: "0" }}
+        >
           <button
             className={
-              "px-2 min-w-[4rem] text-sm rounded-tl-[5px]" +
-              (active === 0 ? " bg-blue-500 text-slate-50" : "")
+              "px-4 text-sm" +
+              (active === 0 ? " bg-zinc-800 text-zinc-100" : "")
             }
+            style={{
+              borderTopLeftRadius: "6px",
+            }}
             onClick={() => setActive(0)}
           >
             Raw
           </button>
           <button
             className={
-              "px-2 min-w-[2rem] text-sm rounded-tr-[5px]" +
-              (active === 1 ? " bg-blue-500 text-slate-50" : "")
+              "px-2 min-w-[2rem] text-sm" +
+              (active === 1 ? " bg-zinc-800 text-slate-50" : "")
             }
+            style={{
+              borderTopRightRadius: "6px",
+            }}
             onClick={() => setActive(1)}
           >
             Preview
           </button>
         </div>
       </div>
-      <div className="editor-container flex flex-col border border-solid border-slate-300 flex-grow items-stretch">
+      <div
+        className="editor-container flex flex-col border border-solid border-zinc-800 flex-grow h-auto items-stretch"
+        style={{
+          borderBottomLeftRadius: "6px",
+          borderBottomRightRadius: "6px",
+          WebkitBorderTopRightRadius: "6px",
+          height: "20rem",
+        }}
+      >
         {active === 0 ? (
           <textarea
             className={
-              robotoMono.className +
-              " labeval-markdown-editor p-2 min-h-[20rem] flex-grow"
+              jetbrainsMono.className +
+              " labeval-markdown-editor bg-transparent rounded-md p-2 flex-grow overflow-auto flex-1"
             }
+            style={{
+              padding: "0.5rem",
+              borderTopLeftRadius: "0",
+            }}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={handleOnKeyDown}
-            placeholder="Type..."
+            placeholder="Type markdown"
           />
         ) : (
-          <div className="labeval-markdown-preview-content h-[20rem] overflow-y-auto p-2 flex-grow">
-            {labevalMarkdownParser(value)}
-          </div>
+          <MarkdownViewer
+            str={value}
+            className={notoSerif.className + " flex-1 p-2 h-80"}
+            style={{
+              paddingInline: "0.5rem",
+            }}
+          />
         )}
       </div>
     </div>
