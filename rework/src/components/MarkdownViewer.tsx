@@ -1,6 +1,6 @@
 "use client";
 
-import { labevalMarkdownParser } from "@/markdown/mdParser";
+import labevalMarkdownParser from "@/markdown/mdParser";
 import React, { useEffect } from "react";
 
 function MarkdownViewer({

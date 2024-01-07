@@ -46,18 +46,18 @@ function labevalMarkdownRawTextTokenizer(src: string) {
   let tokens = [];
   let curPos = -1;
 
-  const peek = (offset: number) => {
+  const peek = (offset: number): any => {
     if (offset < 0 && curPos + offset < 0) return "\0";
     if (curPos + offset >= src.length) return "\0";
     return src[curPos + offset];
   };
 
-  const peekMultiple = (n: number) => {
+  const peekMultiple = (n: number): any => {
     let ret = src.slice(curPos + 1, curPos + 1 + n);
     return ret;
   };
 
-  const consume = (n: number) => {
+  const consume = (n: number): any => {
     let ret = "";
     let start = curPos + 1;
     for (let i = start; i < start + n && i < src.length; ++i, ++curPos)
@@ -65,14 +65,14 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     return ret;
   };
 
-  const isEof = () => peek(1) === "\0";
+  const isEof = (): any => peek(1) === "\0";
 
-  const consumeNewline = () => {
+  const consumeNewline = (): any => {
     consume(1);
     return { type: TokenType.BREAK, tag: "<br />" };
   };
 
-  const consumeStrong = () => {
+  const consumeStrong = (): any => {
     consume(2); // Consume /\*\*/
     let tokens = [];
     while (!isEof() && !/\*\*/.test(peekMultiple(2)))
@@ -88,7 +88,7 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     return { type: TokenType.STRONG, tag: "<strong>", tokens: tokens };
   };
 
-  const consumeEmphasis = () => {
+  const consumeEmphasis = (): any => {
     consume(1); // Consume /\*/
     let tokens = [];
     while (!isEof() && !/\*/.test(peek(1))) tokens.push(tokenizeAll());
@@ -103,7 +103,7 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     return { type: TokenType.EM, tag: "<em>", tokens: tokens };
   };
 
-  const consumeBoxedStatement = () => {
+  const consumeBoxedStatement = (): any => {
     let offset = 2;
     while (peek(offset) !== "\0" && peek(offset) !== "]") ++offset;
     if (peek(offset) === "\0" || peek(offset) !== "]") {
@@ -160,14 +160,14 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     let curlText = "";
     while (peek(1) !== "}") curlText += consume(1);
     consume(1);
-    let attributes = curlText.split(",").map((val) => {
+    let attributes = curlText.split(",").map((val): any => {
       let t = val.split("=");
       return { attribute: t[0].trim(), value: t[1].trim() };
     });
     return { type: TokenType.BOXED, attributes, content: content };
   };
 
-  const consumeInlineCode = () => {
+  const consumeInlineCode = (): any => {
     consume(1);
     let content = "";
     while (!isEof() && peek(1) !== "`") {
@@ -181,7 +181,7 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     return { type: TokenType.INLINE_CODE, raw: content };
   };
 
-  const consumeInlineMath = () => {
+  const consumeInlineMath = (): any => {
     let offset = 2;
     while (
       peek(offset) !== "\0" &&
@@ -203,8 +203,11 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     };
   };
 
-  const consumeText = () => {
-    let raw = src.slice(curPos + 1, src.length).match(/^[^\$\*<\\\[\]`]*/)[0]; // `
+  const consumeText = (): any => {
+    let raw: any = src
+      ?.slice(curPos + 1, src.length)
+      .match(/^[^\$\*<\\\[\]`]*/); // `
+    raw = raw ? raw[0].toString() : "";
     curPos += raw.length;
     if (/\\[^n]/.test(peekMultiple(2))) {
       raw += peek(2);
@@ -217,7 +220,7 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     };
   };
 
-  const tokenizeAll = () => {
+  const tokenizeAll = (): any => {
     if (/\n/.test(peek(1))) {
       return consumeNewline();
     } else if (/\*\*/.test(peekMultiple(2))) {
@@ -245,19 +248,19 @@ function labevalMarkdownRawTextTokenizer(src: string) {
   return tokens;
 }
 
-function labEvalMarkdownTokenizer(src) {
+function labEvalMarkdownTokenizer(src: string) {
   src = src.replace(/(\r\n|\n\r|\n)/, "\n").replace(/\t/, "    ");
 
   let curPos = -1;
   let tokens = [];
 
-  const peek = (offset) => {
+  const peek = (offset: number): any => {
     if (offset < 0 && curPos + offset < 0) return "\0";
     if (curPos + offset >= src.length) return "\0";
     return src[curPos + offset];
   };
 
-  const consume = (n) => {
+  const consume = (n: number): any => {
     let ret = "";
     let start = curPos + 1;
     for (let i = start; i < start + n && i < src.length; ++i, ++curPos)
@@ -265,11 +268,11 @@ function labEvalMarkdownTokenizer(src) {
     return ret;
   };
 
-  const isEof = () => peek(1) === "\0";
+  const isEof = (): any => peek(1) === "\0";
 
-  const isNewline = () => peek(1) === "\n";
+  const isNewline = (): any => peek(1) === "\n";
 
-  const isContinuousNewlines = () => {
+  const isContinuousNewlines = (): any => {
     let offset = 1,
       newlines = 0;
     while (/^[\s\n]{1}/.test(peek(offset))) {
@@ -283,7 +286,7 @@ function labEvalMarkdownTokenizer(src) {
     return newlines > 1 ? offset - 1 : 0;
   };
 
-  const isHeading = () => {
+  const isHeading = (): any => {
     if (curPos > 0 && peek(0) !== "\n") return false;
     let spaceCount = 0;
     while (peek(spaceCount + 1) === " ") ++spaceCount;
@@ -297,7 +300,7 @@ function labEvalMarkdownTokenizer(src) {
     return true;
   };
 
-  const isUlistItem = () => {
+  const isUlistItem = (): any => {
     if (curPos > 0 && peek(0) !== "\n") return { indent: -1 };
     let indent = 0,
       spaceCount = 0;
@@ -312,7 +315,7 @@ function labEvalMarkdownTokenizer(src) {
     return { indent: -1 };
   };
 
-  const isOlistItem = () => {
+  const isOlistItem = (): any => {
     if (curPos > 0 && peek(0) !== "\n")
       return { indent: -1, start: -1, len: -1 };
     let indent = 0,
@@ -340,7 +343,7 @@ function labEvalMarkdownTokenizer(src) {
     return { indent: -1, start: -1, len: -1 };
   };
 
-  const isHr = () => {
+  const isHr = (): any => {
     let spaceCount = 0;
     while (peek(spaceCount + 1) === " ") ++spaceCount;
     if (spaceCount > 3) return false;
@@ -353,8 +356,8 @@ function labEvalMarkdownTokenizer(src) {
     return true;
   };
 
-  const isTable = () => {
-    const isLastCell = (n) => {
+  const isTable = (): any => {
+    const isLastCell = (n: number): any => {
       if (peek(n + 1) !== "|") return 0;
       let offset = 2;
       while (peek(n + offset) === " ") ++offset;
@@ -368,7 +371,8 @@ function labEvalMarkdownTokenizer(src) {
     if (spaceCount > 3) return false;
     if (peek(spaceCount + 1) !== "|") return false;
     ++spaceCount;
-    if (spaceCount + 1 === "|" || peek(spaceCount + 1) === "\n") return false;
+    if (peek(spaceCount + 1) === "|" || peek(spaceCount + 1) === "\n")
+      return false;
 
     let cells = 0;
     while (peek(spaceCount + 1) !== "\0" && !isLastCell(spaceCount)) {
@@ -403,7 +407,7 @@ function labEvalMarkdownTokenizer(src) {
     return true;
   };
 
-  const isBlockMath = () => {
+  const isBlockMath = (): any => {
     if (!(peek(1) === "$" && peek(2) === "$")) return false;
     let offset = 3;
     while (
@@ -415,7 +419,7 @@ function labEvalMarkdownTokenizer(src) {
     return true;
   };
 
-  const isCodeBlock = () => {
+  const isCodeBlock = (): any => {
     let tok = peek(1) + peek(2) + peek(3) + peek(4);
     if (tok !== "```\n") return false;
     let offset = 5;
@@ -427,11 +431,11 @@ function labEvalMarkdownTokenizer(src) {
     return true;
   };
 
-  const consumeSpaces = () => {
+  const consumeSpaces = (): any => {
     while (peek(1) === " ") consume(1);
   };
 
-  const consumeHeading = () => {
+  const consumeHeading = (): any => {
     consumeSpaces();
     let headingNo = 0;
     while (peek(1) === "#") {
@@ -454,13 +458,13 @@ function labEvalMarkdownTokenizer(src) {
     });
   };
 
-  const consumeHLine = () => {
+  const consumeHLine = (): any => {
     while (!isEof() && peek(1) !== "\n") consume(1);
     consume(1);
     tokens.push({ type: TokenType.HLINE, raw: "<hr />" });
   };
 
-  const consumeUListItem = () => {
+  const consumeUListItem = (): any => {
     let indent = isUlistItem().indent;
     let tokens = [];
     consumeSpaces();
@@ -496,7 +500,7 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.ULIST_ITEMS, tag: "<li>", tokens: tokens };
   };
 
-  const consumeOListItem = () => {
+  const consumeOListItem = (): any => {
     let { indent, start, len } = isOlistItem();
     let tokens = [];
     consume(len);
@@ -531,7 +535,7 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.OLIST_ITEMS, tag: "<li>", tokens: tokens };
   };
 
-  const consumeUList = () => {
+  const consumeUList = (): any => {
     let items = [];
     let indent = isUlistItem().indent;
 
@@ -551,7 +555,7 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.ULIST, tag: "<ul>", items: items };
   };
 
-  const consumeOList = () => {
+  const consumeOList = (): any => {
     let indent = isOlistItem().indent;
     let items = [];
 
@@ -571,7 +575,7 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.OLIST, tag: "<ol>", items: items };
   };
 
-  const consumeTable = () => {
+  const consumeTable = (): any => {
     let headings = [];
     while (peek(1) === " ") consume(1);
     consume(1); // Consume '|'
@@ -596,7 +600,7 @@ function labEvalMarkdownTokenizer(src) {
 
     let rows = [];
 
-    const isLastCell = () => {
+    const isLastCell = (): any => {
       if (peek(1) !== "|") return 0;
       let offset = 2;
       while (peek(offset) === " ") ++offset;
@@ -636,7 +640,7 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.TABLE, tag: "<table>", rows: rows, headings };
   };
 
-  const consumeBlockMath = () => {
+  const consumeBlockMath = (): any => {
     consume(2);
     let raw = "";
     while (!(peek(1) === "$" && peek(2) === "$")) raw += consume(1);
@@ -644,7 +648,7 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.MATH, tag: "<math>", raw: "\\[" + raw + "\\]" };
   };
 
-  const consumeCodeBlock = () => {
+  const consumeCodeBlock = (): any => {
     consume(4);
     let content = "";
     let tok = peek(1) + peek(2) + peek(3);
@@ -656,7 +660,7 @@ function labEvalMarkdownTokenizer(src) {
     return { type: TokenType.CODE_BLOCK, raw: content };
   };
 
-  const consumeParagraph = () => {
+  const consumeParagraph = (): any => {
     let raw = "",
       nline = 0;
     if ((nline = isContinuousNewlines())) {
@@ -729,18 +733,18 @@ function labEvalMarkdownTokenizer(src) {
   return tokens;
 }
 
-export function labevalMarkdownParser(buffer: string): React.ReactNode {
+export default function labevalMarkdownParser(buffer: string): React.ReactNode {
   let tokens = labEvalMarkdownTokenizer(buffer);
   let html = [];
   let curToken = -1;
 
-  const next = () => {
+  const next = (): any => {
     if (curToken >= tokens.length) return tokens.slice(-1);
     ++curToken;
     return tokens[curToken];
   };
 
-  const parseText = (tok, key) => {
+  const parseText = (tok: any, key: number): any => {
     let parts = [];
     let cur = "";
     for (let i = 0; i < tok.raw.length; ++i) {
@@ -758,52 +762,52 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
     return <span key={key}>{...parts}</span>;
   };
 
-  const parseSpan = (tok, key) => {
+  const parseSpan = (tok: any, key: number): any => {
     return (
       <span key={key}>
-        {...tok.tokens.map((token, index) => {
+        {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
       </span>
     );
   };
 
-  const parseStrong = (tok, key) => {
+  const parseStrong = (tok: any, key: number): any => {
     return (
       <strong key={key}>
-        {...tok.tokens.map((token, index) => {
+        {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
       </strong>
     );
   };
 
-  const parseEmphasis = (tok, key) => {
+  const parseEmphasis = (tok: any, key: number): any => {
     return (
       <em key={key}>
-        {...tok.tokens.map((token, index) => {
+        {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
       </em>
     );
   };
 
-  const parseParagraph = (tok, key) => {
+  const parseParagraph = (tok: any, key: number): any => {
     return (
       <p key={key}>
-        {...tok.tokens.map((token, index) => {
+        {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
       </p>
     );
   };
 
-  const parseHline = (key) => {
+  const parseHline = (key: number): any => {
     return <hr key={key} />;
   };
 
-  const parseHeading = (tok, key) => {
-    let html = tok.tokens.map((token, index) => {
+  const parseHeading = (tok: any, key: number): any => {
+    let html = tok.tokens.map((token: any, index: number): any => {
       return parseStatement(token, key + 1 + index);
     });
     switch (tok.heading) {
@@ -822,71 +826,71 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
     }
   };
 
-  const parseUlist = (tok, key) => {
+  const parseUlist = (tok: any, key: number): any => {
     return (
       <ul key={key}>
-        {...tok.items.map((item, index) => {
+        {...tok.items.map((item: any, index: number): any => {
           return parseStatement(item, key + 1 + index);
         })}
       </ul>
     );
   };
 
-  const parseOlist = (tok, key) => {
+  const parseOlist = (tok: any, key: number): any => {
     return (
       <ol key={key}>
-        {...tok.items.map((item, index) => {
+        {...tok.items.map((item: any, index: number): any => {
           return parseStatement(item, key + 1 + index);
         })}
       </ol>
     );
   };
 
-  const parseListItem = (tok, key) => {
+  const parseListItem = (tok: any, key: number): any => {
     return (
       <li key={key}>
-        {...tok.tokens.map((token, index) => {
+        {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
       </li>
     );
   };
 
-  const parseTableHeading = (tok, key) => {
+  const parseTableHeading = (tok: any, key: number): any => {
     return (
       <span key={key}>
-        {...tok.tokens.map((token, index) => {
+        {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
       </span>
     );
   };
 
-  const parseTableCell = (tok, key) => {
+  const parseTableCell = (tok: any, key: number): any => {
     return (
       <td key={key}>
-        {...tok.tokens.map((token, index) => {
+        {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
       </td>
     );
   };
 
-  const parseTableRow = (tok, key) => {
+  const parseTableRow = (tok: any, key: number): any => {
     return (
       <tr key={key}>
-        {...tok.cells.map((cell, index) => {
+        {...tok.cells.map((cell: any, index: number): any => {
           return parseStatement(cell, key + 1 + index);
         })}
       </tr>
     );
   };
 
-  const parseTable = (tok, key) => {
+  const parseTable = (tok: any, key: number): any => {
     return (
       <Table
         key={key}
-        heads={tok.headings.map((head, index) => {
+        heads={tok.headings.map((head: any, index: number): any => {
           return {
             content: parseTableHeading(head, key + 1 + index),
             className: "",
@@ -894,32 +898,32 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
         })}
         className="flex-1 w-full"
       >
-        {...tok.rows.map((row, index) => {
+        {...tok.rows.map((row: any, index: number): any => {
           return parseStatement(row, key + 1 + index);
         })}
       </Table>
     );
   };
 
-  const parseBoxedStatement = (tok, key) => {
+  const parseBoxedStatement = (tok: any, key: number): any => {
     let image = tok.attributes.find(
-      (attribute) => attribute.attribute === "src"
+      (attribute: any): any => attribute.attribute === "src"
     );
 
     let color = tok.attributes.find(
-      (attribute) => attribute.attribute === "color"
+      (attribute: any): any => attribute.attribute === "color"
     );
 
     let href = tok.attributes.find(
-      (attribute) => attribute.attribute === "href"
+      (attribute: any): any => attribute.attribute === "href"
     );
     if (image) {
       let width = tok.attributes.find(
-        (attribute) => attribute.attribute === "width"
+        (attribute: any): any => attribute.attribute === "width"
       );
 
       let height = tok.attributes.find(
-        (attribute) => attribute.attribute === "height"
+        (attribute: any): any => attribute.attribute === "height"
       );
 
       width = width ? width.value : "auto";
@@ -956,13 +960,13 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
             href={href.value}
             className="hover:text-blue-500 hover:underline"
           >
-            {...tok.content.map((token, index) => {
+            {...tok.content.map((token: any, index: number): any => {
               return parseStatement(token, key + 1 + index);
             })}
           </a>
         ) : (
           <span key={key + 1}>
-            {...tok.content.map((token, index) => {
+            {...tok.content.map((token: any, index: number): any => {
               return parseStatement(token, key + 1 + index);
             })}
           </span>
@@ -971,7 +975,7 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
     );
   };
 
-  const parseInlineCode = (tok, key) => {
+  const parseInlineCode = (tok: any, key: number): any => {
     return (
       <span
         key={key}
@@ -986,7 +990,7 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
     );
   };
 
-  const parseMath = (tok, key) => {
+  const parseMath = (tok: any, key: number): any => {
     return (
       <div key={key} className="flex flex-col">
         {tok.raw}
@@ -994,7 +998,7 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
     );
   };
 
-  const parseCodeBlock = (tok, key) => {
+  const parseCodeBlock = (tok: any, key: number): any => {
     return (
       <p
         key={key}
@@ -1007,7 +1011,7 @@ export function labevalMarkdownParser(buffer: string): React.ReactNode {
     );
   };
 
-  const parseStatement = (tok, key) => {
+  const parseStatement = (tok: any, key: number): any => {
     switch (tok.type) {
       case TokenType.BREAK:
         return <br key={key} />;

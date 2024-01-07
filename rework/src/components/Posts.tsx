@@ -1,11 +1,9 @@
 "use client";
 
 import MarkdownViewer from "@/components/MarkdownViewer";
-import { labevalMarkdownParser } from "@/markdown/mdParser";
 import { formatDistance } from "date-fns";
 import Link from "next/link";
-import Button from "@/components/Button";
-import { EventsCreateIcon, PostsIcon, UnfilledPostsIcon } from "@/icons";
+import { PostsIcon, UnfilledPostsIcon } from "@/icons";
 import postgres from "postgres";
 import { useState } from "react";
 

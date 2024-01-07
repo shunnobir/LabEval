@@ -2,7 +2,6 @@ import { getEvent } from "@/app/lib/getEvent";
 import { getEventProblems } from "@/app/lib/getEventProblems";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import Table from "@/components/Table";
-import { labevalMarkdownParser } from "@/markdown/mdParser";
 import Link from "next/link";
 import React from "react";
 
