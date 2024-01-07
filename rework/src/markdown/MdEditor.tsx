@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { KeyboardEventHandler, useEffect, useState } from "react";
 import { Roboto_Mono } from "next/font/google";
 
-import mdParser, { labevalMarkdownParser } from "./mdParser";
+import labevalMarkdownParser from "./mdParser";
 
 const robotoMono = Roboto_Mono({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -11,22 +11,28 @@ const robotoMono = Roboto_Mono({
   subsets: ["latin"],
 });
 
-export default function MdEditor({ value, onChange }) {
+type MdEditorProps = {
+  value: string;
+  onChange: any;
+};
+
+export default function MdEditor({ value, onChange }: MdEditorProps) {
   const [active, setActive] = useState(0);
   const [caretPosition, setCaretPosition] = useState(value.length);
   const [tabInserted, setTabInserted] = useState(false);
 
-  const handleOnKeyDown = (e) => {
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Tab") {
       e.preventDefault();
-      let start = e.target.selectionStart,
-        end = e.target.selectionEnd;
-      e.target.value =
-        e.target.value.substring(0, start) +
+      let target = e.target as HTMLTextAreaElement;
+      let start = target.selectionStart,
+        end = target.selectionEnd;
+      target.value =
+        target.value.substring(0, start) +
         "    " +
-        e.target.value.substring(end, e.target.value.length);
-      onChange(e.target.value);
-      e.target.focus();
+        target.value.substring(end, target.value.length);
+      onChange(target.value);
+      target.focus();
       setCaretPosition(start + "    ".length);
       setTabInserted(true);
     } else {
@@ -36,20 +42,24 @@ export default function MdEditor({ value, onChange }) {
 
   useEffect(() => {
     if (tabInserted) return;
-    let e = document.querySelector(".labeval-markdown-editor");
+    let e = document.querySelector(
+      ".labeval-markdown-editor"
+    ) as HTMLTextAreaElement;
     if (e) setCaretPosition(e.selectionStart);
-  }, [value]);
+  }, [value, tabInserted]);
 
   useEffect(() => {
-    let e = document.querySelector(".labeval-markdown-editor");
+    let e = document.querySelector(
+      ".labeval-markdown-editor"
+    ) as HTMLTextAreaElement;
     if (e) e.selectionStart = e.selectionEnd = caretPosition;
     setTabInserted(false);
   }, [caretPosition]);
 
   useEffect(() => {
-    window.MathJax?.typesetClear();
-    window.MathJax?.typeset();
-    window.MathJax?.document?.updateDocument();
+    (window as any).MathJax?.typesetClear();
+    (window as any).MathJax?.typeset();
+    (window as any).MathJax?.document?.updateDocument();
   }, [active]);
 
   return (
