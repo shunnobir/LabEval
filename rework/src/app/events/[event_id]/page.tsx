@@ -34,6 +34,7 @@ export default async function Event({ params }: EventProps) {
               { content: "Problem" },
             ]}
             className="w-full"
+            empty={problems.problems?.length === 0}
           >
             {problems.problems?.map((problem, index) => {
               return (

@@ -60,9 +60,11 @@ async function signupHandler(req: NextRequest): Promise<NextResponse> {
     await psql`insert into users (user_id, username, email, password, role, join_date) values ${psql(
       values
     )}`;
-    await psql2`insert into users (user_id, username, email, password, role, join_date)  values ${psql(
-      values
-    )}`;
+    if (process.env.NODE_ENV === "development") {
+      await psql2`insert into users (user_id, username, email, password, role, join_date)  values ${psql(
+        values
+      )}`;
+    }
     return NextResponse.json({ status: "signed up", ok: true });
   } catch (err) {
     console.error(err);
@@ -73,7 +75,7 @@ async function signupHandler(req: NextRequest): Promise<NextResponse> {
 async function loginHandler(req: NextRequest) {
   try {
     const { uname, password, role } = await req.json();
-    let user = await psql2`select user_id, 
+    let user = await psql`select user_id, 
                                   username,
                                   email,
                                   role,

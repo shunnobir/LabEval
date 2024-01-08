@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { EventsCreateIcon } from "@/icons";
 import Table from "./Table";
@@ -12,8 +12,27 @@ type EventsViewerProps = {
   user?: User;
 };
 
+type NEvent = Event & { participants: number };
+
 function EventsViewer({ events, user }: EventsViewerProps) {
   const router = useRouter();
+  const [ongoingEvents, setOngoingEvents] = useState<NEvent[]>();
+  const [pastEvents, setPastEvents] = useState<NEvent[]>();
+
+  useEffect(() => {
+    setOngoingEvents(
+      events?.filter(
+        (event: Event & { participants: number }) =>
+          new Date(event.end_time) >= new Date()
+      )
+    );
+    setPastEvents(
+      events?.filter(
+        (event: Event & { participants: number }) =>
+          new Date(event.end_time) < new Date()
+      )
+    );
+  }, [events]);
   return (
     <div className="events flex gap-8">
       <div className="left flex flex-col flex-[2] gap-4">
@@ -37,34 +56,27 @@ function EventsViewer({ events, user }: EventsViewerProps) {
               { content: "Duration", className: "" },
               { content: "Participant", className: "" },
             ]}
-            empty={events?.length === 0}
+            empty={ongoingEvents?.length === 0}
           >
-            {events
-              ?.filter(
-                (event: Event & { participants: number }) =>
-                  new Date(event.end_time) >= new Date()
-              )
-              .map((event: Event & { participants: number }, index: number) => {
-                return (
-                  <tr key={index}>
-                    <td>
-                      {format(event.start_time, "dd-MM-yyyy (EEE) HH:mm ")}
-                    </td>
-                    <td>
-                      <Link
-                        href={`/events/${event.event_id}`}
-                        className="hover:text-blue-500 hover:underline"
-                      >
-                        {event.title}
-                      </Link>
-                    </td>
-                    <td>
-                      {formatDistanceStrict(event.end_time, event.start_time)}
-                    </td>
-                    <td>{event.participants}</td>
-                  </tr>
-                );
-              })}
+            {ongoingEvents?.map((event: NEvent, index: number) => {
+              return (
+                <tr key={index}>
+                  <td>{format(event.start_time, "dd-MM-yyyy (EEE) HH:mm ")}</td>
+                  <td>
+                    <Link
+                      href={`/events/${event.event_id}`}
+                      className="hover:text-blue-500 hover:underline"
+                    >
+                      {event.title}
+                    </Link>
+                  </td>
+                  <td>
+                    {formatDistanceStrict(event.end_time, event.start_time)}
+                  </td>
+                  <td>{event.participants}</td>
+                </tr>
+              );
+            })}
           </Table>
         </div>
         <div className="flex flex-col flex-1 gap-2">
@@ -76,34 +88,27 @@ function EventsViewer({ events, user }: EventsViewerProps) {
               { content: "Duration", className: "" },
               { content: "Participant", className: "" },
             ]}
-            empty={events?.length === 0}
+            empty={pastEvents?.length === 0}
           >
-            {events
-              ?.filter(
-                (event: Event & { participants: number }) =>
-                  new Date(event.end_time) < new Date()
-              )
-              .map((event: Event & { participants: number }, index: number) => {
-                return (
-                  <tr key={index}>
-                    <td>
-                      {format(event.start_time, "dd-MM-yyyy (EEE) HH:mm ")}
-                    </td>
-                    <td>
-                      <Link
-                        href={`/events/${event.event_id}`}
-                        className="hover:text-blue-500 hover:underline"
-                      >
-                        {event.title}
-                      </Link>
-                    </td>
-                    <td>
-                      {formatDistanceStrict(event.end_time, event.start_time)}
-                    </td>
-                    <td>{event.participants}</td>
-                  </tr>
-                );
-              })}
+            {pastEvents?.map((event: NEvent, index: number) => {
+              return (
+                <tr key={index}>
+                  <td>{format(event.start_time, "dd-MM-yyyy (EEE) HH:mm ")}</td>
+                  <td>
+                    <Link
+                      href={`/events/${event.event_id}`}
+                      className="hover:text-blue-500 hover:underline"
+                    >
+                      {event.title}
+                    </Link>
+                  </td>
+                  <td>
+                    {formatDistanceStrict(event.end_time, event.start_time)}
+                  </td>
+                  <td>{event.participants}</td>
+                </tr>
+              );
+            })}
           </Table>
         </div>
       </div>

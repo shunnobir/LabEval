@@ -10,6 +10,7 @@ export async function getEvents() {
                  order by e.create_date desc`;
     return { events: res, ok: true };
   } catch (err) {
+    console.error(err);
     return { events: [], ok: false };
   }
 }
