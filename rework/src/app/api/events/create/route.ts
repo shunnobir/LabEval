@@ -11,7 +11,9 @@ export async function POST(req: NextRequest) {
   };
   try {
     await psql`insert into events values ${psql(values)}`;
-    await psql2`insert into events values ${psql(values)}`;
+    if (process.env.NODE_ENV === "development") {
+      await psql2`insert into events values ${psql(values)}`;
+    }
     return NextResponse.json({ status: "event created", ok: true });
   } catch (err) {
     return NextResponse.json({ status: "internal database error", ok: false });
