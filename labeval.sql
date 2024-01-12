@@ -23,7 +23,7 @@ create table users (
 );
 
 create table events (
-    event_id varchar(10),
+    event_id serial,
     title varchar(80),
     description varchar,
     start_time timestamp with time zone,
@@ -44,8 +44,8 @@ create table problems (
     points integer,
     time_limit integer,
     memory_limit integer,
-    problem_order integer,
-    event_id varchar(10),
+    problem_order varchar,
+    event_id serial,
     constraint unique_problemid unique (problem_id),
     constraint foreign_event_id foreign key (event_id) references events (event_id) on delete cascade,
     constraint problems_primary_key primary key (problem_id) 
@@ -53,7 +53,7 @@ create table problems (
 
 create table registrations (
     user_id varchar(10),
-    event_id varchar(10),
+    event_id serial,
     constraint foreign_user_id foreign key (user_id) references users (user_id) on delete cascade,
     constraint foreign_event_id foreign key (event_id) references events (event_id) on delete cascade,
     constraint participates_primary_key primary key (user_id, event_id)
