@@ -609,6 +609,26 @@ export function AddIcon({ color, width, height, className }: IconProps) {
   );
 }
 
+export function CodeFileIcon({ color, width, height, className }: IconProps) {
+  const w = width ? width : "24";
+  const h = height ? height : "24";
+  const c = color ? color : "#fafafa";
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      width={w}
+      height={h}
+      viewBox="0 0 14 14"
+    >
+      <g fill="none" stroke={c} stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12.5 12.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1H9L12.5 4z" />
+        <path d="m5.5 10.5l-2-2l2-2m3 4l2-2l-2-2" />
+      </g>
+    </svg>
+  );
+}
+
 export function LabEvalIcon({ color, width, height, className }: IconProps) {
   const w = width ? width : "48";
   const h = height ? height : "48";

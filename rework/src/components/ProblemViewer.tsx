@@ -3,13 +3,22 @@
 import React, { useEffect, useState } from "react";
 import { Noto_Serif } from "next/font/google";
 import dynamic from "next/dynamic";
-import { User, Event, Problem, Testcase } from "../../types";
+import { User, Event, Problem, Testcase, Solutions } from "../../types";
 import EventTimer from "./EventTimer";
 import getUser from "@/app/lib/getUser";
 import Button from "./Button";
-import { AddIcon, CopyIcon, ShortTextIcon, ShowIcon } from "@/icons";
+import {
+  AddIcon,
+  CodeFileIcon,
+  CopyIcon,
+  ShortTextIcon,
+  ShowIcon,
+} from "@/icons";
 import { usePathname, useRouter } from "next/navigation";
+import { format } from "date-fns";
 import { toast } from "sonner";
+import Select from "./Select";
+import Table from "./Table";
 const MarkdownViewer = dynamic(() => import("@/components/MarkdownViewer"), {
   ssr: false,
 });
@@ -38,6 +47,23 @@ export default function ProblemViewer({
   const pathName = usePathname();
 
   const [testcases, setTestcases] = useState<Testcase[]>([]);
+  const [fileType, setFileType] = useState(0);
+  const [inputFile, setInputFile] = useState<File>();
+  const [code, setCode] = useState("");
+  const [submissions, setSubmissions] = useState<Solutions[]>([]);
+
+  const handleInputFile = (file?: File | null) => {
+    if (file) {
+      setInputFile(file);
+      let fr = new FileReader();
+      fr.addEventListener("load", () => {
+        setCode(fr.result?.toString() || "");
+      });
+      fr.readAsText(file);
+    }
+  };
+
+  const handleSubmit = () => {};
 
   useEffect(() => {
     fetch(`/api/testcase?event_id=${params.event_id}&order=${params.order}`, {
@@ -58,6 +84,36 @@ export default function ProblemViewer({
       setUser(res.user);
     });
   }, []);
+
+  // const handleSubmit = () => {
+  //         fetch(`/api/problems/submit`, {
+  //           method: "POST",
+  //           body: JSON.stringify({
+  //             code: code,
+  //             language:
+  //               fileType === 0 ? "C" : fileType === 1 ? "C++" : "Python",
+  //             extension: fileType === 0 ? "c" : fileType === 1 ? "cpp" : "py",
+  //             submission_time: new Date(),
+  //             user_id: user?.user_id,
+  //             problem_id: problem.problem_id,
+  //           }),
+  //           cache: "no-store",
+  //           next: { revalidate: 300 },
+  //         });
+  // }
+
+  useEffect(() => {
+    if (user) {
+      fetch(`/api/problems/submit`, {
+        method: "GET",
+        cache: "no-store",
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.ok) setSubmissions(res.submissions);
+        });
+    }
+  }, [code, fileType, problem.problem_id, user]);
 
   return (
     <div className={"problem flex gap-8 pb-8"}>
@@ -141,9 +197,104 @@ export default function ProblemViewer({
           })}
         </div>
       </div>
-      <div className="right flex flex-col w-[25%]">
+      <div className="right flex flex-col gap-8 w-[25%]">
         <div className="top">
           <EventTimer event={event} />
+        </div>
+        <div className="mid flex flex-col border border-solid border-zinc-800 rounded-md pb-2">
+          <div className="border-b border-solid border-zinc-800 p-2 flex justify-center">
+            <span>Submit</span>
+          </div>
+          <div className="p-2">
+            <Select
+              options={["C", "C++", "Python"]}
+              setSelected={setFileType}
+            />
+          </div>
+          <div className={"p-2 flex flex-col gap-2 justify-center"}>
+            <label
+              className={
+                "cursor-pointer border border-solid border-zinc-800 p-2 rounded-md flex items-center"
+              }
+            >
+              <span>Choose a file</span>
+              <input
+                type="file"
+                required={true}
+                className="hidden"
+                onChange={(e) => {
+                  handleInputFile(
+                    e.target?.files?.length
+                      ? e.target?.files?.item(0)
+                      : undefined
+                  );
+                }}
+              />
+            </label>
+            <span
+              className={
+                "px-2 flex gap-2 " +
+                (inputFile ? "text-zinc-300" : "text-zinc-500")
+              }
+            >
+              <CodeFileIcon
+                color={inputFile ? "#d4d4d8" : "#71717a"}
+                width="20"
+                height="20"
+              />
+              {inputFile ? inputFile?.name : "No file choosen"}
+            </span>
+          </div>
+          <Button
+            className={
+              "mx-2 mb-2 " + (inputFile ? "" : "bg-zinc-700 border-t-zinc-700")
+            }
+            disabled={inputFile === undefined}
+          >
+            Submit
+          </Button>
+        </div>
+        <div className="border border-solid border-zinc-800 border-b-0 rounded-t-md flex flex-col">
+          <span className="text-center p-2">Submissions</span>
+          <Table
+            heads={[
+              { content: "Submission" },
+              { content: "Time" },
+              { content: "Verdict" },
+            ]}
+            className="h-full w-full"
+            style={{ marginBottom: "0" }}
+            empty={submissions?.length === 0}
+          >
+            {submissions?.map((submission, index) => {
+              let time = new Date(submission.submission_time);
+              return (
+                <tr key={index}>
+                  <td className="text-blue-500 font-semibold cursor-pointer">
+                    {" "}
+                    {submission?.solution_id}{" "}
+                  </td>
+                  <td>
+                    {format(
+                      submission?.submission_time,
+                      "dd-MM-yyyy (EEE) hh:mm a"
+                    )}
+                  </td>
+                  <td
+                    className={
+                      "font-semibold " +
+                      (submission.verdict === "Accepted"
+                        ? "text-green-600"
+                        : "text-red-500")
+                    }
+                  >
+                    {" "}
+                    {submission.verdict}{" "}
+                  </td>
+                </tr>
+              );
+            })}
+          </Table>
         </div>
       </div>
     </div>

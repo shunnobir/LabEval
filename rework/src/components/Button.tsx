@@ -8,6 +8,7 @@ type ButtonProps = {
   children?: React.ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   title?: string | "";
+  disabled?: boolean;
 };
 
 export default function Button({
@@ -18,6 +19,7 @@ export default function Button({
   children,
   onClick,
   title,
+  disabled,
 }: ButtonProps) {
   return (
     <button
@@ -27,6 +29,7 @@ export default function Button({
       }
       title={title}
       onClick={onClick ? onClick : (_) => {}}
+      disabled={disabled || false}
     >
       {icon ? icon : null}
       {children}

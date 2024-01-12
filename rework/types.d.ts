@@ -45,3 +45,15 @@ export type Testcase = {
   is_sample: boolean;
   problem_id?: string;
 };
+
+export type Solutions = {
+  solution_id: string;
+  code: string;
+  language: string;
+  verdict: string;
+  execution_time?: number;
+  memory_taken?: number;
+  submission_time: Date;
+  points?: number;
+  user_id: string;
+};

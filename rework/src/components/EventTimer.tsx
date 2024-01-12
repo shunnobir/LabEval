@@ -38,10 +38,21 @@ export default function EventTimer({ event }: EventTimerProps) {
       </div>
       <Separator className="my-0" />
       <div className="text-center p-2 text-sm">
-        {event && timeNow && event?.end_time > timeNow
+        {event && timeNow && event?.start_time > timeNow
           ? formatDuration(
               intervalToDuration({
                 end: event.start_time || new Date(),
+                start: timeNow,
+              }),
+              {
+                delimiter: " ",
+                format: ["days", "hours", "minutes", "seconds"],
+              }
+            )
+          : event && timeNow && event?.end_time > timeNow
+          ? formatDuration(
+              intervalToDuration({
+                end: event.end_time || new Date(),
                 start: timeNow,
               }),
               {
