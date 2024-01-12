@@ -1,10 +1,11 @@
 "use client";
 
-import { Roboto_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import Table from "@/components/Table";
 import Image from "next/image";
+import Separator from "@/components/Separator";
 
-const robotoMono = Roboto_Mono({
+const jetbrainsMono = JetBrains_Mono({
   weight: ["200", "300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
@@ -658,7 +659,7 @@ function labEvalMarkdownTokenizer(src: string) {
       tok = peek(1) + peek(2) + peek(3);
     }
     if (!isEof()) consume(3);
-    return { type: TokenType.CODE_BLOCK, raw: content };
+    return { type: TokenType.CODE_BLOCK, raw: content.trimEnd() };
   };
 
   const consumeParagraph = (): any => {
@@ -804,7 +805,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
   };
 
   const parseHline = (key: number): any => {
-    return <hr key={key} />;
+    return <Separator key={key} className="my-2" />;
   };
 
   const parseHeading = (tok: any, key: number): any => {
@@ -813,17 +814,41 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
     });
     switch (tok.heading) {
       case 1:
-        return <h1 key={key}>{...html}</h1>;
+        return (
+          <h1 key={key} style={{ marginBlock: "0.5rem" }}>
+            {...html}
+          </h1>
+        );
       case 2:
-        return <h2 key={key}>{...html}</h2>;
+        return (
+          <h2 key={key} style={{ marginBlock: "0.5rem" }}>
+            {...html}
+          </h2>
+        );
       case 3:
-        return <h3 key={key}>{...html}</h3>;
+        return (
+          <h3 key={key} style={{ marginBlock: "0.5rem" }}>
+            {...html}
+          </h3>
+        );
       case 4:
-        return <h4 key={key}>{...html}</h4>;
+        return (
+          <h4 key={key} style={{ marginBlock: "0.5rem" }}>
+            {...html}
+          </h4>
+        );
       case 5:
-        return <h5 key={key}>{...html}</h5>;
+        return (
+          <h5 key={key} style={{ marginBlock: "0.5rem" }}>
+            {...html}
+          </h5>
+        );
       case 6:
-        return <h6 key={key}>{...html}</h6>;
+        return (
+          <h6 key={key} style={{ marginBlock: "0.5rem" }}>
+            {...html}
+          </h6>
+        );
     }
   };
 
@@ -981,7 +1006,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
       <span
         key={key}
         className={
-          robotoMono.className +
+          jetbrainsMono.className +
           " whitespace-pre text-blue-500 bg-zinc-800 rounded-md"
         }
         style={{ paddingInline: "8px" }}
@@ -1001,14 +1026,15 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
 
   const parseCodeBlock = (tok: any, key: number): any => {
     return (
-      <p
+      <div
         key={key}
         className={
-          "block-code whitespace-pre bg-zinc-800/50 text-zinc-200 w-full border border-solid border-zinc-800 rounded-md px-2 py-2"
+          jetbrainsMono.className +
+          " block-code bg-zinc-800/50 text-zinc-200 w-full border border-solid border-zinc-800 rounded-md px-2 py-2"
         }
       >
-        {tok.raw}
-      </p>
+        <pre>{tok.raw}</pre>
+      </div>
     );
   };
 
@@ -1063,6 +1089,6 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
   }
 
   return (
-    <main className="labeval-markdown-content h-full w-full">{...html}</main>
+    <main className="labeval-markdown-content h-auto w-full ">{...html}</main>
   );
 }

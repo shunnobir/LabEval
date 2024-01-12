@@ -8,14 +8,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import getUser from "@/app/lib/getUser";
 import Input from "@/components/Input";
 import { Switch } from "@/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import Button from "@/components/Button";
 import { toast } from "sonner";
+import Popover from "@/components/Popover";
+import Separator from "@/components/Separator";
+import Loader from "@/components/Loader";
 
 type CreateEventProps = {
   user?: User;
@@ -78,97 +75,106 @@ function CreateEvent() {
   }, [pathName, searchParams]);
 
   return (
-    <div className="flex flex-col min-h-fit md:px-[15%] gap-4 pb-6">
-      {/* <h1 className="text-center w-full">New Event</h1> */}
+    <div className="flex flex-col min-h-fit gap-4 pb-6 md:mx-[5%]">
       <div className="flex flex-col gap-2">
-        <label className="font-semibold text-lg">
-          Event Title<span className="text-red-500">{" *"}</span>
-        </label>
-        <Input
-          className="rounded-md bg-transparent"
-          placeholder="event title"
-          maxLength={80}
-          showLimit={true}
-          value={title}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setTitle(e.target.value)
+        <h1 className="font-bold">New Event</h1>
+        <span className="text-zinc-500">
+          Create your events with your preffered settings
+        </span>
+        <Separator className="my-4" />
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <label className="font-semibold">
+            Event Title<span className="text-red-500">{" *"}</span>
+          </label>
+          <Input
+            className="rounded-md bg-transparent"
+            placeholder="event title"
+            maxLength={80}
+            showLimit={true}
+            value={title}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setTitle(e.target.value)
+            }
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="font-semibold">
+            Event Description<span className="text-red-500">{" *"}</span>
+          </label>
+          <MdEditor value={description} onChange={setDescription} />
+        </div>
+        <div className="flex flex-col lg:flex-row flex-1 gap-10">
+          <div className="flex flex-col flex-1 gap-2">
+            <label className="font-semibold">
+              Start Time<span className="text-red-500">{" *"}</span>
+            </label>
+            <Input
+              type="datetime-local"
+              className="rounded-md"
+              value={startTime}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setStartTime(e.target.value)
+              }
+            />
+          </div>
+          <div className="flex flex-col flex-1 gap-2">
+            <label className="font-semibold">
+              End Time<span className="text-red-500">{" *"}</span>
+            </label>
+            <Input
+              type="datetime-local"
+              className="rounded-md"
+              value={endTime}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEndTime(e.target.value)
+              }
+            />
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row flex-1 gap-10">
+          <div className="flex gap-2 items-center">
+            <Switch
+              checked={isopen}
+              onCheckedChange={(e: any) => setIsOpen(e)}
+            />
+            <label className="font-semibold">Public Event</label>
+            <Popover
+              content={
+                <InfoIcon width="20" height="20" className="fill-zinc-300" />
+              }
+              tip={
+                <span>
+                  Do you want to make the event accessible to everyone?
+                </span>
+              }
+            />
+          </div>
+          <div className="flex gap-2 items-center">
+            <Switch
+              checked={creatorControlled}
+              onCheckedChange={(e: any) => setCreatorControlled(e)}
+            />
+            <label className="font-semibold">Manual Evaluation</label>
+            <Popover
+              content={
+                <InfoIcon width="20" height="20" className="fill-zinc-300" />
+              }
+              tip={<span>Do you want to evaluate submissions manually?</span>}
+            />
+          </div>
+        </div>
+        <Button
+          icon={
+            !creationPending ? <EventCreateYes width="24" height="24" /> : null
           }
-        />
+          className="w-fit gap-2 py-2 rounded-md mt-4"
+          onClick={handleCreate}
+        >
+          {creationPending ? <Loader /> : "Create"}
+        </Button>
       </div>
-      <div className="flex flex-col gap-2">
-        <label className="font-semibold text-lg">
-          Event Description<span className="text-red-500">{" *"}</span>
-        </label>
-        <MdEditor value={description} onChange={setDescription} />
-      </div>
-      <div className="flex flex-col lg:flex-row flex-1 gap-10">
-        <div className="flex flex-col flex-1 gap-2">
-          <label className="font-semibold text-lg">
-            Start Time<span className="text-red-500">{" *"}</span>
-          </label>
-          <Input
-            type="datetime-local"
-            className="rounded-md"
-            value={startTime}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setStartTime(e.target.value)
-            }
-          />
-        </div>
-        <div className="flex flex-col flex-1 gap-2">
-          <label className="font-semibold text-lg">
-            End Time<span className="text-red-500">{" *"}</span>
-          </label>
-          <Input
-            type="datetime-local"
-            className="rounded-md"
-            value={endTime}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEndTime(e.target.value)
-            }
-          />
-        </div>
-      </div>
-      <div className="flex flex-col sm:flex-row flex-1 gap-10">
-        <div className="flex gap-2 items-center">
-          <Switch checked={isopen} onCheckedChange={(e: any) => setIsOpen(e)} />
-          <label className="font-semibold text-lg">Public Event</label>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <InfoIcon width="20" height="20" className="fill-zinc-300" />
-              </TooltipTrigger>
-              <TooltipContent>
-                Do you want to make the event accessible to everyone?
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-        <div className="flex gap-2 items-center">
-          <Switch
-            checked={creatorControlled}
-            onCheckedChange={(e: any) => setCreatorControlled(e)}
-          />
-          <label className="font-semibold text-lg">Manual Evaluation</label>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <InfoIcon width="20" height="20" className="fill-zinc-300" />
-              </TooltipTrigger>
-              <TooltipContent>
-                Do you want to evaluate submissions manually?
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
-      <Button
-        icon={<EventCreateYes width="24" height="24" />}
-        className="w-fit gap-2 py-2 rounded-md mt-12"
-        onClick={handleCreate}
-      >
-        Create
-      </Button>
     </div>
   );
 }

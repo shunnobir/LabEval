@@ -12,20 +12,27 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-const notoSerif = Noto_Serif({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  fallback: ["serif"],
-  preload: true,
-});
+// const notoSerif = Noto_Serif({
+//   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+//   style: ["normal", "italic"],
+//   subsets: ["latin"],
+//   fallback: ["serif"],
+//   preload: true,
+// });
 
 type MdEditorProps = {
   value: string;
   onChange: any;
+  className?: string;
+  height?: string;
 };
 
-export default function MdEditor({ value, onChange }: MdEditorProps) {
+export default function MdEditor({
+  value,
+  onChange,
+  className,
+  height,
+}: MdEditorProps) {
   const [active, setActive] = useState(0);
   const [caretPosition, setCaretPosition] = useState(value.length);
   const [tabInserted, setTabInserted] = useState(false);
@@ -110,7 +117,7 @@ export default function MdEditor({ value, onChange }: MdEditorProps) {
           borderBottomLeftRadius: "6px",
           borderBottomRightRadius: "6px",
           WebkitBorderTopRightRadius: "6px",
-          height: "20rem",
+          height: height ? height : "20rem",
         }}
       >
         {active === 0 ? (
@@ -131,9 +138,10 @@ export default function MdEditor({ value, onChange }: MdEditorProps) {
         ) : (
           <MarkdownViewer
             str={value}
-            className={notoSerif.className + " flex-1 p-2 h-80"}
+            className={"flex-1 p-2 h-80 overflow-auto"}
             style={{
-              paddingInline: "0.5rem",
+              paddingInline: "1rem",
+              paddingBottom: "1rem",
             }}
           />
         )}

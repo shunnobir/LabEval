@@ -118,7 +118,7 @@ export default function Auth() {
             <span className="mx-auto text-red-500">{status}</span>
           ) : null} */}
           <Button
-            className="rounded-full py-2"
+            className="py-2"
             onClick={isSignup ? handleSignup : handleLogin}
           >
             {isSignup ? (

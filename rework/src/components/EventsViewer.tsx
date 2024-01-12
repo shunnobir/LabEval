@@ -3,7 +3,13 @@ import Button from "./Button";
 import { EventsCreateIcon } from "@/icons";
 import Table from "./Table";
 import { Event, User } from "../../types";
-import { format, formatDistanceStrict } from "date-fns";
+import {
+  format,
+  formatDistance,
+  formatDistanceStrict,
+  formatDuration,
+  intervalToDuration,
+} from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -18,6 +24,7 @@ function EventsViewer({ events, user }: EventsViewerProps) {
   const router = useRouter();
   const [ongoingEvents, setOngoingEvents] = useState<NEvent[]>();
   const [pastEvents, setPastEvents] = useState<NEvent[]>();
+  const [timeNow, setTimeNow] = useState(new Date());
 
   useEffect(() => {
     setOngoingEvents(
@@ -33,9 +40,16 @@ function EventsViewer({ events, user }: EventsViewerProps) {
       )
     );
   }, [events]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setTimeNow(new Date());
+    }, 1000);
+  }, [timeNow]);
+
   return (
     <div className="events flex gap-8">
-      <div className="left flex flex-col flex-[2] gap-4">
+      <div className="left flex flex-col w-[80%] gap-4">
         <div className="flex flex-col flex-1 gap-2">
           <h2 className="flex justify-between">
             Upcoming Events or Ongoing Events
@@ -55,13 +69,16 @@ function EventsViewer({ events, user }: EventsViewerProps) {
               { content: "Event", className: "" },
               { content: "Duration", className: "" },
               { content: "Participant", className: "" },
+              { content: "Time to start or Time Remaining", className: "" },
             ]}
             empty={ongoingEvents?.length === 0}
           >
             {ongoingEvents?.map((event: NEvent, index: number) => {
               return (
                 <tr key={index}>
-                  <td>{format(event.start_time, "dd-MM-yyyy (EEE) HH:mm ")}</td>
+                  <td>
+                    {format(event.start_time, "dd-MM-yyyy (EEE) hh:mm a")}
+                  </td>
                   <td>
                     <Link
                       href={`/events/${event.event_id}`}
@@ -71,9 +88,45 @@ function EventsViewer({ events, user }: EventsViewerProps) {
                     </Link>
                   </td>
                   <td>
-                    {formatDistanceStrict(event.end_time, event.start_time)}
+                    {formatDuration(
+                      intervalToDuration({
+                        end: event.end_time,
+                        start: event.start_time,
+                      }),
+                      {
+                        delimiter: " ",
+                        format: ["days", "hours", "minutes"],
+                      }
+                    )}
                   </td>
                   <td>{event.participants}</td>
+                  {event.start_time > timeNow ? (
+                    <td className="text-blue-600 font-semibold">
+                      {formatDuration(
+                        intervalToDuration({
+                          end: event.start_time,
+                          start: timeNow,
+                        }),
+                        {
+                          delimiter: " ",
+                          format: ["hours", "minutes", "seconds"],
+                        }
+                      )}
+                    </td>
+                  ) : (
+                    <td className="text-red-600 font-semibold">
+                      {formatDuration(
+                        intervalToDuration({
+                          end: event.end_time,
+                          start: timeNow,
+                        }),
+                        {
+                          delimiter: " ",
+                          format: ["hours", "minutes", "seconds"],
+                        }
+                      )}
+                    </td>
+                  )}
                 </tr>
               );
             })}
@@ -93,7 +146,9 @@ function EventsViewer({ events, user }: EventsViewerProps) {
             {pastEvents?.map((event: NEvent, index: number) => {
               return (
                 <tr key={index}>
-                  <td>{format(event.start_time, "dd-MM-yyyy (EEE) HH:mm ")}</td>
+                  <td>
+                    {format(event.start_time, "dd-MM-yyyy (EEE) HH:mm a")}
+                  </td>
                   <td>
                     <Link
                       href={`/events/${event.event_id}`}
@@ -103,7 +158,16 @@ function EventsViewer({ events, user }: EventsViewerProps) {
                     </Link>
                   </td>
                   <td>
-                    {formatDistanceStrict(event.end_time, event.start_time)}
+                    {formatDuration(
+                      intervalToDuration({
+                        end: event.end_time,
+                        start: event.start_time,
+                      }),
+                      {
+                        delimiter: " ",
+                        format: ["hours", "minutes"],
+                      }
+                    )}
                   </td>
                   <td>{event.participants}</td>
                 </tr>
@@ -112,7 +176,7 @@ function EventsViewer({ events, user }: EventsViewerProps) {
           </Table>
         </div>
       </div>
-      <div className="right flex flex-col flex-1"></div>
+      <div className="right flex flex-col w-[20%]"></div>
     </div>
   );
 }

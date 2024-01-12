@@ -1,4 +1,4 @@
-drop table submissions;
+drop table solutions;
 drop table testcases;
 drop table registrations;
 drop table problems;
@@ -23,7 +23,7 @@ create table users (
 );
 
 create table events (
-    event_id varchar(10),
+    event_id serial,
     title varchar(80),
     description varchar,
     start_time timestamp with time zone,
@@ -44,8 +44,8 @@ create table problems (
     points integer,
     time_limit integer,
     memory_limit integer,
-    problem_order integer,
-    event_id varchar(10),
+    problem_order varchar,
+    event_id serial,
     constraint unique_problemid unique (problem_id),
     constraint foreign_event_id foreign key (event_id) references events (event_id) on delete cascade,
     constraint problems_primary_key primary key (problem_id) 
@@ -53,7 +53,7 @@ create table problems (
 
 create table registrations (
     user_id varchar(10),
-    event_id varchar(10),
+    event_id serial,
     constraint foreign_user_id foreign key (user_id) references users (user_id) on delete cascade,
     constraint foreign_event_id foreign key (event_id) references events (event_id) on delete cascade,
     constraint participates_primary_key primary key (user_id, event_id)
@@ -74,19 +74,31 @@ create table testcases (
     constraint testcases_primary_key primary key (testcase_id)
 );
 
-create table submissions (
-    submission_id varchar(12),
+create table solutions (
+    solution_id varchar(12),
     code varchar,
     language varchar,
     verdict varchar,
     execution_time integer,
     memory_taken integer,
-    submission_time timestamp with time zone,
+    solution_time timestamp with time zone,
     points integer default 0,
     user_id varchar(10),
     problem_id varchar(20),
-    constraint unique_submissionid unique(submission_id),
+    constraint unique_solutionid unique(solution_id),
     constraint foreign_user_id foreign key (user_id) references users (user_id) on delete cascade,
     constraint foreign_problem_id foreign key (problem_id) references problems (problem_id) on delete cascade,
-    constraint submissions_primary_key primary key (submission_id)
+    constraint solutions_primary_key primary key (solution_id)
+);
+
+create table verdicts (
+    verdict_id serial,
+    testcase_id varchar(20),
+    solution_id varchar(12),
+    verdict varchar,
+    execution_time integer,
+    memory_taken integer,
+    constraint foreign_testcase_id foreign key (testcase_id) references testcases (testcase_id) on delete cascade,
+    constraint foreign_solution_id foreign key (solution_id) references solutions (solution_id) on delete cascade,
+    constraint verdicts_primary_key primary key(solution_id)
 );

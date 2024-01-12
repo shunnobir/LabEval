@@ -7,7 +7,7 @@ export async function getEvents() {
                          from registrations p 
                          where p.event_id = e.event_id) as "participants" 
                  from events e
-                 order by e.create_date desc`;
+                 order by e.start_time desc`;
     return { events: res, ok: true };
   } catch (err) {
     console.error(err);

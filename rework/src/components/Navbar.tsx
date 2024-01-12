@@ -24,7 +24,7 @@ export default function Navbar() {
   const navLinks: NavLink[] = [
     { name: "Posts", link: "" },
     { name: "Events", link: "events" },
-    { name: "Problems", link: "problems" },
+    { name: "Problemset", link: "problemset" },
   ];
 
   const [isLoggedIn, setIsloggedIn] = useState(false);
@@ -61,7 +61,7 @@ export default function Navbar() {
               <Link href={`/${link.link}`} key={index}>
                 <div
                   className={
-                    "text-sm sm:text-[1rem] h-6 py-1 sm:py-0 sm:h-8 px-4 rounded-full flex items-center justify-center hover:bg-zinc-800/80 hover:text-zinc-300 duration-300 " +
+                    "text-sm sm:text-[1rem] py-1 px-4 rounded-full flex items-center justify-center hover:bg-zinc-800/80 hover:text-zinc-300 duration-300 " +
                     ((segments.length === 0 && index == 0) ||
                     segments[0] === link.link
                       ? "bg-zinc-800/80 text-zinc-300"

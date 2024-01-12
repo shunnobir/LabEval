@@ -1,7 +1,7 @@
 import psql from "@/database.config";
 import { Event } from "../../../types";
 
-export async function getEvent(event_id: string) {
+export async function getEvent(event_id: number) {
   try {
     const res = await psql`select * 
     from events
