@@ -41,6 +41,21 @@
   color: inherit;
 }
 
+*::-webkit-scrollbar {
+  background: #18181b88;
+  width: 10px;
+  border-radius: 100%;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--zinc-700);
+  border-radius: 1rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: #18181b88;
+}
+
 span {
   color: inherit;
 }
@@ -80,8 +95,7 @@ textarea {
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--zinc-500);
-  font-style: italic;
+  color: var(--zinc-700);
 }
 
 input:focus,

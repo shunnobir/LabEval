@@ -538,6 +538,77 @@ export function UnfilledPostsIcon({
   );
 }
 
+export function ShowIcon({ color, width, height, className }: IconProps) {
+  const w = width ? width : "28";
+  const h = height ? height : "28";
+  const c = color ? color : "#fafafa";
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      width={w}
+      height={h}
+      viewBox="0 0 28 28"
+      fill={c}
+    >
+      <path d="M7 5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4.5a1 1 0 1 1 2 0V21a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h4.5a1 1 0 1 1 0 2zm8.5-1a1 1 0 0 1 1-1H24a1 1 0 0 1 1 1v7.5a1 1 0 1 1-2 0V6.414l-5.793 5.793a1 1 0 1 1-1.414-1.414L21.586 5H16.5a1 1 0 0 1-1-1" />
+    </svg>
+  );
+}
+
+export function CopyIcon({ color, width, height, className }: IconProps) {
+  const w = width ? width : "24";
+  const h = height ? height : "24";
+  const c = color ? color : "#fafafa";
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      width={w}
+      height={h}
+      viewBox="0 0 24 24"
+    >
+      <g
+        fill="none"
+        stroke={c}
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      >
+        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+      </g>
+    </svg>
+  );
+}
+
+export function AddIcon({ color, width, height, className }: IconProps) {
+  const w = width ? width : "24";
+  const h = height ? height : "24";
+  const c = color ? color : "#fafafa";
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      width={w}
+      height={h}
+      viewBox="0 0 256 256"
+    >
+      <g
+        fill="none"
+        stroke={c}
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16"
+      >
+        <circle cx="128" cy="128" r="112" />
+        <path d="M 79.999992,128 H 176.0001" />
+        <path d="m 128.00004,79.99995 v 96.0001" />
+      </g>
+    </svg>
+  );
+}
+
 export function LabEvalIcon({ color, width, height, className }: IconProps) {
   const w = width ? width : "48";
   const h = height ? height : "48";

@@ -4,15 +4,29 @@ import generateId from "@/app/generateId";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const event_id = generateId(10, false);
   const values = {
-    event_id,
     ...body,
   };
   try {
-    await psql`insert into events values ${psql(values)}`;
+    await psql`insert into events (title, 
+                                  description,
+                                  start_time,
+                                  end_time,
+                                  isopen,
+                                  creator_controlled,
+                                  user_id,
+                                  create_date)
+                      values ${psql(values)}`;
     if (process.env.NODE_ENV === "development") {
-      await psql2`insert into events values ${psql(values)}`;
+      await psql2`insert into events (title, 
+                                  description,
+                                  start_time,
+                                  end_time,
+                                  isopen,
+                                  creator_controlled,
+                                  user_id,
+                                  create_date)
+                      values ${psql(values)}`;
     }
     return NextResponse.json({ status: "event created", ok: true });
   } catch (err) {

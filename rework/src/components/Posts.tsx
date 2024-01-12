@@ -35,8 +35,8 @@ export default function Posts({ events, ok }: PostsProps) {
   }
 
   return (
-    <main className="flex flex-1 gap-10 pb-4">
-      <div className="left flex flex-col flex-1 gap-2 rounded-md items-end">
+    <main className="flex flex-1 gap-4 md:gap-10 pb-4">
+      <div className="left flex flex-col w-[20%] gap-2 rounded-md items-end">
         <button
           className={
             (active === 0 ? "bg-zinc-800/80" : "") +
@@ -47,7 +47,7 @@ export default function Posts({ events, ok }: PostsProps) {
           }}
         >
           <PostsIcon className="fill-zinc-300" />
-          All Posts
+          <span className="hidden md:inline-block">All Posts</span>
         </button>
         {isLoggedIn ? (
           <button
@@ -60,11 +60,11 @@ export default function Posts({ events, ok }: PostsProps) {
             }}
           >
             <UnfilledPostsIcon className="fill-zinc-300" />
-            <span>My Posts</span>
+            <span className="hidden md:inline-block">My Posts</span>
           </button>
         ) : null}
       </div>
-      <div className="right flex flex-col gap-10 flex-[5] sm:flex-[4]">
+      <div className="right flex flex-col gap-10 w-[80%]">
         {events.map((event, index) => {
           return (
             <div

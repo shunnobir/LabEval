@@ -48,6 +48,14 @@ async function signupHandler(req: NextRequest): Promise<NextResponse> {
       });
     }
 
+    user = await psql`select * from users where email = ${uname}`;
+    if (user.length !== 0) {
+      return NextResponse.json({
+        status: `username '${uname}' is already taken`,
+        ok: false,
+      });
+    }
+
     const values = {
       user_id: generateId(10),
       username: uname,
@@ -78,6 +86,7 @@ async function loginHandler(req: NextRequest) {
     let user = await psql`select user_id, 
                                   username,
                                   email,
+                                  password,
                                   role,
                                   avatar,
                                   institution,
@@ -85,12 +94,24 @@ async function loginHandler(req: NextRequest) {
                                   city,
                                   join_date
                             from users
-                            where username = ${uname} and 
-                                  password = ${password} and 
-                                  role = ${role}`;
+                            where username = ${uname}`;
     if (user.length !== 1) {
       return NextResponse.json({
         status: `wrong credentials`,
+        ok: false,
+      });
+    }
+
+    if (user[0].password !== password) {
+      return NextResponse.json({
+        status: `wrong password`,
+        ok: false,
+      });
+    }
+
+    if (user[0].role !== role) {
+      return NextResponse.json({
+        status: `invalid credential`,
         ok: false,
       });
     }

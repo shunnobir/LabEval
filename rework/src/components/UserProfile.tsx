@@ -7,7 +7,7 @@ import Link from "next/link";
 import { DeleteIcon, LogoutIcon, PersonIcon, SettingsIcon } from "@/icons";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Seperator from "./Seperator";
+import Separator from "./Separator";
 
 type UserProfileProps = {
   user?: User;
@@ -70,7 +70,7 @@ function UserProfile({ user, show }: UserProfileProps) {
           </span>
         </div>
       </div>
-      <Seperator />
+      <Separator className="my-4" />
       {/* <hr /> */}
       <div className="mid flex flex-col flex-1">
         <span className="text-sm hover:bg-zinc-700/80 flex-1 cursor-pointer px-2 py-2 rounded-md flex gap-2">
@@ -82,7 +82,7 @@ function UserProfile({ user, show }: UserProfileProps) {
           Delete Account
         </span>
       </div>
-      <Seperator />
+      <Separator className="my-4" />
       {/* <hr /> */}
       <div className="bottom flex flex-col">
         <span className="text-sm px-2 py-2 hover:bg-zinc-700/80 cursor-pointer rounded-md flex gap-2">
