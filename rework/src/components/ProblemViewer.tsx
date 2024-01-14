@@ -125,10 +125,7 @@ export default function ProblemViewer({
 
   useEffect(() => {
     getUser().then((res) => {
-      if (!res.ok) {
-        return;
-      }
-      setUser(res.user);
+      if (res.ok) setUser(res.user);
       setLoading(false);
     });
   }, []);
@@ -145,9 +142,9 @@ export default function ProblemViewer({
         .then((res) => res.json())
         .then((res) => {
           if (res.ok) setSubmissions(res.submissions);
-          setSubmissionsLoading(false);
         });
     }
+    setSubmissionsLoading(false);
   }, [code, fileType, problem.problem_id, user]);
 
   if (loading) {
