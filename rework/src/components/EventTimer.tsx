@@ -24,14 +24,14 @@ export default function EventTimer({ event }: EventTimerProps) {
   }, []);
 
   return (
-    <div className="w-full border border-solid border-zinc-800 rounded-md">
-      <div className="p-4 text-center text-sm hover:text-blue-600 hover:underline">
+    <div className="w-full border border-solid border-slate-300 dark:border-slate-800 rounded-md">
+      <div className="p-4 text-center text-sm text-slate-100 hover:text-sky-600 hover:underline bg-slate-800 rounded-t-md">
         <Link href={`/events/${event?.event_id}`}>{event?.title}</Link>
       </div>
       <Separator className="my-0" />
       <div className="text-center p-2">
         {event && timeNow && event?.start_time > timeNow ? (
-          <span className="text-blue-600">Time to start</span>
+          <span className="text-sky-600">Time to start</span>
         ) : (
           <span className="text-red-600">Time remaining</span>
         )}

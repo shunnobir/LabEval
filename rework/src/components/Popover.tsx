@@ -20,7 +20,7 @@ function Popover({ content, tip }: { content: any; tip: any }) {
     >
       {content}
       {showTip ? (
-        <div className="absolute z-[999] bg-zinc-950 border border-solid border-zinc-800 shadow-[0_0_0.5rem_rgba(0,0,0,0.3)] rounded-md w-40 text-sm sm:w-60 p-2">
+        <div className="absolute z-[999] bg-white dark:bg-slate-950 border border-solid border-slate-300 dark:border-slate-800 shadow-[0_0_5px_rgba(0,0,0,0.3)] rounded-md w-40 text-sm sm:w-60 p-2">
           {tip}
         </div>
       ) : null}

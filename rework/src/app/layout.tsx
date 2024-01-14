@@ -74,7 +74,7 @@ export default function RootLayout({
           workSans.className +
           " " +
           workSansLocal.className +
-          " px-4 lg:px-[15%] py-8 h-full w-full flex flex-col"
+          " px-4 lg:px-[10%] py-8 h-full w-full flex flex-col font-[450] bg-white text-slate-700 dark:bg-slate-950 dark:text-slate-300"
         }
       >
         <Navbar />

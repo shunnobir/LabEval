@@ -1,5 +1,6 @@
 "use client";
 
+import getUser from "@/app/lib/getUser";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Loader from "@/components/Loader";
@@ -7,14 +8,21 @@ import Separator from "@/components/Separator";
 import { Switch } from "@/components/ui/switch";
 import { AddIcon, ShowIcon } from "@/icons";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Event, User } from "../../../../../../../../types";
+import UnauthorizedAccess from "@/components/UnauthorizedAccess";
+import Loading from "@/components/Loading";
+import Page404 from "@/components/404";
 
 export default function AddTestcase({
   params,
 }: {
   params: { event_id: string; order: string };
 }) {
+  const [loading, setLoading] = useState(0);
+  const [user, setUser] = useState<User>();
+  const [event, setEvent] = useState<Event>();
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [isSample, setIsSample] = useState(false);
@@ -57,11 +65,36 @@ export default function AddTestcase({
     setPending(false);
   };
 
-  return (
+  useEffect(() => {
+    getUser().then((res) => {
+      if (res.ok) setUser(res.user);
+      setLoading((prev) => prev + 1);
+    });
+    fetch(`/api/events?event_id=${params.event_id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok) setEvent(res.event);
+        setLoading((prev) => prev + 1);
+      });
+  }, [params.event_id]);
+
+  if (loading === 0) {
+    return <Loading />;
+  }
+
+  if (loading > 0 && !event) {
+    return <Page404 />;
+  }
+
+  if (loading > 0 && event && !user) {
+    return <UnauthorizedAccess />;
+  }
+
+  return user && event && user.user_id === event.user_id ? (
     <div className="add-testcase flex flex-col md:mx-[5%] gap-4 pb-8">
       <div className="flex flex-col gap-2">
         <h1 className="font-bold">Add Testcases</h1>
-        <span className="text-zinc-500">
+        <span className="text-slate-500">
           Write testcase inputs and outputs in the given boxes and add them.
         </span>
         <Separator className="my-4" />
@@ -80,7 +113,7 @@ export default function AddTestcase({
       <div className="input-box flex flex-col gap-2">
         <label className="font-semibold">Testcase Input</label>
         <textarea
-          className="resize-none bg-transparent border border-solid border-zinc-800 rounded-md h-60 p-2"
+          className="resize-none bg-transparent border border-solid border-slate-300 dark:border-slate-800 rounded-md h-60 p-2"
           placeholder="write here"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -89,7 +122,7 @@ export default function AddTestcase({
       <div className="input-box flex flex-col gap-2">
         <label className="font-semibold">Testcase Output</label>
         <textarea
-          className="resize-none bg-transparent border border-solid border-zinc-800 rounded-md h-60 p-2"
+          className="resize-none bg-transparent border border-solid border-slate-300 dark:border-slate-800 rounded-md h-60 p-2"
           placeholder="write here"
           value={output}
           onChange={(e) => setOutput(e.target.value)}
@@ -116,5 +149,7 @@ export default function AddTestcase({
         </Button>
       )}
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }

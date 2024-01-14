@@ -43,7 +43,7 @@ export default function EyeInput({
         className={"pr-12"}
       />
       <button
-        className="absolute right-4 ml-auto bg-transparent border-none shadow-zinc-800 shadow-none px-0"
+        className="absolute right-4 ml-auto bg-transparent border-none shadow-slate-800 shadow-none px-0"
         onClick={handleOnClick}
       >
         {show ? (

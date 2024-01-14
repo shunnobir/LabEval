@@ -8,9 +8,8 @@ export async function getEvents() {
                          where p.event_id = e.event_id) as "participants" 
                  from events e
                  order by e.start_time desc`;
-    return { events: res, ok: true };
+    return { events: res, status: "success", ok: true };
   } catch (err) {
-    console.error(err);
-    return { events: [], ok: false };
+    return { events: [], status: "internal database error", ok: false };
   }
 }

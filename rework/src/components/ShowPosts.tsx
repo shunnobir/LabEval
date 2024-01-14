@@ -25,12 +25,12 @@ export default async function ShowPosts({ all }: ShowPostsProps) {
         return (
           <div
             key={index}
-            className="event flex flex-col justify-center border border-solid border-zinc-800 rounded-md"
+            className="event flex flex-col justify-center border border-solid border-slate-800 rounded-md"
           >
-            <div className="top flex items-center bg-zinc-800 p-3 rounded-t-md">
+            <div className="top flex items-center bg-slate-800 p-3 rounded-t-md">
               <Link
                 href={`/events/${event.event_id}`}
-                className="hover:text-blue-500 hover:underline"
+                className="hover:text-sky-500 hover:underline"
               >
                 {event.title}
               </Link>
@@ -38,7 +38,7 @@ export default async function ShowPosts({ all }: ShowPostsProps) {
             <div className="description p-3">
               <MarkdownViewer str={event.description} />
             </div>
-            <div className="tail border-t border-solid border-zinc-800 p-3">
+            <div className="tail border-t border-solid border-slate-800 p-3">
               Posted:{" "}
               {formatDistance(new Date(event.create_date), new Date(), {
                 addSuffix: true,
@@ -48,7 +48,7 @@ export default async function ShowPosts({ all }: ShowPostsProps) {
         );
       })}
       {events.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center text-zinc-600">
+        <div className="flex flex-1 items-center justify-center text-slate-600">
           No posts yet
         </div>
       ) : null}

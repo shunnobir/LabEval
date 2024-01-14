@@ -97,7 +97,7 @@ async function loginHandler(req: NextRequest) {
                             where username = ${uname}`;
     if (user.length !== 1) {
       return NextResponse.json({
-        status: `wrong credentials`,
+        status: `wrong username`,
         ok: false,
       });
     }

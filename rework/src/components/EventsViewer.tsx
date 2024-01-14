@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { EventsCreateIcon } from "@/icons";
-import Table from "./Table";
+import Table, { TableCell, TableRow } from "./Table";
 import { Event, User } from "../../types";
 import {
   format,
@@ -66,28 +66,31 @@ function EventsViewer({ events, user }: EventsViewerProps) {
           <Table
             heads={[
               { content: "Start Time", className: "" },
-              { content: "Event", className: "" },
+              { content: "Event", className: "w-2/6" },
               { content: "Duration", className: "" },
               { content: "Participant", className: "" },
-              { content: "Time to start or Time Remaining", className: "" },
+              {
+                content: "Time to start or Time Remaining",
+                className: "",
+              },
             ]}
             empty={ongoingEvents?.length === 0}
           >
             {ongoingEvents?.map((event: NEvent, index: number) => {
               return (
-                <tr key={index}>
-                  <td>
+                <TableRow key={index}>
+                  <TableCell>
                     {format(event.start_time, "dd-MM-yyyy (EEE) hh:mm a")}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <Link
                       href={`/events/${event.event_id}`}
-                      className="hover:text-blue-500 hover:underline"
+                      className="hover:text-sky-500 hover:underline"
                     >
                       {event.title}
                     </Link>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     {formatDuration(
                       intervalToDuration({
                         end: event.end_time,
@@ -98,10 +101,10 @@ function EventsViewer({ events, user }: EventsViewerProps) {
                         format: ["days", "hours", "minutes"],
                       }
                     )}
-                  </td>
-                  <td>{event.participants}</td>
+                  </TableCell>
+                  <TableCell>{event.participants}</TableCell>
                   {event.start_time > timeNow ? (
-                    <td className="text-blue-600 font-semibold">
+                    <TableCell className="text-sky-600 font-semibold">
                       {formatDuration(
                         intervalToDuration({
                           end: event.start_time,
@@ -112,9 +115,9 @@ function EventsViewer({ events, user }: EventsViewerProps) {
                           format: ["hours", "minutes", "seconds"],
                         }
                       )}
-                    </td>
+                    </TableCell>
                   ) : (
-                    <td className="text-red-600 font-semibold">
+                    <TableCell className="text-red-600 font-semibold">
                       {formatDuration(
                         intervalToDuration({
                           end: event.end_time,
@@ -125,9 +128,9 @@ function EventsViewer({ events, user }: EventsViewerProps) {
                           format: ["hours", "minutes", "seconds"],
                         }
                       )}
-                    </td>
+                    </TableCell>
                   )}
-                </tr>
+                </TableRow>
               );
             })}
           </Table>
@@ -145,19 +148,19 @@ function EventsViewer({ events, user }: EventsViewerProps) {
           >
             {pastEvents?.map((event: NEvent, index: number) => {
               return (
-                <tr key={index}>
-                  <td>
+                <TableRow key={index}>
+                  <TableCell>
                     {format(event.start_time, "dd-MM-yyyy (EEE) HH:mm a")}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <Link
                       href={`/events/${event.event_id}`}
-                      className="hover:text-blue-500 hover:underline"
+                      className="hover:text-sky-500 hover:underline"
                     >
                       {event.title}
                     </Link>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     {formatDuration(
                       intervalToDuration({
                         end: event.end_time,
@@ -168,9 +171,9 @@ function EventsViewer({ events, user }: EventsViewerProps) {
                         format: ["hours", "minutes"],
                       }
                     )}
-                  </td>
-                  <td>{event.participants}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{event.participants}</TableCell>
+                </TableRow>
               );
             })}
           </Table>

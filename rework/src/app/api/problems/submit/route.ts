@@ -18,7 +18,8 @@ interface Type {
     ftp: Type,
     file: string,
     testcases: any[],
-    solution_id: string
+    solution_id: string,
+    execution_time: number
   ) => Promise<any>;
   filetype: string;
 }
@@ -62,7 +63,8 @@ export async function GET(req: NextRequest) {
     const res = await psql`select * 
               from solutions 
               where problem_id = ${searchParams.get("problem_id")} and
-                    user_id = ${searchParams.get("user_id")}`;
+                    user_id = ${searchParams.get("user_id")}
+              order by submission_time desc`;
     return NextResponse.json({ status: "success", submissions: res, ok: true });
   } catch (err) {
     return NextResponse.json({ status: "internal database error", ok: false });
@@ -70,9 +72,10 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const body = await req.json();
   try {
-    const body = await req.json();
-    const solution_id = generateId(12);
+    const problem =
+      await psql`select * from problems where problem_id = ${body.problem_id}`;
     await psql`insert into solutions (solution_id, 
                                       code, 
                                       language, 
@@ -80,22 +83,23 @@ export async function POST(req: NextRequest) {
                                       submission_time, 
                                       user_id, 
                                       problem_id)
-                values (${solution_id}, 
+                values (${body.solution_id}, 
                         ${body.code},
                         ${body.language},
                         'running',
                         ${body.submission_time},
                         ${body.user_id},
                         ${body.problem_id})`;
+
     if (process.env.NODE_ENV === "development") {
       await psql2`insert into solutions (solution_id, 
-        code, 
+                                      code, 
                                       language, 
                                       verdict, 
                                       submission_time, 
                                       user_id, 
                                       problem_id)
-                values (${solution_id}, 
+                values (${body.solution_id}, 
                         ${body.code},
                         ${body.language},
                         'running',
@@ -110,10 +114,20 @@ export async function POST(req: NextRequest) {
       ftp[body.extension],
       body.code,
       testcases,
-      solution_id
+      body.solution_id,
+      problem[0].time_limit
     );
     return res;
   } catch (err) {
+    console.log(err);
+    await psql`update solutions 
+    set verdict = 'internal database error'
+    where solution_id = ${body.solution_id}`;
+    if (process.env.NODE_ENV === "development") {
+      await psql2`update solutions 
+      set verdict = 'internal database error'
+      where solution_id = ${body.solution_id}`;
+    }
     return NextResponse.json({ status: "internal database error", ok: false });
   }
 }
@@ -122,7 +136,8 @@ async function executeCorCppProgram(
   ftp: Type,
   file: string,
   testcases: any[],
-  solution_id: string
+  solution_id: string,
+  execution_time: number
 ) {
   try {
     const filePath = path.join("__temp." + ftp.filetype);
@@ -144,6 +159,8 @@ async function executeCorCppProgram(
         set verdict = 'internal server error'
         where solution_id = ${solution_id}`;
       }
+      fs.rmSync(filePath);
+      fs.rmSync(executablePath);
       return NextResponse.json({
         status: "internal server error",
         ok: false,
@@ -153,70 +170,115 @@ async function executeCorCppProgram(
     let errorOccured = compilation.status === null || compilation.status !== 0;
 
     if (errorOccured) {
+      const verdict = `compilation error\n${compilation.stderr}`;
       await psql`update solutions 
-                set verdict = 'compilation error\n${compilation.stderr}'
+                set verdict = ${verdict}
                 where solution_id = ${solution_id}`;
 
       if (process.env.NODE_ENV === "development") {
         await psql2`update solutions 
-                set verdict = 'compilation error\n${compilation.stderr}'
+                set verdict = ${verdict}
                 where solution_id = ${solution_id}`;
       }
       fs.rmSync(filePath);
+      fs.rmSync(executablePath);
       return NextResponse.json({
         status: "compilation error",
-        ok: false,
+        ok: true,
       });
     }
 
+    let maxMem = 0;
+    let maxTime = 0;
     for (let i = 0; i < testcases.length; ++i) {
+      const verdict = `running on test case ${i + 1}`;
       await psql`update solutions 
-                set verdict = 'running on test case ${i + 1}'
+                set verdict = ${verdict}
                 where solution_id = ${solution_id}`;
 
       if (process.env.NODE_ENV === "development") {
         await psql2`update solutions 
-        set verdict = 'running on test case ${i + 1}'
+        set verdict = ${verdict}
         where solution_id = ${solution_id}`;
       }
 
       const inputPath = path.join(`temp${i + 1}.input`);
       fs.writeFileSync(inputPath, testcases[i].input_content);
       let run = child_process.spawnSync(
-        "./" + executablePath + "<" + inputPath.toString(),
+        '/usr/bin/time -f"\n%e\n%M" ' +
+          "./" +
+          executablePath +
+          " < " +
+          inputPath.toString(),
         { shell: true }
       );
 
       errorOccured = run.status === null || run.status !== 0;
 
       if (errorOccured) {
+        fs.rmSync(inputPath);
+        const verdict = `runtime error\n${run.stderr}`;
         await psql`update solutions 
-                  set verdict = 'runtime error\n${run.stderr}'
+                  set verdict = ${verdict}
                   where solution_id = ${solution_id}`;
 
         if (process.env.NODE_ENV === "development") {
           await psql2`update solutions 
-                    set verdict = 'runtime error\n${run.stderr}'
+                    set verdict = ${verdict}
                     where solution_id = ${solution_id}`;
         }
         break;
       }
 
       fs.rmSync(inputPath);
-      if (run.stdout.toString() !== testcases[i].output_content) {
+      const stdout = run.stdout.toString();
+      const [time, memory] = run.stderr.toString().split("\n");
+      // console.log(stdout, run.stderr.toString());
+
+      if (maxTime < Number(time)) {
+        await psql`update solutions
+                  set execution_time = ${Number(time)}
+                  where solution_id = ${solution_id}`;
+
+        if (process.env.NODE_ENV === "development") {
+          await psql2`update solutions
+          set execution_time = ${Number(time)}
+          where solution_id = ${solution_id}`;
+        }
+        maxTime = Number(time);
+      }
+
+      if (maxMem < Number(memory)) {
+        await psql`update solutions
+                  set memory_taken = ${Number(memory)}
+                  where solution_id = ${solution_id}`;
+
+        if (process.env.NODE_ENV === "development") {
+          await psql2`update solutions
+          set memory_taken = ${Number(memory)}
+          where solution_id = ${solution_id}`;
+        }
+        maxTime = Number(time);
+      }
+
+      const testcaseOutput = stdout;
+      if (testcaseOutput.trimEnd() !== testcases[i].output_content) {
         errorOccured = true;
+        const verdict = `wrong answer on test case ${i + 1}`;
         await psql`update solutions 
-          set verdict = 'wrong answer on test case ${i + 1}'
+          set verdict = ${verdict}
           where solution_id = ${solution_id}`;
 
         if (process.env.NODE_ENV === "development") {
           await psql2`update solutions 
-            set verdict = 'wrong answer on test case ${i + 1}'
+            set verdict = ${verdict}
             where solution_id = ${solution_id}`;
         }
+        fs.rmSync(filePath);
+        fs.rmSync(executablePath);
         return NextResponse.json({
           status: `wrong answer on test case ${i + 1}`,
-          ok: false,
+          ok: true,
         });
       }
     }
@@ -232,10 +294,20 @@ async function executeCorCppProgram(
               where solution_id = ${solution_id}`;
       }
 
+      fs.rmSync(filePath);
+      fs.rmSync(executablePath);
       return NextResponse.json({ status: "accepted", ok: true });
     }
   } catch (err) {
     console.error("Error: ", err);
+    await psql`update solutions 
+    set verdict = 'internal database error'
+    where solution_id = ${solution_id}`;
+    if (process.env.NODE_ENV === "development") {
+      await psql2`update solutions 
+      set verdict = 'internal database error'
+      where solution_id = ${solution_id}`;
+    }
     return NextResponse.json({ status: "internal database error", ok: false });
   }
 }

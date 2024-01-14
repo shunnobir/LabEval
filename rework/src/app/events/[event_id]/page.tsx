@@ -5,6 +5,9 @@ import MarkdownViewer from "@/components/MarkdownViewer";
 import React from "react";
 import { Event } from "../../../../types";
 import EventTimer from "@/components/EventTimer";
+import getUser from "@/app/lib/getUser";
+import Page404 from "@/components/404";
+import { notFound } from "next/navigation";
 
 type EventProps = {
   params: {
@@ -15,9 +18,14 @@ type EventProps = {
 export default async function Event({ params }: EventProps) {
   const { event, ok } = await getEvent(params.event_id);
   const problems = await getEventProblems(params.event_id);
+  const user = await getUser();
 
   if (!ok || !problems.ok) {
     return <div>error</div>;
+  }
+
+  if (ok && !event) {
+    notFound();
   }
 
   return (
@@ -27,7 +35,11 @@ export default async function Event({ params }: EventProps) {
         <div>
           <MarkdownViewer str={event?.description || ""} />
         </div>
-        <EventProblems problems={problems?.problems} />
+        <EventProblems
+          event={event}
+          problems={problems?.problems}
+          user={user.user}
+        />
       </div>
       <div className="right flex flex-col w-[25%]">
         <div className="top">

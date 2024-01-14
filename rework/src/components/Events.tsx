@@ -10,22 +10,26 @@ import Button from "./Button";
 import { EventsCreateIcon } from "@/icons";
 import CreateEvent from "./CreateEvent";
 import EventsViewer from "./EventsViewer";
+import Loading from "./Loading";
 
 type EventsProps = {
   events: any;
 };
 
 export default function Events({ events }: EventsProps) {
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
     getUser().then((res) => {
-      if (!res.ok) {
-        return;
-      }
-      setUser(res.user);
+      if (res.ok) setUser(res.user);
+      setLoading(false);
     });
   }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return <EventsViewer user={user} events={events} />;
 }

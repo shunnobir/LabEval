@@ -46,20 +46,20 @@ function CreateEvent({ user }: CreateEventProps) {
           <Input type="checkbox" className="rounded-md" />
           <label>Public Event</label>
           <div
-            className="p-1 cursor-pointer bg-zinc-800/30 hover:bg-zinc-800/80 rounded-full"
+            className="p-1 cursor-pointer bg-slate-800/30 hover:bg-slate-800/80 rounded-full"
             title="Do you want to make the event accessible to everyone?"
           >
-            <InfoIcon width="20" height="20" className="fill-zinc-300" />
+            <InfoIcon width="20" height="20" className="fill-slate-300" />
           </div>
         </div>
         <div className="flex gap-2 items-center">
           <Input type="checkbox" className="rounded-md" />
           <label>Manual Evaluation</label>
           <div
-            className="p-1 cursor-pointer bg-zinc-800/30 hover:bg-zinc-800/80 rounded-full"
+            className="p-1 cursor-pointer bg-slate-800/30 hover:bg-slate-800/80 rounded-full"
             title="Do you want to evaluate submissions manually?"
           >
-            <InfoIcon width="20" height="20" className="fill-zinc-300" />
+            <InfoIcon width="20" height="20" className="fill-slate-300" />
           </div>
         </div>
       </div>

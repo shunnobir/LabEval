@@ -1,7 +1,7 @@
 "use client";
 
 import { JetBrains_Mono } from "next/font/google";
-import Table from "@/components/Table";
+import Table, { TableCell, TableRow } from "@/components/Table";
 import Image from "next/image";
 import Separator from "@/components/Separator";
 
@@ -163,7 +163,9 @@ function labevalMarkdownRawTextTokenizer(src: string) {
     while (peek(1) !== "}") curlText += consume(1);
     consume(1);
     let attributes = curlText.split(",").map((val): any => {
+      if (val.length === 0) return { attribute: "", value: "" };
       let t = val.split("=");
+      if (t.length === 0) return { attribute: "", value: "" };
       return { attribute: t[0].trim(), value: t[1].trim() };
     });
     return { type: TokenType.BOXED, attributes, content: content };
@@ -894,21 +896,21 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
 
   const parseTableCell = (tok: any, key: number): any => {
     return (
-      <td key={key}>
+      <TableCell key={key}>
         {...tok.tokens.map((token: any, index: number): any => {
           return parseStatement(token, key + 1 + index);
         })}
-      </td>
+      </TableCell>
     );
   };
 
   const parseTableRow = (tok: any, key: number): any => {
     return (
-      <tr key={key}>
+      <TableRow key={key}>
         {...tok.cells.map((cell: any, index: number): any => {
           return parseStatement(cell, key + 1 + index);
         })}
-      </tr>
+      </TableRow>
     );
   };
 
@@ -977,14 +979,14 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
       <span
         key={key}
         style={{
-          color: color ? `var(--${color.value}-500)` : "var(--zinc-300)",
+          color: color ? `var(--${color.value}-500)` : "var(--slate-300)",
         }}
       >
         {href ? (
           <a
             key={key + 1}
             href={href.value}
-            className="text-blue-500 hover:underline"
+            className="text-sky-500 hover:underline"
           >
             {...tok.content.map((token: any, index: number): any => {
               return parseStatement(token, key + 1 + index);
@@ -1007,7 +1009,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
         key={key}
         className={
           jetbrainsMono.className +
-          " whitespace-pre text-blue-500 bg-zinc-800 rounded-md"
+          " whitespace-pre text-sky-500 bg-slate-200 dark:bg-slate-800 rounded-md"
         }
         style={{ paddingInline: "8px" }}
       >
@@ -1030,7 +1032,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
         key={key}
         className={
           jetbrainsMono.className +
-          " block-code bg-zinc-800/50 text-zinc-200 w-full border border-solid border-zinc-800 rounded-md px-2 py-2"
+          " block-code bg-slate-100 dark:bg-slate-800/50  w-full border border-solid border-slate-300 dark:border-slate-800 rounded-md px-2 py-2"
         }
       >
         <pre>{tok.raw}</pre>

@@ -3,11 +3,7 @@ import Posts from "@/components/Posts";
 import getUser from "./lib/getUser";
 
 export default async function Home() {
-  const { events, ok } = await getEvents();
+  const { events, ok, status } = await getEvents();
 
-  if (!ok) {
-    return <main>error</main>;
-  }
-
-  return <Posts events={events} ok={ok} />;
+  return <Posts events={events} ok={ok} status={status} />;
 }

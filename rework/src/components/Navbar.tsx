@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { HomeIcon, LabEvalIcon, LabEvalLogo, LoginIcon } from "@/icons";
+import {
+  BackButton,
+  HomeIcon,
+  LabEvalIcon,
+  LabEvalLogo,
+  LoginIcon,
+} from "@/icons";
 import Link from "next/link";
 import {
   usePathname,
@@ -14,11 +20,16 @@ import getUser from "@/app/lib/getUser";
 import { User } from "../../types";
 import Image from "next/image";
 import UserProfile from "./UserProfile";
+import useTheme, { ThemeProp } from "@/app/hooks/useTheme";
 
 type NavLink = {
   name: string;
   link: string;
 };
+
+interface IThemeIcon {
+  [id: string]: string;
+}
 
 export default function Navbar() {
   const navLinks: NavLink[] = [
@@ -34,6 +45,11 @@ export default function Navbar() {
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [theme, setTheme] = useTheme();
+  const themeIcons: IThemeIcon = {
+    light: "🌛",
+    dark: "☀️",
+  };
 
   useEffect(() => {
     getUser().then((res) => {
@@ -46,26 +62,31 @@ export default function Navbar() {
     });
   }, [pathName, searchParams]);
 
+  useEffect(() => {}, []);
+
   return (
     <nav className="navbar flex flex-col mb-4 gap-4">
-      <div className="navbar-top flex gap-4 justify-between items-center ">
+      <div className="navbar-top flex gap-4 items-center ">
         <Link href="/" className="hidden lg:block">
-          <LabEvalLogo width="160" />
+          <LabEvalLogo
+            width="160"
+            color={theme === "light" ? "#09090b" : "#fafafa"}
+          />
         </Link>
         <Link href="/" className="lg:hidden">
           <LabEvalIcon width="50" />
         </Link>
-        <div className="navbar-mid w-3/4 lg:w-1/2 rounded-full flex items-center justify-between border border-solid border-zinc-800">
+        <div className="navbar-mid ml-auto rounded-full flex gap-4 items-center">
           {navLinks.map((link: NavLink, index: number) => {
             return (
               <Link href={`/${link.link}`} key={index}>
                 <div
                   className={
-                    "text-sm sm:text-[1rem] py-1 px-4 rounded-full flex items-center justify-center hover:bg-zinc-800/80 hover:text-zinc-300 duration-300 " +
+                    "py-1 px-4 rounded-full flex items-center justify-center hover:bg-slate-200 hover:text-slate-700 hover:dark:bg-slate-800/80 hover:dark:text-slate-300 duration-300 " +
                     ((segments.length === 0 && index == 0) ||
                     segments[0] === link.link
-                      ? "bg-zinc-800/80 text-zinc-300"
-                      : "text-zinc-500")
+                      ? "bg-slate-200 dark:bg-slate-800/80 dark:text-slate-300"
+                      : "text-slate-500")
                   }
                 >
                   <span>{link.name}</span>
@@ -73,6 +94,17 @@ export default function Navbar() {
               </Link>
             );
           })}
+          <button
+            className="ml-auto dark:bg-slate-800 bg-slate-600 w-10 h-10 rounded-full"
+            title="click to change theme"
+            onClick={() =>
+              setTheme((prev: ThemeProp) =>
+                prev === "light" ? "dark" : "light"
+              )
+            }
+          >
+            {themeIcons[theme as string]}
+          </button>
         </div>
         {segments.length === 0 ||
         (segments.length > 0 && segments[0] !== "auth") ? (
@@ -122,7 +154,6 @@ export default function Navbar() {
                   title="Login"
                   icon={<LoginIcon width="20" height="20" />}
                   onClick={() => router.push("/auth?auth=login")}
-                  className="px-2 py-2 rounded-full bg-transparent bg-gradient-to-tr from-zinc-800 to-zinc-800 border border-solid border-zinc-800 shadow-none"
                 />
               )}
             </div>
@@ -138,36 +169,54 @@ export default function Navbar() {
         )}
       </div>
       <div className="navbar-bottom breadcrum flex flex-row flex-wrap gap-2 items-center">
+        <Button
+          className="w-8 h-8"
+          style={{ borderRadius: 999 }}
+          icon={<BackButton width="20" height="20" />}
+          title="go back"
+          onClick={() => router.back()}
+        ></Button>
+        <Button
+          className="w-8 h-8 rotate-180"
+          style={{ borderRadius: 999 }}
+          icon={<BackButton width="20" height="20" />}
+          title="go forward"
+          onClick={() => router.forward()}
+        ></Button>
         <Link
           href="/"
-          className="rounded-full px-2 py-1 bg-zinc-800/50 hover:bg-zinc-800/80"
+          className="rounded-full px-2 py-1 hover:bg-slate-200 dark:hover:bg-slate-800/80"
         >
           <HomeIcon
-            className="fill-zinc-500 hover:fill-zinc-300"
+            className=" fill-slate-400 dark:fill-slate-500 hover:fill-slate-500 dark:hover:fill-slate-300"
             width="18"
             height="18"
           />
         </Link>
-        <span className="text-zinc-600 text-sm">{"\u276D"}</span>
+        <span className="text-slate-300 dark:text-slate-600 text-sm">
+          {"\u276D"}
+        </span>
         {segments.map((segment: string, index: number) => {
           return (
             <Link
               key={index}
               href={"/" + segments.slice(0, index + 1).join("/")}
-              className="text-zinc-500 flex gap-2 items-center"
+              className="flex gap-2 items-center"
             >
               <span
                 className={
-                  "text-sm hover:bg-zinc-800/80 hover:text-zinc-300 hover:underline bg-zinc-800/50 rounded-full px-4 py-1 " +
+                  "text-sm hover:bg-slate-200 dark:hover:bg-slate-800/80 hover:text-slate-800 dark:hover:text-slate-300 hover:underline bg-slate-200 dark:bg-slate-800/50 rounded-full px-4 py-1 " +
                   (index === segments.length - 1
-                    ? "bg-zinc-800/80 text-zinc-300"
-                    : "text-zinc-400")
+                    ? "bg-slate-200 dark:bg-slate-800/80 text-slate-800 dark:text-slate-300"
+                    : "text-slate-400")
                 }
               >
                 {segment}
               </span>
               {index < segments.length - 1 ? (
-                <span className="text-zinc-600 text-sm">{"\u276D"}</span>
+                <span className="text-slate-300 dark:text-slate-600 text-sm">
+                  {"\u276D"}
+                </span>
               ) : null}
             </Link>
           );
@@ -175,7 +224,7 @@ export default function Navbar() {
         {segments.length === 0 ? (
           <Link
             href={"/"}
-            className="text-sm bg-zinc-800/80 text-zinc-300 hover:underline px-4 py-1 rounded-full"
+            className="text-sm bg-slate-200 dark:bg-slate-800/80 text-slate-800 dark:text-slate-300 hover:underline px-4 py-1 rounded-full"
           >
             posts
           </Link>
