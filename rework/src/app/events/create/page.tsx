@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import Popover from "@/components/Popover";
 import Separator from "@/components/Separator";
 import Loader from "@/components/Loader";
+import UnauthorizedAccess from "@/components/UnauthorizedAccess";
+import Loading from "@/components/Loading";
 
 type CreateEventProps = {
   user?: User;
@@ -29,6 +31,7 @@ function CreateEvent() {
   const [isopen, setIsOpen] = useState(false);
   const [creatorControlled, setCreatorControlled] = useState(false);
   const [creationPending, setCreationPending] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const handleCreate = async () => {
@@ -67,18 +70,18 @@ function CreateEvent() {
 
   useEffect(() => {
     getUser().then((res) => {
-      if (!res.ok) {
-        return;
-      }
-      setUser(res.user);
+      if (res.ok) setUser(res.user);
+      setLoading(false);
     });
   }, [pathName, searchParams]);
 
-  return (
+  if (loading) return <Loading />;
+
+  return !loading && user && user.role === "instructor" ? (
     <div className="flex flex-col min-h-fit gap-4 pb-6 md:mx-[5%]">
       <div className="flex flex-col gap-2">
         <h1 className="font-bold">New Event</h1>
-        <span className="text-zinc-500">
+        <span className="text-slate-500">
           Create your events with your preffered settings
         </span>
         <Separator className="my-4" />
@@ -142,7 +145,11 @@ function CreateEvent() {
             <label className="font-semibold">Public Event</label>
             <Popover
               content={
-                <InfoIcon width="20" height="20" className="fill-zinc-300" />
+                <InfoIcon
+                  width="20"
+                  height="20"
+                  className="fill-slate-600 dark:fill-slate-300"
+                />
               }
               tip={
                 <span>
@@ -159,7 +166,11 @@ function CreateEvent() {
             <label className="font-semibold">Manual Evaluation</label>
             <Popover
               content={
-                <InfoIcon width="20" height="20" className="fill-zinc-300" />
+                <InfoIcon
+                  width="20"
+                  height="20"
+                  className="fill-slate-600 dark:fill-slate-300"
+                />
               }
               tip={<span>Do you want to evaluate submissions manually?</span>}
             />
@@ -176,6 +187,8 @@ function CreateEvent() {
         </Button>
       </div>
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

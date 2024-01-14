@@ -18,7 +18,7 @@ function MarkdownViewer({
     (window as any).MathJax?.startup.document.updateDocument();
   }, []);
   return (
-    <div className={className} style={style}>
+    <div className={className + " w-full"} style={style}>
       {labevalMarkdownParser(str)}
     </div>
   );

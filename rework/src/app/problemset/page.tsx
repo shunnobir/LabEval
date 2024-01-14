@@ -1,18 +1,19 @@
-import Table from "@/components/Table";
+import Table, { TableCell, TableRow } from "@/components/Table";
 import React from "react";
 import { getProblems } from "../lib/getProblems";
 import Link from "next/link";
+import InternalError from "@/components/InternalError";
 
 async function Problems() {
-  const { problems, ok } = await getProblems();
+  const { problems, ok, status } = await getProblems();
 
   if (!ok) {
-    return <div>error</div>;
+    return <InternalError status={status} />;
   }
 
   return (
     <div className="problems flex gap-8">
-      <div className="left flex flex-col flex-[2] gap-2">
+      <div className="left flex flex-col w-[75%] gap-2">
         <h2>Problems</h2>
         <Table
           heads={[
@@ -24,29 +25,29 @@ async function Problems() {
         >
           {problems?.map((problem, index) => {
             return (
-              <tr key={index}>
-                <td>
+              <TableRow key={index}>
+                <TableCell className="py-2">
                   <Link
                     href={`/events/${problem.event_id}/problems/${problem.problem_order}`}
-                    className="hover:text-blue-500 hover:underline"
+                    className="hover:text-sky-500 hover:underline"
                   >
                     {problem.event_id + problem.problem_order}
                   </Link>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell className="py-2">
                   <Link
                     href={`/events/${problem.event_id}/problems/${problem.problem_order}`}
-                    className="hover:text-blue-500 hover:underline"
+                    className="hover:text-sky-500 hover:underline"
                   >
                     {problem.title}
                   </Link>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             );
           })}
         </Table>
       </div>
-      <div className="right flex flex-col flex-1"></div>
+      <div className="right flex flex-col w-[25%]"></div>
     </div>
   );
 }

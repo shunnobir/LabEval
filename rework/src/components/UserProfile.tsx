@@ -5,7 +5,7 @@ import { User } from "../../types";
 import Image from "next/image";
 import Link from "next/link";
 import { DeleteIcon, LogoutIcon, PersonIcon, SettingsIcon } from "@/icons";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Separator from "./Separator";
 
@@ -17,6 +17,7 @@ type UserProfileProps = {
 function UserProfile({ user, show }: UserProfileProps) {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathName = usePathname();
 
   const handleLogout = () => {
     const res = fetch("/api/auth?auth=logout", {
@@ -27,7 +28,7 @@ function UserProfile({ user, show }: UserProfileProps) {
       loading: "logging out",
       success: (data) => {
         localStorage.removeItem("isLoggedIn");
-        router.push("/auth?auth=login");
+        location.reload();
         return "logged out";
       },
       error: (data) => {
@@ -49,7 +50,7 @@ function UserProfile({ user, show }: UserProfileProps) {
 
   return (
     <div
-      className="user-profile flex flex-col absolute right-0 border border-solid border-zinc-800 bg-zinc-950 px-2 py-4 text-sm sm:text-[1rem] rounded-md z-10 text-zinc-300 after:border-[12px] after:border-solid after:border-b-zinc-800 after:border-t-transparent after:border-l-transparent after:border-r-transparent after:w-[24px] after:h-[24px] after:absolute after:right-2 after:top-[-24px] after:z-[10] "
+      className="user-profile flex flex-col absolute right-0 border border-solid border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-950 px-2 py-4 text-sm sm:text-[1rem] rounded-md z-10 text-slate-700 dark:text-slate-300 after:border-[12px] after:border-solid after:border-b-slate-800 after:border-t-transparent after:border-l-transparent after:border-r-transparent after:w-[24px] after:h-[24px] after:absolute after:right-2 after:top-[-24px] after:z-[10] "
       ref={ref}
       style={{
         width: "15rem",
@@ -65,7 +66,7 @@ function UserProfile({ user, show }: UserProfileProps) {
         />
         <div className="flex flex-col">
           <span>{user?.username}</span>
-          <span className="text-sm text-zinc-400 hover:text-blue-500 hover:underline">
+          <span className="text-sm text-slate-400 hover:text-sky-500 hover:underline">
             <Link href={`mailto:${user?.email}`}>{user?.email}</Link>
           </span>
         </div>
@@ -73,27 +74,27 @@ function UserProfile({ user, show }: UserProfileProps) {
       <Separator className="my-4" />
       {/* <hr /> */}
       <div className="mid flex flex-col flex-1">
-        <span className="text-sm hover:bg-zinc-700/80 flex-1 cursor-pointer px-2 py-2 rounded-md flex gap-2">
-          <PersonIcon width="20" height="20" className="fill-zinc-300" />
+        <span className="text-sm hover:bg-slate-200 hover:dark:bg-slate-700 flex-1 cursor-pointer px-2 py-2 rounded-md flex gap-2">
+          <PersonIcon width="20" height="20" className="fill-slate-300" />
           Profile
         </span>
-        <span className="text-sm hover:bg-zinc-700/80 flex-1 cursor-pointer px-2 py-2 rounded-md flex gap-2">
-          <DeleteIcon width="20" height="20" className="fill-zinc-300" />
+        <span className="text-sm hover:bg-slate-200 hover:dark:bg-slate-700 flex-1 cursor-pointer px-2 py-2 rounded-md flex gap-2">
+          <DeleteIcon width="20" height="20" className="fill-slate-300" />
           Delete Account
         </span>
       </div>
       <Separator className="my-4" />
       {/* <hr /> */}
       <div className="bottom flex flex-col">
-        <span className="text-sm px-2 py-2 hover:bg-zinc-700/80 cursor-pointer rounded-md flex gap-2">
-          <SettingsIcon width="20" height="20" className="fill-zinc-300" />
+        <span className="text-sm px-2 py-2 hover:bg-slate-200 hover:dark:bg-slate-700 cursor-pointer rounded-md flex gap-2">
+          <SettingsIcon width="20" height="20" className="fill-slate-300" />
           Settings
         </span>
         <button
-          className="text-sm px-2 py-2 hover:bg-zinc-700/80 cursor-pointer rounded-md flex gap-2"
+          className="text-sm px-2 py-2 hover:bg-slate-200 hover:dark:bg-slate-700 cursor-pointer rounded-md flex gap-2"
           onClick={handleLogout}
         >
-          <LogoutIcon width="20" height="20" className="fill-zinc-300" />
+          <LogoutIcon width="20" height="20" className="fill-slate-300" />
           Logout
         </button>
       </div>

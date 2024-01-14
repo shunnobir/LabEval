@@ -10,6 +10,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 import { toast } from "sonner";
+import useTheme from "../hooks/useTheme";
+import LoaderButton from "@/components/LoaderButton";
 
 export default function Auth() {
   const router = useRouter();
@@ -19,6 +21,7 @@ export default function Auth() {
   const [signupPending, setSignupPending] = useState(false);
   const [loginPending, setLoginPending] = useState(false);
   const searchParams = useSearchParams();
+  const [theme, setTheme] = useTheme();
 
   const [uname, setUname] = useState("");
   const [email, setEmail] = useState("");
@@ -42,7 +45,7 @@ export default function Auth() {
     if (!data.ok) toast.error(data.status);
     else {
       toast.success("signup successful");
-      router.push("/auth?auth=login");
+      router.replace("/auth?auth=login");
     }
     setSignupPending(false);
   };
@@ -80,9 +83,13 @@ export default function Auth() {
 
   return (
     <div className="auth flex flex-col flex-1 gap-4 sm:items-center sm:justify-center px-[2.5%]">
-      <div className="m-auto w-[95%] sm:w-[30rem] flex flex-col gap-4 sm:items-center border border-solid border-zinc-800 px-4 py-8 sm:px-10 sm:py-20 rounded-md">
+      <div className="m-auto w-[95%] sm:w-[30rem] flex flex-col gap-4 sm:items-center border border-solid border-slate-300 dark:border-slate-800 px-4 py-8 sm:px-10 sm:py-20 rounded-md">
         <Link href="/" className="mx-auto">
-          <LabEvalLogo width="180" className="w-[140px] sm:w-[180px]" />
+          <LabEvalLogo
+            color={theme === "light" ? "#09090b" : "#f0f9ff"}
+            width="180"
+            className="w-[140px] sm:w-[180px]"
+          />
         </Link>
         <span className="text-2xl sm:text-3xl mx-auto">
           {isSignup ? "SIGNUP" : "LOGIN"}
@@ -114,37 +121,35 @@ export default function Auth() {
             options={["Instructor", "Participant"]}
             setSelected={setSelected}
           />
-          {/* {status.length > 0 ? (
-            <span className="mx-auto text-red-500">{status}</span>
-          ) : null} */}
-          <Button
-            className="py-2"
-            onClick={isSignup ? handleSignup : handleLogin}
-          >
-            {isSignup ? (
-              signupPending ? (
-                <Loader />
-              ) : (
-                "Signup"
-              )
-            ) : loginPending ? (
-              <Loader />
+          {isSignup ? (
+            signupPending ? (
+              <LoaderButton />
             ) : (
-              "Login"
-            )}
-          </Button>
+              <Button onClick={handleSignup}>Signup</Button>
+            )
+          ) : loginPending ? (
+            <LoaderButton />
+          ) : (
+            <Button onClick={handleLogin}>Login</Button>
+          )}
         </form>
         {isSignup ? (
           <span className="mx-auto">
             Already have an account?{" "}
-            <Link href="/auth?auth=login" className="text-blue-500 font-bold">
+            <Link
+              href="/auth?auth=login"
+              className="text-sky-500 hover:underline"
+            >
               Login
             </Link>
           </span>
         ) : (
           <span className="mx-auto">
             {"Don't have an account? "}
-            <Link href="/auth?auth=signup" className="text-blue-500 font-bold">
+            <Link
+              href="/auth?auth=signup"
+              className="text-sky-500 hover:underline"
+            >
               Signup
             </Link>
           </span>

@@ -1,9 +1,9 @@
 "use client";
 
+import useTheme from "@/app/hooks/useTheme";
 import React, { useState } from "react";
 
 type InputProps = {
-  // lbl?: string | React.ReactNode;
   type?: string;
   id?: string;
   name?: string;
@@ -32,6 +32,7 @@ function Input({
   pattern,
 }: InputProps) {
   const [count, setCount] = useState(0);
+  const [theme] = useTheme();
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -44,7 +45,6 @@ function Input({
 
   return (
     <div className="flex flex-col gap-1 flex-1 overflow-hidden relative">
-      {/* <label className="font-bold">{lbl}</label> */}
       <input
         type={type}
         id={id}
@@ -57,13 +57,13 @@ function Input({
         pattern={pattern}
         className={
           className +
-          " outline-none focus-within:outline-none bg-transparent border border-solid border-zinc-800 text-zinc-300 pl-4 py-2 rounded-md flex-1 w-full" +
+          " outline-none focus-within:outline-none bg-transparent border border-solid border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 pl-4 py-2 rounded-md flex-1 w-full placeholder:text-slate-400 dark:placeholder:text-slate-400" +
           (maxLength && showLimit ? " pr-10" : " pr-4")
         }
-        style={{ colorScheme: "dark" }}
+        style={{ colorScheme: theme }}
       />
       {maxLength && showLimit ? (
-        <span className="ml-auto text-sm text-zinc-500 absolute bottom-1/4 right-4">
+        <span className="ml-auto text-sm text-slate-500 absolute bottom-1/4 right-4">
           {count}/{maxLength}
         </span>
       ) : null}

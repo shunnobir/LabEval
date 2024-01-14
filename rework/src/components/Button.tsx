@@ -9,7 +9,7 @@ type ButtonProps = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   title?: string | "";
   disabled?: boolean;
-};
+} & React.HTMLAttributes<HTMLButtonElement>;
 
 export default function Button({
   width,
@@ -20,16 +20,18 @@ export default function Button({
   onClick,
   title,
   disabled,
+  ...res
 }: ButtonProps) {
   return (
     <button
       className={
         className +
-        " bg-blue-600 text-zinc-50 border-t border-solid border-blue-400 px-4 py-1 shadow-sm shadow-zinc-900 flex items-center justify-center rounded-md"
+        " hover:bg-sky-400 bg-sky-500 text-slate-50 border-t border-solid border-sky-400 px-4 py-2 shadow-sm shadow-slate-300 dark:shadow-slate-900 flex items-center justify-center rounded-md duration-300 disabled:bg-slate-400 disabled:border-t-slate-400 disabled:dark:bg-slate-800 disabled:dark:border-t-slate-800"
       }
       title={title}
       onClick={onClick ? onClick : (_) => {}}
       disabled={disabled || false}
+      {...res}
     >
       {icon ? icon : null}
       {children}

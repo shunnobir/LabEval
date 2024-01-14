@@ -82,13 +82,15 @@ export default function MdEditor({
     <div className="markdown-editor-frame rounded-[5px] h-full flex flex-col items-stretch">
       <div className="toolbar flex flex-row h-10 items-end">
         <div
-          className="button-group flex flex-row border border-solid border-zinc-800 border-b-transparent rounded-t-md h-10"
+          className="button-group flex flex-row border border-solid border-slate-300 dark:border-slate-800 border-b-transparent rounded-t-md h-10"
           style={{ borderBottomWidth: "0" }}
         >
           <button
             className={
               "px-4 text-sm" +
-              (active === 0 ? " bg-zinc-800 text-zinc-100" : "")
+              (active === 0
+                ? " bg-sky-600 text-slate-100 dark:bg-slate-800"
+                : "")
             }
             style={{
               borderTopLeftRadius: "6px",
@@ -100,7 +102,9 @@ export default function MdEditor({
           <button
             className={
               "px-2 min-w-[2rem] text-sm" +
-              (active === 1 ? " bg-zinc-800 text-slate-50" : "")
+              (active === 1
+                ? " bg-sky-600 text-slate-100 dark:bg-slate-800"
+                : "")
             }
             style={{
               borderTopRightRadius: "6px",
@@ -112,7 +116,7 @@ export default function MdEditor({
         </div>
       </div>
       <div
-        className="editor-container flex flex-col border border-solid border-zinc-800 flex-grow h-auto items-stretch"
+        className="editor-container flex flex-col border border-solid border-slate-300 dark:border-slate-800 flex-grow h-auto items-stretch"
         style={{
           borderBottomLeftRadius: "6px",
           borderBottomRightRadius: "6px",
