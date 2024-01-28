@@ -39,7 +39,11 @@ export default function AddProblem({
     return <Page404 />;
   }
 
-  if (loading > 0 && event && !user) {
+  if (
+    loading > 1 &&
+    event &&
+    (!user || (user && user.user_id !== event.user_id))
+  ) {
     return <UnauthorizedAccess />;
   }
 

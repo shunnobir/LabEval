@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       ok: true,
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return NextResponse.json({ status: "internal database error", ok: false });
   }
 }

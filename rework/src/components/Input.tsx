@@ -1,9 +1,11 @@
 "use client";
 
-import useTheme from "@/app/hooks/useTheme";
-import React, { useState } from "react";
+import { ThemeContext } from "@/app/contexts/ThemeContext";
+import React, { useContext, useState } from "react";
+import Label from "./Label";
 
 type InputProps = {
+  label?: string;
   type?: string;
   id?: string;
   name?: string;
@@ -18,7 +20,7 @@ type InputProps = {
 };
 
 function Input({
-  // lbl,
+  label,
   type,
   id,
   name,
@@ -32,7 +34,7 @@ function Input({
   pattern,
 }: InputProps) {
   const [count, setCount] = useState(0);
-  const [theme] = useTheme();
+  const theme = useContext(ThemeContext);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -45,6 +47,7 @@ function Input({
 
   return (
     <div className="flex flex-col gap-1 flex-1 overflow-hidden relative">
+      {label ? <Label>{label}</Label> : null}
       <input
         type={type}
         id={id}

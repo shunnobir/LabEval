@@ -7,7 +7,7 @@
   --red-600: #ff2929;
 
   --blue-500: #4282cd;
-  --sky-600: #3272bd;
+  --blue-600: #3272bd;
 
   --green-500: #23b648;
   --green-600: #18ae3e;
@@ -91,6 +91,7 @@ textarea:focus {
 
 h1 {
   font-size: 2rem;
+  font-weight: 600;
 }
 
 h2 {

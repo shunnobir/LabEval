@@ -24,6 +24,9 @@ import generateId from "@/app/generateId";
 import Link from "next/link";
 import Loading from "./Loading";
 import LoaderButton from "./LoaderButton";
+import EventQuickLinks from "./EventQuickLinks";
+import Label from "./Label";
+import LButton from "./LButton";
 const MarkdownViewer = dynamic(() => import("@/components/MarkdownViewer"), {
   ssr: false,
 });
@@ -108,7 +111,7 @@ export default function ProblemViewer({
         if (!res.ok) toast.error(res.status);
         setPending(false);
       });
-    router.push(`/submissions?solution_id=${solution_id}`);
+    router.push(`/submissions/${solution_id}`);
   };
 
   useEffect(() => {
@@ -154,7 +157,9 @@ export default function ProblemViewer({
   return (
     <div className={"problem flex gap-8 pb-8"}>
       <div className={"left flex flex-col w-[75%] items-center"}>
-        {user && user.role === "instructor" ? (
+        {user &&
+        user.role === "instructor" &&
+        user.user_id === event.user_id ? (
           <div className="flex gap-2 ml-auto mb-8">
             <Button
               icon={<AddIcon width="20" height="20" />}
@@ -178,7 +183,9 @@ export default function ProblemViewer({
         <MarkdownViewer str={problem?.statement as string} />
         {!testcasesLoading ? (
           <div className="w-full flex flex-col gap-4 mt-4">
-            <h2 className="font-bold">Samples</h2>
+            {testcases.length > 0 ? (
+              <h2 className="font-bold">Samples</h2>
+            ) : null}
             {testcases.map((testcase, index) => {
               return testcase.is_sample ? (
                 <div
@@ -243,25 +250,30 @@ export default function ProblemViewer({
         <div className="top">
           <EventTimer event={event} />
         </div>
+        <div className="top-mid">
+          <EventQuickLinks event={event} />
+        </div>
         {user ? (
           <>
             <div className="mid flex flex-col border border-solid border-slate-300 dark:border-slate-800 rounded-md pb-2">
               <div className="bg-slate-800 text-slate-100 rounded-t-md border-b border-solid border-slate-300 dark:border-slate-800 p-2 flex justify-center">
                 <span>Submit</span>
               </div>
-              <div className="p-2">
+              <div className="p-2 flex flex-col gap-1">
                 <Select
+                  label="Language"
                   options={["C", "C++", "Python"]}
                   setSelected={setFileType}
                 />
               </div>
-              <div className={"p-2 flex flex-col gap-2 justify-center"}>
+              <div className={"p-2 flex flex-col gap-1 justify-center"}>
+                <Label>Choose a file</Label>
                 <label
                   className={
                     "cursor-pointer border border-solid border-slate-300 dark:border-slate-800 p-2 rounded-md flex items-center"
                   }
                 >
-                  <span>Choose a file</span>
+                  <span>Click to choose file</span>
                   <input
                     type="file"
                     required={true}
@@ -278,34 +290,28 @@ export default function ProblemViewer({
                 </label>
                 <span
                   className={
-                    "px-2 flex gap-2 " +
+                    "px-2 py-1 flex gap-2 " +
                     (inputFile
                       ? "text-slate-500 dark:text-slate-300"
                       : "text-slate-500")
                   }
                 >
                   <CodeFileIcon width="20" height="20" />
-                  {inputFile ? inputFile?.name : "No file choosen"}
+                  {inputFile ? inputFile?.name : "No file chosen"}
                 </span>
               </div>
-              {!pending ? (
-                <Button
-                  className={"mx-2 mb-2"}
-                  disabled={inputFile === undefined}
-                  title={"choose a file to submit"}
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </Button>
-              ) : (
-                <LoaderButton />
-              )}
+              <LButton
+                variant={inputFile ? "primary" : "ghost"}
+                className={"mx-2 mb-2 justify-center"}
+                disabled={inputFile === undefined}
+                title={"choose a file to submit"}
+                onClick={handleSubmit}
+              >
+                {pending ? <Loader className="border-zinc-100" /> : "Submit"}
+              </LButton>
             </div>
             {!submissionsLoading ? (
               <div className="flex flex-col">
-                {/* <span className="bg-slate-800 text-slate-100 text-center p-2 border border-solid border-slate-300 dark:border-slate-800 border-b-0 rounded-t-md">
-                  Submissions
-                </span> */}
                 <Table
                   heads={[
                     { content: "Submission" },
@@ -322,7 +328,7 @@ export default function ProblemViewer({
                       <TableRow key={index} className="text-sm">
                         <TableCell className="text-sky-500 font-semibold">
                           <Link
-                            href={`/submissions?solution_id=${submission?.solution_id}`}
+                            href={`/submissions/${submission?.solution_id}`}
                           >
                             {submission?.solution_id}
                           </Link>

@@ -70,29 +70,39 @@ export default function Testcases({
             </div>
             <div className="flex">
               <div className="flex flex-col flex-1 overflow-auto border-r border-solid border-slate-300 dark:border-slate-800">
-                <div className="flex justify-between border-b border-solid border-slate-300 dark:border-slate-800">
-                  <span className="p-2 font-semibold">Input</span>
-                  <span className="p-2">size: {testcase.input_size}B</span>
-                </div>
-                <div className="p-2 h-40 relative">
-                  <pre>{testcase.input_content}</pre>
+                <div className="flex border-b border-solid border-slate-300 dark:border-slate-800">
+                  <span className="p-2 font-semibold">
+                    Input
+                    <span className="text-slate-400 dark:text-slate-600 text-sm">
+                      {" "}
+                      ({testcase.input_size}B)
+                    </span>
+                  </span>
                   <CopyButton
-                    className="absolute right-2 top-2"
+                    className="ml-auto border-transparent dark:border-transparent"
                     content={testcase.input_content}
                   />
                 </div>
+                <div className="p-2 h-40 relative overflow-auto">
+                  <pre>{testcase.input_content}</pre>
+                </div>
               </div>
               <div className="flex flex-col flex-1 overflow-auto">
-                <div className="flex justify-between border-b border-solid border-slate-300 dark:border-slate-800">
-                  <span className="p-2 font-semibold">Output</span>
-                  <span className="p-2">size: {testcase.output_size}B</span>
-                </div>
-                <div className="p-2 h-40 relative">
-                  <pre>{testcase.output_content}</pre>
+                <div className="flex border-b border-solid border-slate-300 dark:border-slate-800">
+                  <span className="p-2 font-semibold">
+                    Output
+                    <span className="text-slate-400 dark:text-slate-600 text-sm">
+                      {" "}
+                      ({testcase.output_size}B)
+                    </span>
+                  </span>
                   <CopyButton
-                    className="absolute right-2 top-2"
+                    className="ml-auto border-transparent dark:border-transparent"
                     content={testcase.output_content}
                   />
+                </div>
+                <div className="p-2 h-40 relative overflow-auto">
+                  <pre>{testcase.output_content}</pre>
                 </div>
               </div>
             </div>
