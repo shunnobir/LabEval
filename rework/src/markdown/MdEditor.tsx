@@ -89,7 +89,7 @@ export default function MdEditor({
             className={
               "px-4 text-sm" +
               (active === 0
-                ? " bg-sky-600 text-slate-100 dark:bg-slate-800"
+                ? " bg-slate-800 text-slate-100 dark:bg-slate-800"
                 : "")
             }
             style={{
@@ -103,7 +103,7 @@ export default function MdEditor({
             className={
               "px-2 min-w-[2rem] text-sm" +
               (active === 1
-                ? " bg-sky-600 text-slate-100 dark:bg-slate-800"
+                ? " bg-slate-800 text-slate-100 dark:bg-slate-800"
                 : "")
             }
             style={{

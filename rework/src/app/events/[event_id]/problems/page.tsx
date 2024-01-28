@@ -3,13 +3,12 @@ import { getEventProblems } from "@/app/lib/getEventProblems";
 import EventProblems from "@/components/EventProblems";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import React from "react";
-import { Event } from "../../../../types";
 import EventTimer from "@/components/EventTimer";
+import getUser from "@/app/lib/getUser";
+import Page404 from "@/components/404";
 import { notFound } from "next/navigation";
+import { Event } from "../../../../../types";
 import Loading from "@/components/Loading";
-import LButton from "@/components/LButton";
-import Link from "next/link";
-import { UnfilledPostsIcon } from "@/icons";
 import EventQuickLinks from "@/components/EventQuickLinks";
 
 type EventProps = {
@@ -18,9 +17,10 @@ type EventProps = {
   };
 };
 
-export default async function Event({ params }: EventProps) {
+export default async function Problems({ params }: EventProps) {
   const { event, ok } = await getEvent(params.event_id);
   const problems = await getEventProblems(params.event_id);
+  const user = await getUser();
 
   if (!ok || !problems.ok) {
     notFound();
@@ -29,10 +29,11 @@ export default async function Event({ params }: EventProps) {
   return (
     <div className="events flex gap-10">
       <div className="left flex flex-col w-[75%]">
-        <h1 className="title">{event?.title}</h1>
-        <div>
-          <MarkdownViewer str={event?.description || ""} />
-        </div>
+        <EventProblems
+          event={event}
+          problems={problems?.problems}
+          user={user.user}
+        />
       </div>
       <div className="right flex flex-col gap-8 w-[25%]">
         <div className="top">

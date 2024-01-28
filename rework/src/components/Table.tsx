@@ -37,7 +37,7 @@ export function TableCell({ children, className, ...res }: TableCellProps) {
     <td
       className={
         className +
-        " px-2 py-1 text-wrap border-r border-solid border-slate-300 dark:border-slate-800 last:border-r-0"
+        " px-2 py-1 font-normal text-wrap border-r border-solid border-slate-300 dark:border-slate-800 last:border-r-0"
       }
       {...res}
     >
@@ -71,7 +71,10 @@ export default function Table({
                 return (
                   <th
                     key={index}
-                    className={value.className + " font-bold p-2 text-left"}
+                    className={
+                      value.className +
+                      " border-r border-solid border-slate-600 dark:border-slate-700 font-bold p-2 text-left"
+                    }
                     style={value.style}
                   >
                     {value.content}

@@ -13,12 +13,13 @@ export default function CopyButton({
     <button
       className={
         className +
-        " p-1 hover:bg-slate-700/30 rounded-md border border-solid border-slate-300 dark:border-slate-800"
+        " p-1 hover:bg-slate-200 hover:dark:bg-slate-700/30 rounded-md border border-solid border-slate-300 dark:border-slate-800"
       }
       onClick={() => {
         navigator.clipboard.writeText(content);
         toast.info("text copied to clipboard");
       }}
+      title="click to copy"
     >
       <CopyIcon />
     </button>

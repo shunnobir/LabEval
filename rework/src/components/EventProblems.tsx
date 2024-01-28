@@ -28,7 +28,7 @@ function EventProblems({
             icon={<AddIcon width="20" height="20" />}
             className="ml-auto py-2 rounded-md gap-2"
             onClick={() => {
-              router.push(pathName + "/add");
+              router.push(`/events/${event.event_id}/add`);
             }}
           >
             <span className="hidden sm:inline-block">Add Problem</span>
@@ -36,25 +36,34 @@ function EventProblems({
         ) : null}
       </div>
       <Table
-        heads={[{ content: "No", className: "w-[5%]" }, { content: "Problem" }]}
+        heads={[
+          { content: "No", className: "w-[5%]" },
+          { content: "Problem", className: "w-2/3" },
+          { content: "Submissions", className: "w-[5%]" },
+        ]}
         className="w-full"
         empty={problems?.length === 0}
       >
-        {problems?.map((problem: Problem, index: number) => {
-          return (
-            <TableRow key={index}>
-              <TableCell className="py-2">{problem.problem_order}</TableCell>
-              <TableCell className="py-2">
-                <Link
-                  href={`/events/${problem.event_id}/problems/${problem.problem_order}`}
-                  className="hover:text-sky-500 hover:underline"
-                >
-                  <span>{problem.title}</span>
-                </Link>
-              </TableCell>
-            </TableRow>
-          );
-        })}
+        {problems?.map(
+          (problem: Problem & { submissions: number }, index: number) => {
+            return (
+              <TableRow key={index}>
+                <TableCell className="py-2">{problem.problem_order}</TableCell>
+                <TableCell className="py-2">
+                  <Link
+                    href={`/events/${problem.event_id}/problems/${problem.problem_order}`}
+                    className="hover:text-sky-500 hover:underline"
+                  >
+                    <span>{problem.title}</span>
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <span>{problem.submissions}</span>
+                </TableCell>
+              </TableRow>
+            );
+          }
+        )}
       </Table>
     </div>
   );

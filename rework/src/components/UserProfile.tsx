@@ -50,7 +50,7 @@ function UserProfile({ user, show }: UserProfileProps) {
 
   return (
     <div
-      className="user-profile flex flex-col absolute right-0 border border-solid border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-950 px-2 py-4 text-sm sm:text-[1rem] rounded-md z-10 text-slate-700 dark:text-slate-300 after:border-[12px] after:border-solid after:border-b-slate-800 after:border-t-transparent after:border-l-transparent after:border-r-transparent after:w-[24px] after:h-[24px] after:absolute after:right-2 after:top-[-24px] after:z-[10] "
+      className="user-profile flex flex-col absolute right-0 border border-solid border-slate-300 dark:border-slate-800 bg-white dark:bg-zinc-950 px-2 py-4 text-sm sm:text-[1rem] rounded-md z-10 text-slate-700 dark:text-slate-300 after:border-[12px] after:border-solid after:border-b-slate-800 after:border-t-transparent after:border-l-transparent after:border-r-transparent after:w-[24px] after:h-[24px] after:absolute after:right-2 after:top-[-24px] after:z-[10] "
       ref={ref}
       style={{
         width: "15rem",

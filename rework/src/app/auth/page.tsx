@@ -7,21 +7,22 @@ import Select from "@/components/Select";
 import { LabEvalLogo } from "@/icons";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 import { toast } from "sonner";
-import useTheme from "../hooks/useTheme";
 import LoaderButton from "@/components/LoaderButton";
+import { ThemeContext } from "../contexts/ThemeContext";
+import Loading from "@/components/Loading";
 
 export default function Auth() {
   const router = useRouter();
   const [isSignup, setIsSignup] = useState(true);
   const [selected, setSelected] = useState(0);
-  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(true);
   const [signupPending, setSignupPending] = useState(false);
   const [loginPending, setLoginPending] = useState(false);
   const searchParams = useSearchParams();
-  const [theme, setTheme] = useTheme();
+  const theme = useContext(ThemeContext);
 
   const [uname, setUname] = useState("");
   const [email, setEmail] = useState("");
@@ -74,12 +75,15 @@ export default function Auth() {
   };
 
   useEffect(() => {
+    setLoading(false);
     if (searchParams.get("auth") === "signup") setIsSignup(true);
     else setIsSignup(false);
     setUname("");
     setEmail("");
     setPassword("");
   }, [searchParams]);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="auth flex flex-col flex-1 gap-4 sm:items-center sm:justify-center px-[2.5%]">

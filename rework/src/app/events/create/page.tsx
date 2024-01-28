@@ -183,7 +183,7 @@ function CreateEvent() {
           className="w-fit gap-2 py-2 rounded-md mt-4"
           onClick={handleCreate}
         >
-          {creationPending ? <Loader /> : "Create"}
+          {creationPending ? <Loader className="border-zinc-100" /> : "Create"}
         </Button>
       </div>
     </div>

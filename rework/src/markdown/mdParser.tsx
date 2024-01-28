@@ -1032,7 +1032,7 @@ export default function labevalMarkdownParser(buffer: string): React.ReactNode {
         key={key}
         className={
           jetbrainsMono.className +
-          " block-code bg-slate-100 dark:bg-slate-800/50  w-full border border-solid border-slate-300 dark:border-slate-800 rounded-md px-2 py-2"
+          " block-code bg-slate-100 dark:bg-slate-800/50  w-full border border-solid border-slate-300 dark:border-slate-800 rounded-md px-2 py-2 my-2"
         }
       >
         <pre>{tok.raw}</pre>

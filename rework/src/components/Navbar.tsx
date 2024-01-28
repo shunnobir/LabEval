@@ -20,22 +20,29 @@ import getUser from "@/app/lib/getUser";
 import { User } from "../../types";
 import Image from "next/image";
 import UserProfile from "./UserProfile";
-import useTheme, { ThemeProp } from "@/app/hooks/useTheme";
 
 type NavLink = {
   name: string;
   link: string;
+  userRequired: boolean;
 };
 
 interface IThemeIcon {
   [id: string]: string;
 }
 
-export default function Navbar() {
+export default function Navbar({
+  theme,
+  setTheme,
+}: {
+  theme: any;
+  setTheme: any;
+}) {
   const navLinks: NavLink[] = [
-    { name: "Posts", link: "" },
-    { name: "Events", link: "events" },
-    { name: "Problemset", link: "problemset" },
+    { name: "Posts", link: "", userRequired: false },
+    { name: "Events", link: "events", userRequired: false },
+    { name: "Problemset", link: "problemset", userRequired: false },
+    { name: "Submissions", link: "submissions", userRequired: true },
   ];
 
   const [isLoggedIn, setIsloggedIn] = useState(false);
@@ -45,7 +52,6 @@ export default function Navbar() {
   const pathName = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [theme, setTheme] = useTheme();
   const themeIcons: IThemeIcon = {
     light: "🌛",
     dark: "☀️",
@@ -62,8 +68,6 @@ export default function Navbar() {
     });
   }, [pathName, searchParams]);
 
-  useEffect(() => {}, []);
-
   return (
     <nav className="navbar flex flex-col mb-4 gap-4">
       <div className="navbar-top flex gap-4 items-center ">
@@ -78,7 +82,7 @@ export default function Navbar() {
         </Link>
         <div className="navbar-mid ml-auto rounded-full flex gap-4 items-center">
           {navLinks.map((link: NavLink, index: number) => {
-            return (
+            return !link.userRequired || (user && link.userRequired) ? (
               <Link href={`/${link.link}`} key={index}>
                 <div
                   className={
@@ -92,15 +96,13 @@ export default function Navbar() {
                   <span>{link.name}</span>
                 </div>
               </Link>
-            );
+            ) : null;
           })}
           <button
             className="ml-auto dark:bg-slate-800 bg-slate-600 w-10 h-10 rounded-full"
             title="click to change theme"
             onClick={() =>
-              setTheme((prev: ThemeProp) =>
-                prev === "light" ? "dark" : "light"
-              )
+              setTheme((prev: any) => (prev === "light" ? "dark" : "light"))
             }
           >
             {themeIcons[theme as string]}

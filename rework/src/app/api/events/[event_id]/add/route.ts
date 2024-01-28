@@ -14,7 +14,7 @@ export async function POST(
                           problem_order = ${body.problem_order}`;
     if (prob.length !== 0) {
       return NextResponse.json({
-        status: "duplicate problem order",
+        status: `problem ${body.problem_order} already exists`,
         ok: false,
       });
     }

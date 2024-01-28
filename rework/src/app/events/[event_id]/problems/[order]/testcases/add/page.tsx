@@ -32,7 +32,8 @@ export default function AddTestcase({
   const handleAddTestcase = async () => {
     if (
       (input.length === 0 && output.length > 0) ||
-      (input.length > 0 && output.length === 0)
+      (input.length > 0 && output.length === 0) ||
+      (input.length === 0 && output.length === 0)
     ) {
       toast.error("both fields have to be filled to add a testcase");
       return;
@@ -63,6 +64,9 @@ export default function AddTestcase({
       router.refresh();
     }
     setPending(false);
+    setInput("");
+    setOutput("");
+    setIsSample(false);
   };
 
   useEffect(() => {
@@ -86,7 +90,11 @@ export default function AddTestcase({
     return <Page404 />;
   }
 
-  if (loading > 0 && event && !user) {
+  if (
+    loading > 1 &&
+    event &&
+    (!user || (user && user.user_id !== event.user_id))
+  ) {
     return <UnauthorizedAccess />;
   }
 
@@ -137,12 +145,13 @@ export default function AddTestcase({
       </div>
       {pending ? (
         <Button className="w-fit px-2 py-2">
-          <Loader />
+          <Loader className="border-slate-50" />
         </Button>
       ) : (
         <Button
           icon={<AddIcon width="24" height="24" />}
           className="w-fit py-2 gap-2"
+          disabled={pending}
           onClick={handleAddTestcase}
         >
           Add testcase

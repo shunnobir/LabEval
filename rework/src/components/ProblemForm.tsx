@@ -81,7 +81,7 @@ export default function ProblemForm({ event_id }: { event_id: string }) {
     if (!res.ok) toast.error(res.status);
     else {
       toast.success(res.status);
-      router.push(`/events/${event_id}`);
+      router.push(`/events/${event_id}/problems`);
     }
     setAddPending(false);
   };
@@ -168,7 +168,7 @@ export default function ProblemForm({ event_id }: { event_id: string }) {
         </Button>
       ) : (
         <Button className="w-fit gap-2 rounded-md px-4 py-2">
-          <Loader />
+          <Loader className="border-slate-50" />
         </Button>
       )}
     </div>
